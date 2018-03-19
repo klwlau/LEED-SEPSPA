@@ -3,10 +3,12 @@ from UsedFunc import *
 from fitFunc import *
 rcParams['figure.figsize'] = [10., 8.]
 
+
+#read Image and make Mask
 testfileA = readLEEDImage("test2.tif")
 mask = makeMask(125, 125, 0, 30)
-centerArray = findSpot("test2.tif", 100, mask, showSpots=False, plotSensitivity=4)
 
+centerArray = findSpot("test2.tif", 1000, mask, scaleFactor=10,showSpots=False, plotSensitivity=4)
 
 
 
@@ -18,7 +20,7 @@ for i in range(len(centerArray)):
     spotNumber = i
     print(centerArray[spotNumber])
     cropRange = 8
-    spot1 = testfileA[int(centerArray[spotNumber][1]) - cropRange:int(centerArray[spotNumber][1]) + cropRange, \
+    spot1 = testfileA[int(centerArray[spotNumber][1]) - cropRange:int(centerArray[spotNumber][1]) + cropRange,\
             int(centerArray[spotNumber][0]) - cropRange:int(centerArray[spotNumber][0]) + cropRange]
         # plotFunc(spot1)
 
@@ -34,7 +36,7 @@ for i in range(len(centerArray)):
     i = z.argmax()
     guess = [z[i], x[i], y[i], 50, 50, 100, 30, 30, 100]
     pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=guess, method='lm')
-    plotFitFunc(xy, 11, pred_params)
+    # plotFitFunc(xy, 11, pred_params)
     #     print(pred_params)
 
 print("done")

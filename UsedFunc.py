@@ -43,6 +43,7 @@ def compressImage16to8bit(imageArray, scaleFactor):
     imageArray = imageArray / scaleFactor
     #     imageArray=imageArray.astype(np.uint8)
     imageArray = imageArray
+    print(imageArray.dtype)
     return imageArray
 
 
