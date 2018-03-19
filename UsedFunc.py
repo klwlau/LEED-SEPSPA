@@ -18,13 +18,15 @@ def plotFunc(plot_data, plotSensitivity=3):
     plt.colorbar()
     plt.show()
 
-
-def readLEEDImage(filepath,defpicDim=False):
+def setPicDim(filePath):
     global picWidth, picHeight
-    data = np.array(Image.open(filepath))
-    if defpicDim is True:
-        picWidth = len(data[1])
-        picHeight = len(data)
+    data = np.array(Image.open(filePath))
+    picWidth = len(data[1])
+    picHeight = len(data)
+
+
+def readLEEDImage(filePath):
+    data = np.array(Image.open(filePath))
     return data
 
 
