@@ -1,19 +1,14 @@
-import numpy as np
-from scipy.optimize import curve_fit
-import sep
-from PIL import Image
-import matplotlib.pyplot as plt
 from matplotlib import rcParams
-from matplotlib.patches import Ellipse
-import glob
-import csv
-rcParams['figure.figsize'] = [10., 8.]
 from UsedFunc import *
 from fitFunc import *
+rcParams['figure.figsize'] = [10., 8.]
 
 testfileA = readLEEDImage("test2.tif")
 mask = makeMask(125, 125, 0, 30)
-centerArray = findSpot("test2.tif", 1000, mask, showSpots=False, plotSensitivity=4)
+centerArray = findSpot("test2.tif", 100, mask, showSpots=False, plotSensitivity=4)
+
+
+
 
 testfileA = readLEEDImage("test2.tif")
 mask = makeMask(125, 125, 0, 30)
@@ -25,7 +20,7 @@ for i in range(len(centerArray)):
     cropRange = 8
     spot1 = testfileA[int(centerArray[spotNumber][1]) - cropRange:int(centerArray[spotNumber][1]) + cropRange, \
             int(centerArray[spotNumber][0]) - cropRange:int(centerArray[spotNumber][0]) + cropRange]
-    #     plotFunc(spot1)
+        # plotFunc(spot1)
 
 
     testArray = spot1
@@ -41,3 +36,5 @@ for i in range(len(centerArray)):
     pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=guess, method='lm')
     plotFitFunc(xy, 11, pred_params)
     #     print(pred_params)
+
+print("done")

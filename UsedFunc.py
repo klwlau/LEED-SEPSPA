@@ -5,10 +5,8 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
 from matplotlib.patches import Ellipse
-import glob
-import csv
 rcParams['figure.figsize'] = [10., 8.]
-from UsedFunc import *
+from fitFunc import *
 
 
 
