@@ -157,6 +157,7 @@ def saveToCSV(tempWrite,fileName):
             csvWriter.writerow(i)
             
 def createSaveArray(fileName,mask):
+    # global mask
     fileArray = readLEEDImage(fileName)
     returnArray=[fileName]
     centerArray = findSpot(fileArray, 100, mask, scaleFactor=10, showSpots=False, plotSensitivity=4)
