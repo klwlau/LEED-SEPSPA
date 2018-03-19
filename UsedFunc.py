@@ -115,17 +115,15 @@ def plotFitFunc(fit_params):    #(xy, zobs, pred_params):
 
 def fitCurve(imageArray,centerArray,plotFittedFunc=False,printParameters=False):
     global cropRange
+    allFittedSpot=[]
 
     for i in range(len(centerArray)):
         spotNumber = i
+        xyzArray = []
         # print(centerArray[spotNumber])
 
         cropedArray = imageArray[int(centerArray[spotNumber][1]) - cropRange : int(centerArray[spotNumber][1]) + cropRange, \
                 int(centerArray[spotNumber][0]) - cropRange : int(centerArray[spotNumber][0]) + cropRange]
-
-
-
-        xyzArray = []
 
         for i in range(len(cropedArray)):
             for j in range(len(cropedArray[i])):
@@ -141,8 +139,12 @@ def fitCurve(imageArray,centerArray,plotFittedFunc=False,printParameters=False):
         pred_params[1] = pred_params[1] - cropRange + centerArray[spotNumber][0]
         pred_params[2] = pred_params[2] - cropRange + centerArray[spotNumber][1]
 
+        allFittedSpot.append(pred_params)
+
         if plotFittedFunc==True: plotFitFunc(pred_params)
         if printParameters==True: print(pred_params)
         #Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
 
     ###need to find the center spot
+
+    return allFittedSpot

@@ -12,6 +12,6 @@ mask = makeMask(125, 125, 0, 30)
 fileArray = readLEEDImage("test2.tif")
 centerArray = findSpot(fileArray, 100, mask, scaleFactor=10, showSpots=False, plotSensitivity=4)
 
-fitCurve(fileArray, centerArray)
+print(fitCurve(fileArray, centerArray))
 
 print("done")
