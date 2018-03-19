@@ -1,6 +1,5 @@
 from matplotlib import rcParams
 from UsedFunc import *
-from fitFunc import *
 rcParams['figure.figsize'] = [10., 8.]
 
 

@@ -3,9 +3,7 @@ from scipy.optimize import curve_fit
 import sep
 from PIL import Image
 import matplotlib.pyplot as plt
-from matplotlib import rcParams
 from matplotlib.patches import Ellipse
-rcParams['figure.figsize'] = [10., 8.]
 from fitFunc import *
 
 
