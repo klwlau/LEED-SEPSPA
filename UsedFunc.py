@@ -155,3 +155,10 @@ def saveToCSV(tempWrite,fileName):
         csvWriter=csv.writer(f)
         for i in tempWrite:
             csvWriter.writerow(i)
+            
+def createSaveArray(fileName,mask):
+    fileArray = readLEEDImage(fileName)
+    returnArray=[fileName]
+    centerArray = findSpot(fileArray, 100, mask, scaleFactor=10, showSpots=False, plotSensitivity=4)
+    returnArray.append(fitCurve(fileArray, centerArray))
+    return returnArray
