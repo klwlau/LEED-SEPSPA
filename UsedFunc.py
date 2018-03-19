@@ -19,11 +19,12 @@ def plotFunc(plot_data, plotSensitivity=3):
     plt.show()
 
 
-def readLEEDImage(filepath):
+def readLEEDImage(filepath,defpicDim=False):
     global picWidth, picHeight
     data = np.array(Image.open(filepath))
-    picWidth = len(data[1])
-    picHeight = len(data)
+    if defpicDim is True:
+        picWidth = len(data[1])
+        picHeight = len(data)
     return data
 
 
@@ -72,8 +73,9 @@ def plotSpots(imgArray, objects_list, plotSensitivity=3):
     plt.show()
 
 
-def findSpot(imgArray: object, searchThreshold: object, mask: object, \
-             scaleFactor: object = 10, plotSensitivity: object = 3, showSpots: object = False, fullInformation: object = False) -> object:
+def findSpot(imgArray: np.array, searchThreshold: float, mask: np.array , \
+             scaleFactor: float = 10, plotSensitivity: float = 3, showSpots: bool = False,\
+             fullInformation: bool= False) -> np.array:
 
     # plotFunc(imgArray)
     imgArray = compressImage16to8bit(imgArray, scaleFactor)
@@ -93,31 +95,31 @@ def findSpot(imgArray: object, searchThreshold: object, mask: object, \
         return np.array([objects_list['x'], objects_list['y']]).T
 
 
-def plotFitFunc(pred_params):    #(xy, zobs, pred_params):
+def plotFitFunc(fit_params):    #(xy, zobs, pred_params):
     # x, y = xy
     xi, yi = np.mgrid[:cropRange*2:30j, :cropRange*2:30j]
     xyi = np.vstack([xi.ravel(), yi.ravel()])
 
-    zpred = fitFunc(xyi, *pred_params)
+    zpred = fitFunc(xyi, *fit_params)
     zpred.shape = xi.shape
 
     fig, ax = plt.subplots()
     #     ax.scatter(x, y, c=zobs, s=200, vmin=zpred.min(), vmax=zpred.max())
-    im = ax.imshow(zpred, extent=[xi.min(), xi.max(), yi.max(), yi.min()], aspect='auto')
+    im = ax.imshow(zpred, extent=(xi.min(), xi.max(), yi.max(), yi.min()), aspect='auto')
     fig.colorbar(im)
     ax.invert_yaxis()
     plt.show()
 
 
-def fitCurve(imageArray,centerArray):
+def fitCurve(imageArray,centerArray,plotFittedFunc=False,printParameters=False):
     global cropRange
 
     for i in range(len(centerArray)):
         spotNumber = i
         # print(centerArray[spotNumber])
 
-        cropedArray = imageArray[int(centerArray[spotNumber][1]) - cropRange:int(centerArray[spotNumber][1]) + cropRange, \
-                int(centerArray[spotNumber][0]) - cropRange:int(centerArray[spotNumber][0]) + cropRange]
+        cropedArray = imageArray[int(centerArray[spotNumber][1]) - cropRange : int(centerArray[spotNumber][1]) + cropRange, \
+                int(centerArray[spotNumber][0]) - cropRange : int(centerArray[spotNumber][0]) + cropRange]
 
 
 
@@ -133,7 +135,12 @@ def fitCurve(imageArray,centerArray):
         guess = [z[i], x[i], y[i],50, 50, 100, 30, 30, 100]
         pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=guess, method='lm')
 
-        # print(pred_params)
+        ####do cord transform
+        pred_params[1] = pred_params[1] - cropRange + centerArray[spotNumber][0]
+        pred_params[2] = pred_params[2] - cropRange + centerArray[spotNumber][1]
+
+        if plotFittedFunc==True: plotFitFunc(pred_params)
+        if printParameters==True: print(pred_params)
         #Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
-    ####need to do cord transform
+
     ###need to find the center spot
