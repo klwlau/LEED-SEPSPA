@@ -5,6 +5,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 from fitFunc import *
+import csv
 
 ######parameter list######
 cropRange = 8
@@ -148,3 +149,9 @@ def fitCurve(imageArray,centerArray,plotFittedFunc=False,printParameters=False):
     ###need to find the center spot
 
     return allFittedSpot
+
+def saveToCSV(tempWrite,fileName):
+    with open(fileName,'a',newline='') as f:
+        csvWriter=csv.writer(f)
+        for i in tempWrite:
+            csvWriter.writerow(i)
