@@ -14,5 +14,4 @@ centerArray = findSpot(fileArray, 100, mask, scaleFactor=10,showSpots=False, plo
 
 fitCurve(fileArray,centerArray)
 
-
 print("done")

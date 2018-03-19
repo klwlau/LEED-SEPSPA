@@ -124,7 +124,7 @@ def fitCurve(imageArray,centerArray):
         x, y, z = np.array(xyzArray).T
         xy = x, y
         i = z.argmax()
-        guess = [z[i], x[i], y[i], 50, 50, 100, 30, 30, 100]
+        guess = [z[i], x[i], y[i],50, 50, 100, 30, 30, 100]
         pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=guess, method='lm')
         # plotFitFunc(xy, 11, pred_params)
         print(pred_params)
