@@ -150,13 +150,13 @@ def fitCurve(imageArray,centerArray,plotFittedFunc=False,printParameters=False):
 
     return allFittedSpot
 
-def saveToCSV(tempWrite,fileName):
+def saveToCSV(RowArray, fileName):
     with open(fileName,'a',newline='') as f:
         csvWriter=csv.writer(f)
-        for i in tempWrite:
+        for i in RowArray:
             csvWriter.writerow(i)
             
-def createSaveArray(fileName,mask):
+def createRowArray(fileName, mask):
     # global mask
     fileArray = readLEEDImage(fileName)
     returnArray=[fileName]
