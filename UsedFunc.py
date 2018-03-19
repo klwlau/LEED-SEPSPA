@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 from fitFunc import *
 
+######parameter list######
+cropRange = 8
+######parameter list######
 
 def plotFunc(plot_data, plotSensitivity=3):
     m, s = np.mean(plot_data), np.std(plot_data)
@@ -90,9 +93,9 @@ def findSpot(imgArray: object, searchThreshold: object, mask: object, \
         return np.array([objects_list['x'], objects_list['y']]).T
 
 
-def plotFitFunc(xy, zobs, pred_params):
+def plotFitFunc(pred_params):    #(xy, zobs, pred_params):
     # x, y = xy
-    xi, yi = np.mgrid[:16:30j, :16:30j]
+    xi, yi = np.mgrid[:cropRange*2:30j, :cropRange*2:30j]
     xyi = np.vstack([xi.ravel(), yi.ravel()])
 
     zpred = fitFunc(xyi, *pred_params)
@@ -107,10 +110,12 @@ def plotFitFunc(xy, zobs, pred_params):
 
 
 def fitCurve(imageArray,centerArray):
+    global cropRange
+
     for i in range(len(centerArray)):
         spotNumber = i
         # print(centerArray[spotNumber])
-        cropRange = 8
+
         cropedArray = imageArray[int(centerArray[spotNumber][1]) - cropRange:int(centerArray[spotNumber][1]) + cropRange, \
                 int(centerArray[spotNumber][0]) - cropRange:int(centerArray[spotNumber][0]) + cropRange]
 

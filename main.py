@@ -4,6 +4,7 @@ from UsedFunc import *
 rcParams['figure.figsize'] = [10., 8.]
 
 # int parameter, make Mask
+
 fileArray = readLEEDImage("test2.tif")  # to set the picWidth,picHeight for findSpot function
 mask = makeMask(125, 125, 0, 30)
 
