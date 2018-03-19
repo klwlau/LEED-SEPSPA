@@ -5,38 +5,37 @@ rcParams['figure.figsize'] = [10., 8.]
 
 
 #read Image and make Mask
-testfileA = readLEEDImage("test2.tif")
+fileArray = readLEEDImage("test2.tif")# to set the picWidth,picHeight for findSpot function
+mask = makeMask(125, 125, 0, 30)
+centerArray = findSpot(fileArray, 100, mask, scaleFactor=10,showSpots=True, plotSensitivity=4)
+
+
+
+
 mask = makeMask(125, 125, 0, 30)
 
-centerArray = findSpot("test2.tif", 1000, mask, scaleFactor=10,showSpots=False, plotSensitivity=4)
-
-
-
-testfileA = readLEEDImage("test2.tif")
-mask = makeMask(125, 125, 0, 30)
-centerArray = findSpot("test2.tif", 100, mask, showSpots=True, plotSensitivity=4)
-
-for i in range(len(centerArray)):
-    spotNumber = i
-    print(centerArray[spotNumber])
-    cropRange = 8
-    spot1 = testfileA[int(centerArray[spotNumber][1]) - cropRange:int(centerArray[spotNumber][1]) + cropRange,\
-            int(centerArray[spotNumber][0]) - cropRange:int(centerArray[spotNumber][0]) + cropRange]
-        # plotFunc(spot1)
-
-
-    testArray = spot1
-    xyzArray = []
-    for i in range(len(testArray)):
-        for j in range(len(testArray[i])):
-            xyzArray.append([i, j, testArray[i][j]])
-
-    x, y, z = np.array(xyzArray).T
-    xy = x, y
-    i = z.argmax()
-    guess = [z[i], x[i], y[i], 50, 50, 100, 30, 30, 100]
-    pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=guess, method='lm')
-    # plotFitFunc(xy, 11, pred_params)
-    #     print(pred_params)
+fitCurve(fileArray,centerArray)
+# for i in range(len(centerArray)):
+#     spotNumber = i
+#     # print(centerArray[spotNumber])
+#     cropRange = 8
+#     spot1 = fileArray[int(centerArray[spotNumber][1]) - cropRange:int(centerArray[spotNumber][1]) + cropRange,\
+#             int(centerArray[spotNumber][0]) - cropRange:int(centerArray[spotNumber][0]) + cropRange]
+#         # plotFunc(spot1)
+#
+#
+#     cropedArray = spot1
+#     xyzArray = []
+#     for i in range(len(cropedArray)):
+#         for j in range(len(cropedArray[i])):
+#             xyzArray.append([i, j, cropedArray[i][j]])
+#
+#     x, y, z = np.array(xyzArray).T
+#     xy = x, y
+#     i = z.argmax()
+#     guess = [z[i], x[i], y[i], 50, 50, 100, 30, 30, 100]
+#     pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=guess, method='lm')
+#     # plotFitFunc(xy, 11, pred_params)
+#     print(pred_params)
 
 print("done")

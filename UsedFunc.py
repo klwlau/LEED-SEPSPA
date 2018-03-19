@@ -1,4 +1,4 @@
-import numpy as np
+# import numpy as np
 from scipy.optimize import curve_fit
 import sep
 from PIL import Image
@@ -43,7 +43,7 @@ def compressImage16to8bit(imageArray, scaleFactor):
     imageArray = imageArray / scaleFactor
     #     imageArray=imageArray.astype(np.uint8)
     imageArray = imageArray
-    print(imageArray.dtype)
+    # print(imageArray.dtype)
     return imageArray
 
 
@@ -72,9 +72,9 @@ def plotSpots(imgArray, objects_list, plotSensitivity=3):
     plt.show()
 
 
-def findSpot(fileName, searchThreshold, mask, \
+def findSpot(imgArray, searchThreshold, mask, \
              scaleFactor=10, plotSensitivity=3, showSpots=False, fullInformation=False):
-    imgArray = readLEEDImage(fileName)
+
     # plotFunc(imgArray)
     imgArray = compressImage16to8bit(imgArray, scaleFactor)
     # plotFunc(imgArray)
@@ -107,3 +107,27 @@ def plotFitFunc(xy, zobs, pred_params):
     fig.colorbar(im)
     ax.invert_yaxis()
     plt.show()
+
+
+def fitCurve(imageArray,centerArray):
+    for i in range(len(centerArray)):
+        spotNumber = i
+        # print(centerArray[spotNumber])
+        cropRange = 8
+        spot1 = imageArray[int(centerArray[spotNumber][1]) - cropRange:int(centerArray[spotNumber][1]) + cropRange, \
+                int(centerArray[spotNumber][0]) - cropRange:int(centerArray[spotNumber][0]) + cropRange]
+        # plotFunc(spot1)
+
+        cropedArray = spot1
+        xyzArray = []
+        for i in range(len(cropedArray)):
+            for j in range(len(cropedArray[i])):
+                xyzArray.append([i, j, cropedArray[i][j]])
+
+        x, y, z = np.array(xyzArray).T
+        xy = x, y
+        i = z.argmax()
+        guess = [z[i], x[i], y[i], 50, 50, 100, 30, 30, 100]
+        pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=guess, method='lm')
+        # plotFitFunc(xy, 11, pred_params)
+        print(pred_params)
