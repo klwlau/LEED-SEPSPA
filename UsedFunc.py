@@ -77,9 +77,9 @@ def plotSpots(imgArray, objects_list, plotSensitivity=3):
     plt.show()
 
 
-def findSpot(imgArray: np.array, searchThreshold: float, mask: np.array , \
-             scaleFactor: float = 10, plotSensitivity: float = 3, showSpots: bool = False,\
-             fullInformation: bool= False) -> np.array:
+def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array, \
+                      scaleFactor: float = 10, plotSensitivity: float = 3, showSpots: bool = False, \
+                      fullInformation: bool= False) -> np.array:
 
     # plotFunc(imgArray)
     imgArray = compressImage16to8bit(imgArray, scaleFactor)
@@ -160,12 +160,12 @@ def saveToCSV(RowArray, fileName):
         for i in RowArray:
             csvWriter.writerow(i)
             
-def createRowArray(fileName,searchThreshold, mask,showSpots=False,plotSensitivity=3,scaleFactor=10
-    ,plotFittedFunc = False, printParameters = False):
+def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity=3, scaleFactor=10
+             , plotFittedFunc = False, printParameters = False):
     # global mask
     fileArray = readLEEDImage(fileName)
     returnArray=[]
-    centerArray = findSpot(fileArray, searchThreshold, mask, scaleFactor=scaleFactor, showSpots=showSpots, plotSensitivity=plotSensitivity)
+    centerArray = getSpotRoughRange(fileArray, searchThreshold, mask, scaleFactor=scaleFactor, showSpots=showSpots, plotSensitivity=plotSensitivity)
     returnArray.append(fitCurve(fileArray, centerArray,plotFittedFunc = plotFittedFunc, printParameters = printParameters))
     returnList= list(itertools.chain.from_iterable(returnArray))
     returnList = list(itertools.chain.from_iterable(returnList))
