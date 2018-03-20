@@ -31,7 +31,7 @@ folderName = "20180212_scan01"
 fileList = glob.glob("./" + folderName + "/*.tif")
 setPicDim(fileList[0])  # to set the picWidth,picHeight for findSpot function
 mask = makeMask(470, 440, 250, 300)  # int mask
-writeBuffer = 20
+writeBuffer = 50
 
 # findSpot(fileList[9], 20, mask, scaleFactor=1,showSpots=True,plotSensitivity=4)
 
