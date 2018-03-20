@@ -12,6 +12,10 @@ import itertools
 cropRange = 10
 
 
+# Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
+guessUpBound =(100000,1000,1000,15,15,360,100,100,100000)
+guessLowBound =(0,0,0,0.2,0.2,0,0,0,0)
+guessBound = (guessLowBound,guessUpBound)
 ######parameter list######
 
 
@@ -119,7 +123,7 @@ def plotFitFunc(fit_params):  # (xy, zobs, pred_params):
 
 
 def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=False):
-    global cropRange
+    global cropRange, guessBound
     allFittedSpot = []
 
     for i in range(len(centerArray)):
@@ -138,8 +142,10 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
         x, y, z = np.array(xyzArray).T
         xy = x, y
         i = z.argmax()
-        guess = [z[i], x[i], y[i], 1.6, 3, 1.6, 0.2, 0.3, 40]
-        pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=guess, method='lm')
+        guess = [z[i], x[i], y[i], 3, 3, 180, 0.2, 0.3, 40]
+
+        pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=guess,bounds=guessBound) #, method='lm' does not support bounds
+
 
         ####do cord transform
         pred_params[1] = pred_params[1] - cropRange + centerArray[spotNumber][0]
