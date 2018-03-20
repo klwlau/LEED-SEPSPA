@@ -26,7 +26,7 @@ def mainLoop():
 start_time = time.time()
 # int parameter, make Mask
 print("---Initializing---")
-timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d%H%M')
+timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y_%m_%d_%H%M')
 # folderName = "20180212_scan01/"
 folderName= ""
 fileList = glob.glob("./" + folderName + "*.tif")
