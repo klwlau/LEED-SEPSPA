@@ -32,7 +32,7 @@ mask = makeMask(450, 450, 250, 300) # int mask
 writeBuffer =20
 
 
-findSpot(fileList[0], 130, mask, scaleFactor=1,showSpots=True)
+findSpot(fileList[0], 130, mask, scaleFactor=1,showSpots=True,plotSensitivity=4)
 
 
 # # need to rewrite mainloop
