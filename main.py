@@ -27,8 +27,9 @@ start_time = time.time()
 # int parameter, make Mask
 print("---Initializing---")
 timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y_%m_%d_%H%M')
-# folderName = "20180212_scan01/"
-folderName= ""
+CSVName = timeStamp + ".csv"
+folderName = "20180212_scan01/"
+# folderName= ""
 fileList = glob.glob("./" + folderName + "*.tif")
 setPicDim(fileList[0])  # to set the picWidth,picHeight for findSpot function
 mask = makeMask(470, 440, 250, 300)  # int mask
