@@ -35,6 +35,7 @@ writeBuffer = 50
 
 # findSpot(fileList[9], 20, mask, scaleFactor=1,showSpots=True,plotSensitivity=4)
 
+start_time = time.time()
 mainLoop()
-
+print("--- %m seconds ---" % (time.time() - start_time))
 print("done")
