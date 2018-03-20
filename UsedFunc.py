@@ -134,8 +134,8 @@ def fitCurve(imageArray,centerArray,plotFittedFunc=False,printParameters=False):
         x, y, z = np.array(xyzArray).T
         xy = x, y
         i = z.argmax()
-        guess = [z[i], x[i], y[i],50, 50, 100, 30, 30, 100]
-        pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=guess, method='lm')
+        guessCom = [z[i], x[i], y[i],50, 50, 100, 30, 30, 100]
+        pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=guessCom, method='lm')
 
         ####do cord transform
         pred_params[1] = pred_params[1] - cropRange + centerArray[spotNumber][0]
