@@ -23,7 +23,7 @@ def mainLoop():
         if counter == fileAmount:
             saveToCSV(writeBufferArray, CSVName)
 
-
+start_time = time.time()
 # int parameter, make Mask
 print("---Initializing---")
 timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d%H%M')
@@ -36,7 +36,7 @@ writeBuffer = 50
 
 # findSpot(fileList[9], 20, mask, scaleFactor=1,showSpots=True,plotSensitivity=4)
 
-start_time = time.time()
+
 mainLoop()
-print("--- %m seconds ---" % (time.time() - start_time))
+print("--- %s Minutes ---" % ((time.time() - start_time)/60))
 print("done")
