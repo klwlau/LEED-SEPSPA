@@ -21,9 +21,9 @@ writeBufferArray=[]
 counter=0;fileAmount= len(fileList)
 for fileName in fileList:
     counter += 1
-    templist = findSpot(fileName, 100, mask, scaleFactor=1,showSpots=False)
+    templist,elements = findSpot(fileName, 150, mask, scaleFactor=1,showSpots=False)
     writeBufferArray.append(templist)
-    print(counter,",",fileName,",",counter/fileAmount*100,"%")
+    print(counter,",",elements,",",fileName,",",counter/fileAmount*100,"%")
     if counter % writeBuffer == 0:
         saveToCSV(writeBufferArray, CSVName)
         writeBufferArray = []
