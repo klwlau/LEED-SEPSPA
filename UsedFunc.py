@@ -14,6 +14,7 @@ cropRange = 10
 
 ######parameter list######
 
+
 def plotFunc(plot_data, plotSensitivity=3):
     m, s = np.mean(plot_data), np.std(plot_data)
     plt.imshow(plot_data, interpolation='nearest', cmap='gray', \
