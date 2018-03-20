@@ -8,14 +8,16 @@ rcParams['figure.figsize'] = [10., 8.]
 
 
 def mainLoop():
-    writeBufferArray = []
+    writeBufferArray = [["File Name","Number of Spots","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C"]]
     counter = 0;
     fileAmount = len(fileList)
     for fileName in fileList:
         counter += 1
-        templist, elements = findSpot(fileName, 15, mask, scaleFactor=1, showSpots=False)
+        templist, numberOfSpots = findSpot(fileName, 15, mask, scaleFactor=1, showSpots=False)
+        writeBufferArray.append(numberOfSpots)
         writeBufferArray.append(templist)
-        print(counter, ",", elements, ",", fileName, ",", counter / fileAmount * 100, "%")
+
+        print(counter, ",", numberOfSpots, ",", fileName, ",", counter / fileAmount * 100, "%")
         if counter % writeBuffer == 0:
             saveToCSV(writeBufferArray, CSVName)
             writeBufferArray = []
