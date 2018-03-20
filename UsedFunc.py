@@ -142,7 +142,9 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
         xy = x, y
         i = z.argmax()
         guess = [z[i], x[i], y[i], 3, 3, 180, 0.2, 0.3, 40]
-        pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=guess, method='lm',bounds=guessBound)
+
+        pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=guess,bounds=guessBound) #, method='lm' does not support bounds
+
 
         ####do cord transform
         pred_params[1] = pred_params[1] - cropRange + centerArray[spotNumber][0]
