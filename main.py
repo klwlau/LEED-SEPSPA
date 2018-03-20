@@ -13,7 +13,7 @@ def mainLoop():
     fileAmount = len(fileList)
     for fileName in fileList:
         counter += 1
-        templist, numberOfSpots = findSpot(fileName, 15, mask, scaleFactor=1, showSpots=False)
+        templist, numberOfSpots = findSpot(fileName, 10, mask, scaleFactor=1, showSpots=False)
         writeBufferArray.append(templist)
 
         print(counter, ",", numberOfSpots, ",", fileName, ",", counter / fileAmount * 100, "%")
