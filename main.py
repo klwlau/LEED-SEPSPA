@@ -20,7 +20,7 @@ for fileName in fileList:
     counter += 1
     templist = createRowArray(fileName,10, mask,scaleFactor=10)
     writeBufferArray.append(templist)
-    print(counter/fileAmount*100,"% ,",counter)
+    print(counter,",",fileName,",","%.2f" % counter/fileAmount*100,"%")
     if counter % writeBuffer == 0:
         saveToCSV(writeBufferArray, CSVName)
         writeBufferArray = []
