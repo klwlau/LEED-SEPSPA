@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 from fitFunc import *
 import csv
+import itertools
 
 ######parameter list######
 cropRange = 8
@@ -140,7 +141,10 @@ def fitCurve(imageArray,centerArray,plotFittedFunc=False,printParameters=False):
         pred_params[1] = pred_params[1] - cropRange + centerArray[spotNumber][0]
         pred_params[2] = pred_params[2] - cropRange + centerArray[spotNumber][1]
 
+        pred_params=pred_params.tolist()
         allFittedSpot.append(pred_params)
+
+
 
         if plotFittedFunc==True: plotFitFunc(pred_params)
         if printParameters==True: print(pred_params)
@@ -159,7 +163,10 @@ def saveToCSV(RowArray, fileName):
 def createRowArray(fileName, mask):
     # global mask
     fileArray = readLEEDImage(fileName)
-    returnArray=[fileName]
+    returnArray=[]
     centerArray = findSpot(fileArray, 100, mask, scaleFactor=10, showSpots=False, plotSensitivity=4)
     returnArray.append(fitCurve(fileArray, centerArray))
-    return returnArray
+    returnList= list(itertools.chain.from_iterable(returnArray))
+    returnList = list(itertools.chain.from_iterable(returnList))
+    returnList.insert(0,fileName)
+    return returnList
