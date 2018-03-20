@@ -137,7 +137,7 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
         x, y, z = np.array(xyzArray).T
         xy = x, y
         i = z.argmax()
-        guess = [z[i], x[i], y[i], 5, 5, 10, 30, 30, 30]
+        guess = [z[i], x[i], y[i], 1.6, 3, 1.6, 0.2, 0.3, 40]
         pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=guess, method='lm')
 
         ####do cord transform
