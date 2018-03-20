@@ -160,12 +160,13 @@ def saveToCSV(RowArray, fileName):
         for i in RowArray:
             csvWriter.writerow(i)
             
-def createRowArray(fileName, mask):
+def createRowArray(fileName,searchThreshold, mask,showSpots=False,plotSensitivity=3,scaleFactor=10
+    ,plotFittedFunc = False, printParameters = False):
     # global mask
     fileArray = readLEEDImage(fileName)
     returnArray=[]
-    centerArray = findSpot(fileArray, 100, mask, scaleFactor=10, showSpots=False, plotSensitivity=4)
-    returnArray.append(fitCurve(fileArray, centerArray))
+    centerArray = findSpot(fileArray, searchThreshold, mask, scaleFactor=scaleFactor, showSpots=showSpots, plotSensitivity=plotSensitivity)
+    returnArray.append(fitCurve(fileArray, centerArray,plotFittedFunc = plotFittedFunc, printParameters = printParameters))
     returnList= list(itertools.chain.from_iterable(returnArray))
     returnList = list(itertools.chain.from_iterable(returnList))
     returnList.insert(0,fileName)

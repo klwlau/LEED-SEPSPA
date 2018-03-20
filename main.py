@@ -18,7 +18,7 @@ writeBufferArray=[]
 counter=0;fileAmount= len(fileList)
 for fileName in fileList:
     counter += 1
-    templist = createRowArray(fileName, mask)
+    templist = createRowArray(fileName,10, mask,scaleFactor=1)
     writeBufferArray.append(templist)
     print(counter/fileAmount*100,"% ,",counter)
     if counter % writeBuffer == 0:
