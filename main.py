@@ -25,6 +25,7 @@ def mainLoop():
 
 
 # int parameter, make Mask
+print("---Initializing---")
 timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d%H%M')
 # folderName = "20180212_scan01/"
 folderName= ""
