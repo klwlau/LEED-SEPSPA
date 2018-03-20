@@ -1,4 +1,5 @@
 from matplotlib import rcParams
+from parameterList import *
 from UsedFunc import *
 import glob
 import datetime
@@ -25,10 +26,12 @@ def mainLoop():
 
 
 # int parameter, make Mask
+
 timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d%H%M')
 CSVName = timeStamp + ".csv"
-folderName = "20180212_scan01"
-fileList = glob.glob("./" + folderName + "/*.tif")
+# folderName = "20180212_scan01/"
+folderName = ""
+fileList = glob.glob("./" + folderName + "*.tif")
 setPicDim(fileList[0])  # to set the picWidth,picHeight for findSpot function
 mask = makeMask(470, 440, 250, 300)  # int mask
 writeBuffer = 50
