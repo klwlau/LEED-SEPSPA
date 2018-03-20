@@ -10,8 +10,8 @@ import itertools
 
 ######parameter list######
 cropRange = 10
-# Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
 
+# Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
 guessUpBound =(100000,1000,1000,15,15,360,100,100,100000)
 guessLowBound =(0,0,0,0.2,0.2,0,0,0,0)
 guessBound = (guessLowBound,guessUpBound)
