@@ -7,9 +7,10 @@ rcParams['figure.figsize'] = [10., 8.]
 
 # int parameter, make Mask
 CSVName="spot.csv"
-fileList = glob.glob("./*.tif")
-setPicDim("test2.tif") # to set the picWidth,picHeight for findSpot function
-mask = makeMask(125, 125, 0, 30)
+folderName="20180213_scan02"
+fileList = glob.glob("./"+folderName+"/*.tif")
+setPicDim(fileList[0]) # to set the picWidth,picHeight for findSpot function
+mask = makeMask(125, 125, 0, 30) # int mask
 writeBuffer =20
 
 # need to rewrite mainloop
@@ -19,7 +20,7 @@ for fileName in fileList:
     counter += 1
     templist = createRowArray(fileName, mask)
     writeBufferArray.append(templist)
-    print(counter/fileAmount*100,"%")
+    print(counter/fileAmount*100,"% ,",counter)
     if counter % writeBuffer == 0:
         saveToCSV(writeBufferArray, CSVName)
         writeBufferArray = []
