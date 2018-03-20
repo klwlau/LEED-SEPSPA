@@ -24,7 +24,7 @@ def mainLoop():
 
 
 # int parameter, make Mask
-timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d%H%M%S')
+timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d%H%M')
 CSVName = timeStamp + ".csv"
 folderName = "20180212_scan01"
 fileList = glob.glob("./" + folderName + "/*.tif")
