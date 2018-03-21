@@ -1,1 +1,0 @@
-cropRange = 10

@@ -23,13 +23,15 @@ def mainLoop():
         if counter == fileAmount:
             saveToCSV(writeBufferArray, CSVName)
 
-start_time = time.time()
-# int parameter, make Mask
 print("---Initializing---")
+start_time = time.time()
+
+#setup
 timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y_%m_%d_%H%M')
 CSVName = timeStamp + ".csv"
-folderName = "20180212_scan01/"
-# folderName= ""
+# folderName = "20180212_scan01/"
+folderName= ""
+# int parameter, make Mask, read file name in folder
 fileList = glob.glob("./" + folderName + "*.tif")
 setPicDim(fileList[0])  # to set the picWidth,picHeight for findSpot function
 mask = makeMask(470, 440, 250, 300)  # int mask
