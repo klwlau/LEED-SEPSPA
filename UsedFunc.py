@@ -18,7 +18,7 @@ guessUpBound =configList["fittingParameters"]["guessUpBound"]
 guessLowBound =configList["fittingParameters"]["guessLowBound"]
 guessBound = (guessLowBound,guessUpBound)
 #    sigma_x,sigma_y,theta,A,B,C
-intGuess= configList["fittingParameters"]["intGuess"]
+intConfigGuess= configList["fittingParameters"]["intGuess"]
 ######parameter list######
 
 
@@ -126,7 +126,7 @@ def plotFitFunc(fit_params):  # (xy, zobs, pred_params):
 
 
 def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=False):
-    global cropRange, guessBound,intGuess
+    global cropRange, guessBound,intConfigGuess
     allFittedSpot = []
 
     for i in range(len(centerArray)):
@@ -145,10 +145,9 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
         x, y, z = np.array(xyzArray).T
         xy = x, y
         i = z.argmax()
-        # guess = [z[i], x[i], y[i], 3, 3, 180, 0.2, 0.3, 40]
-        intGuess.insert(0, y[i])
-        intGuess.insert(0, x[i])
-        intGuess.insert(0, z[i])
+        intGuess = [z[i], x[i], y[i], intConfigGuess[0], intConfigGuess[1], intConfigGuess[2],
+                    intConfigGuess[3], intConfigGuess[4], intConfigGuess[5]]
+
 
         pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound) #, method='lm' does not support bounds
 

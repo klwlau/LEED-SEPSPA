@@ -51,7 +51,8 @@ if configList["testMode"]:
     #need to add testMode parameters
     findSpot(fileList[configList["testModeParameters"]["testModeFileNumber"]], configList["testModeParameters"]["searchThreshold"],
              mask,
-             scaleDownFactor = configList["testModeParameters"]["scaleDownFactor"], showSpots=True, plotSensitivity=3,
+             scaleDownFactor = configList["testModeParameters"]["scaleDownFactor"], plotSensitivity=3,
+             showSpots=configList["testModeParameters"]["showSpots"],
              plotFittedFunc= configList["testModeParameters"]["plotFittedFunc"],
              printParameters=configList["testModeParameters"]["printParameters"])
 else:

@@ -27,7 +27,8 @@
     "scaleDownFactor":1,
     "plotSensitivity":3,
     "plotFittedFunc": false,
-    "printParameters":false
+    "printParameters":false,
+    "showSpots":false
   }
 
 
