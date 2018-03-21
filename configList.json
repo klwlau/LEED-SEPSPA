@@ -1,0 +1,19 @@
+{
+  "maskConfig": {
+    "mask_x_center": 440,
+    "mask_y_center": 470,
+    "innerRadius": 250,
+    "outerRadius": 300
+  },
+  "fittingParameters": {
+    "intGuess": [3, 3, 180, 0.2, 0.3, 40],
+    "guessUpBound": [100000, 1000, 1000, 15, 15, 360, 100, 100, 100000],
+    "guessLowBound": [0,0,0, 0.2, 0.2, 0, 0, 0, 0]
+  },
+  "folderName": "",
+  "writeBuffer": 30,
+  "cropRange": 10,
+  "testMode": false
+
+
+}
