@@ -10,16 +10,15 @@
     "searchThreshold":5,
     "cropRange": 10
   },
+
+  "folderName": "",
+  "writeBuffer": 30,
+
   "fittingParameters": {
     "intGuess": [3, 3, 180, 0.2, 0.3, 40],
     "guessUpBound": [100000, 1000, 1000, 15, 15, 360, 100, 100, 100000],
     "guessLowBound": [0,0,0, 0.2, 0.2, 0, 0, 0, 0]
   },
-
-
-  "folderName": "",
-  "writeBuffer": 30,
-
 
   "testMode": true,
   "testModeParameters":{
