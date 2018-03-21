@@ -15,8 +15,8 @@ def mainLoop():
     for fileName in fileList:
         counter += 1
         #need to add all parameters back
-        templist, numberOfSpots = findSpot(fileName, parameterList["findSpotParameters"]["searchThreshold"]
-                                           , mask, scaleDownFactor=parameterList["findSpotParameters"]["scaleDownFactor"],
+        templist, numberOfSpots = findSpot(fileName, configList["findSpotParameters"]["searchThreshold"]
+                                           , mask, scaleDownFactor=configList["findSpotParameters"]["scaleDownFactor"],
                                            showSpots=False)
         writeBufferArray.append(templist)
 
@@ -34,7 +34,7 @@ start_time = time.time()
 #setup
 timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y_%m_%d_%H%M')
 CSVName = timeStamp + ".csv"
-folderName= parameterList["folderName"]
+folderName= configList["folderName"]
 # int parameter, make Mask, read file name in folder
 if not folderName:
     fileList=glob.glob("./*.tif")
@@ -42,18 +42,18 @@ else:
     fileList = glob.glob("./" + folderName + "/*.tif")
 
 setPicDim(fileList[0])  # to set the picWidth,picHeight for findSpot function
-mask = makeMask(parameterList["maskConfig"]["mask_x_center"], parameterList["maskConfig"]["mask_y_center"]
-                , parameterList["maskConfig"]["innerRadius"], parameterList["maskConfig"]["outerRadius"])  # int mask
+mask = makeMask(configList["maskConfig"]["mask_x_center"], configList["maskConfig"]["mask_y_center"]
+                , configList["maskConfig"]["innerRadius"], configList["maskConfig"]["outerRadius"])  # int mask
 writeBuffer = 50
 
 
-if parameterList["testMode"]:
+if configList["testMode"]:
     #need to add testMode parameters
-    findSpot(fileList[parameterList["testModeParameters"]["testModeFileNumber"]], parameterList["testModeParameters"]["searchThreshold"],
+    findSpot(fileList[configList["testModeParameters"]["testModeFileNumber"]], configList["testModeParameters"]["searchThreshold"],
              mask,
-             scaleDownFactor = parameterList["testModeParameters"]["scaleDownFactor"], showSpots=True, plotSensitivity=3,
-             plotFittedFunc= parameterList["testModeParameters"]["plotFittedFunc"],
-             printParameters=parameterList["testModeParameters"]["printParameters"])
+             scaleDownFactor = configList["testModeParameters"]["scaleDownFactor"], showSpots=True, plotSensitivity=3,
+             plotFittedFunc= configList["testModeParameters"]["plotFittedFunc"],
+             printParameters=configList["testModeParameters"]["printParameters"])
 else:
     mainLoop()
 

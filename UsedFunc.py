@@ -9,16 +9,16 @@ import csv
 import itertools
 import json
 
-parameterList=json.load(open("configList.json"))
+configList=json.load(open("configList.json"))
 ######parameter list######
-cropRange = parameterList["findSpotParameters"]["cropRange"]
+cropRange = configList["findSpotParameters"]["cropRange"]
 
 # Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
-guessUpBound =parameterList["fittingParameters"]["guessUpBound"]
-guessLowBound =parameterList["fittingParameters"]["guessLowBound"]
+guessUpBound =configList["fittingParameters"]["guessUpBound"]
+guessLowBound =configList["fittingParameters"]["guessLowBound"]
 guessBound = (guessLowBound,guessUpBound)
 #    sigma_x,sigma_y,theta,A,B,C
-intGuess= parameterList["fittingParameters"]["intGuess"]
+intGuess= configList["fittingParameters"]["intGuess"]
 ######parameter list######
 
 
