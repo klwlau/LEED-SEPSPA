@@ -9,7 +9,7 @@ import csv
 import itertools
 import json
 
-parameterList=json.load(open("parameterList.json"))
+parameterList=json.load(open("configList.json"))
 ######parameter list######
 cropRange = parameterList["cropRange"]
 
