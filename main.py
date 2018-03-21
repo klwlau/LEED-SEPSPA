@@ -45,7 +45,7 @@ writeBuffer = 50
 
 
 if parameterList["testMode"]:
-    findSpot(fileList[9], 20, mask, scaleFactor=1,showSpots=True,plotSensitivity=4)
+    findSpot(fileList[parameterList["testModeFileNumber"]], 20, mask, scaleFactor=1,showSpots=True,plotSensitivity=3)
 else:
     mainLoop()
 

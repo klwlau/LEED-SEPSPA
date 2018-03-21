@@ -13,7 +13,8 @@
   "folderName": "",
   "writeBuffer": 30,
   "cropRange": 10,
-  "testMode": false
+  "testMode": true,
+  "testModeFileNumber":0
 
 
 }
