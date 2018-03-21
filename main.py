@@ -1,3 +1,4 @@
+print("Program Started, Loading Libraries")
 from matplotlib import rcParams
 from UsedFunc import *
 import glob
