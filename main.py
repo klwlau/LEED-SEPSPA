@@ -43,9 +43,12 @@ mask = makeMask(parameterList["maskConfig"]["mask_x_center"], parameterList["mas
                 , parameterList["maskConfig"]["innerRadius"], parameterList["maskConfig"]["outerRadius"])  # int mask
 writeBuffer = 50
 
-# findSpot(fileList[9], 20, mask, scaleFactor=1,showSpots=True,plotSensitivity=4)
+
+if parameterList["testMode"]:
+    findSpot(fileList[9], 20, mask, scaleFactor=1,showSpots=True,plotSensitivity=4)
+else:
+    mainLoop()
 
 
-mainLoop()
 print("--- %s Minutes ---" % ((time.time() - start_time)/60))
 print("done")
