@@ -11,7 +11,7 @@ import json
 
 parameterList=json.load(open("configList.json"))
 ######parameter list######
-cropRange = parameterList["cropRange"]
+cropRange = parameterList["findSpotParameters"]["cropRange"]
 
 # Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
 guessUpBound =parameterList["fittingParameters"]["guessUpBound"]

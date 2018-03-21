@@ -8,20 +8,27 @@
   "findSpotParameters":{
     "scaleDownFactor":1,
     "searchThreshold":5,
-    "plotSensitivity":3
-  }
+    "cropRange": 10
+  },
   "fittingParameters": {
     "intGuess": [3, 3, 180, 0.2, 0.3, 40],
     "guessUpBound": [100000, 1000, 1000, 15, 15, 360, 100, 100, 100000],
     "guessLowBound": [0,0,0, 0.2, 0.2, 0, 0, 0, 0]
   },
-  "folderName": "20180212_scan01",
+
+
+  "folderName": "",
   "writeBuffer": 30,
-  "cropRange": 10,
+
 
   "testMode": true,
   "testModeParameters":{
-    "testModeFileNumber":0
+    "testModeFileNumber":0,
+    "searchThreshold":5,
+    "scaleDownFactor":1,
+    "plotSensitivity":3,
+    "plotFittedFunc": false,
+    "printParameters":false
   }
 
 

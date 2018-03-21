@@ -4,7 +4,7 @@ import glob
 import datetime
 import time
 
-rcParams['figure.figsize'] = [10., 8.]
+# rcParams['figure.figsize'] = [10., 8.]
 
 
 def mainLoop():
@@ -49,8 +49,11 @@ writeBuffer = 50
 
 if parameterList["testMode"]:
     #need to add testMode parameters
-    findSpot(fileList[parameterList["testModeParameters"]["testModeFileNumber"]], 20, mask,
-             scaleDownFactor=1, showSpots=True, plotSensitivity=3)
+    findSpot(fileList[parameterList["testModeParameters"]["testModeFileNumber"]], parameterList["testModeParameters"]["searchThreshold"],
+             mask,
+             scaleDownFactor = parameterList["testModeParameters"]["scaleDownFactor"], showSpots=True, plotSensitivity=3,
+             plotFittedFunc= parameterList["testModeParameters"]["plotFittedFunc"],
+             printParameters=parameterList["testModeParameters"]["printParameters"])
 else:
     mainLoop()
 
