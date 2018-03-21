@@ -18,6 +18,7 @@
   "folderName": "20180212_scan01",
   "writeBuffer": 30,
   "cropRange": 10,
+
   "testMode": true,
   "testModeParameters":{
     "testModeFileNumber":0
