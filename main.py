@@ -14,6 +14,7 @@ def mainLoop():
     fileAmount = len(fileList)
     for fileName in fileList:
         counter += 1
+        #need to add all parameters back
         templist, numberOfSpots = findSpot(fileName, parameterList["findSpotParameters"]["searchThreshold"]
                                            , mask, scaleDownFactor=parameterList["findSpotParameters"]["scaleDownFactor"],
                                            showSpots=False)
@@ -47,6 +48,7 @@ writeBuffer = 50
 
 
 if parameterList["testMode"]:
+    #need to add testMode parameters
     findSpot(fileList[parameterList["testModeParameters"]["testModeFileNumber"]], 20, mask,
              scaleDownFactor=1, showSpots=True, plotSensitivity=3)
 else:
