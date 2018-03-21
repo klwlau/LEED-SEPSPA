@@ -7,16 +7,18 @@ from matplotlib.patches import Ellipse
 from fitFunc import *
 import csv
 import itertools
+import json
 
+parameterList=json.load(open("parameterList.json"))
 ######parameter list######
-cropRange = 10
+cropRange = parameterList["cropRange"]
 
 # Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
-guessUpBound =(100000,1000,1000,15,15,360,100,100,100000)
-guessLowBound =(0,0,0,0.2,0.2,0,0,0,0)
+guessUpBound =parameterList["fittingParameters"]["guessUpBound"]
+guessLowBound =parameterList["fittingParameters"]["guessLowBound"]
 guessBound = (guessLowBound,guessUpBound)
 #    sigma_x,sigma_y,theta,A,B,C
-intGuess= [3, 3, 180, 0.2, 0.3, 40]
+intGuess= parameterList["fittingParameters"]["intGuess"]
 ######parameter list######
 
 

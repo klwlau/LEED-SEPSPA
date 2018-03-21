@@ -8,6 +8,7 @@ rcParams['figure.figsize'] = [10., 8.]
 
 
 def mainLoop():
+    #init first row in CSV file
     writeBufferArray = [["File Name","Number of Spots","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C"]]
     counter = 0;
     fileAmount = len(fileList)
@@ -26,15 +27,20 @@ def mainLoop():
 print("---Initializing---")
 start_time = time.time()
 
+
 #setup
 timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y_%m_%d_%H%M')
 CSVName = timeStamp + ".csv"
-# folderName = "20180212_scan01/"
-folderName= ""
+folderName= parameterList["folderName"]
 # int parameter, make Mask, read file name in folder
-fileList = glob.glob("./" + folderName + "*.tif")
+if not folderName:
+    fileList=glob.glob("./*.tif")
+else:
+    fileList = glob.glob("./" + folderName + "/*.tif")
+
 setPicDim(fileList[0])  # to set the picWidth,picHeight for findSpot function
-mask = makeMask(470, 440, 250, 300)  # int mask
+mask = makeMask(parameterList["maskConfig"]["mask_x_center"], parameterList["maskConfig"]["mask_y_center"]
+                , parameterList["maskConfig"]["innerRadius"], parameterList["maskConfig"]["outerRadius"])  # int mask
 writeBuffer = 50
 
 # findSpot(fileList[9], 20, mask, scaleFactor=1,showSpots=True,plotSensitivity=4)
