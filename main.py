@@ -14,7 +14,9 @@ def mainLoop():
     fileAmount = len(fileList)
     for fileName in fileList:
         counter += 1
-        templist, numberOfSpots = findSpot(fileName, 5, mask, scaleFactor=1, showSpots=False)
+        templist, numberOfSpots = findSpot(fileName, parameterList["findSpotParameters"]["searchThreshold"]
+                                           , mask, scaleDownFactor=parameterList["findSpotParameters"]["scaleDownFactor"],
+                                           showSpots=False)
         writeBufferArray.append(templist)
 
         print(counter, ",", numberOfSpots, ",", fileName, ",", counter / fileAmount * 100, "%")
@@ -45,7 +47,8 @@ writeBuffer = 50
 
 
 if parameterList["testMode"]:
-    findSpot(fileList[parameterList["testModeFileNumber"]], 20, mask, scaleFactor=1,showSpots=True,plotSensitivity=3)
+    findSpot(fileList[parameterList["testModeParameters"]["testModeFileNumber"]], 20, mask,
+             scaleDownFactor=1, showSpots=True, plotSensitivity=3)
 else:
     mainLoop()
 
