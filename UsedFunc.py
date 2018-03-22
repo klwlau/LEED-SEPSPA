@@ -55,7 +55,7 @@ def makeMask(mask_x_center, mask_y_center, r1, r2):
     return np.array(mask).astype(np.uint8)
 
 
-def compressImage16to8bit(imageArray, scaleFactor):
+def compressImage(imageArray, scaleFactor):
     imageArray = imageArray / scaleFactor
     #     imageArray=imageArray.astype(np.uint8)
     imageArray = imageArray
@@ -92,7 +92,7 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
                       scaleDownFactor: float = 10, plotSensitivity: float = 3, showSpots: bool = False, \
                       fullInformation: bool = False) -> np.array:
     # plotFunc(imgArray)
-    imgArray = compressImage16to8bit(imgArray, scaleDownFactor)
+    imgArray = compressImage(imgArray, scaleDownFactor)
     # plotFunc(imgArray)
     imgArray = applyMask(imgArray, mask)
     # plotFunc(imgArray)
