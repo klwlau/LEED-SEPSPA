@@ -1,14 +1,14 @@
 {
   "maskConfig": {
-    "mask_x_center": 440,
-    "mask_y_center": 470,
-    "innerRadius": 250,
+    "mask_x_center": 460,
+    "mask_y_center": 435,
+    "innerRadius": 220,
     "outerRadius": 300
   },
   "findSpotParameters":{
-    "scaleDownFactor":1,
-    "searchThreshold":5,
-    "cropRange": 10
+    "searchThreshold":50,
+    "cropRange": 10,
+    "scaleDownFactor":1
   },
 
   "folderName": "",
@@ -20,15 +20,15 @@
     "guessLowBound": [0,0,0, 0.2, 0.2, 0, 0, 0, 0]
   },
 
-  "testMode": true,
+  "testMode": false,
   "testModeParameters":{
+    "showSpots":true,
     "testModeFileNumber":0,
-    "searchThreshold":5,
+    "searchThreshold":50,
     "scaleDownFactor":1,
     "plotSensitivity":3,
     "plotFittedFunc": false,
-    "printParameters":false,
-    "showSpots":false
+    "printParameters":true
   }
 
 
