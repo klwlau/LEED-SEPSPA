@@ -25,8 +25,8 @@
     "showSpots":true,
     "testModeFileNumber":0,
     "searchThreshold":50,
-    "scaleDownFactor":1,
     "plotSensitivity":3,
+    "scaleDownFactor":1,
     "plotFittedFunc": false,
     "printParameters":true
   }
