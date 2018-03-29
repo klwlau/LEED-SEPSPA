@@ -103,7 +103,7 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
     objects_list = sep.extract(imgArray, searchThreshold, err=bkg.globalrms)
 
     if showSpots == True:
-        imgArray = np.flipud(imgArray)
+        # imgArray = np.flipud(imgArray)
         plotSpots(imgArray, objects_list, plotSensitivity)
 
     if fullInformation == True:
