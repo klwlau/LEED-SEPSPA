@@ -179,7 +179,7 @@ def saveToCSV(RowArray, fileName):
 
 
 def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity=3, scaleDownFactor=10
-             , plotFittedFunc=False, printParameters=False):
+             , plotFittedFunc=False, printParameters=False, fileID=0):
     # global mask
     fileArray = readLEEDImage(fileName)
     # fileArray = np.flipud(fileArray)
@@ -191,5 +191,6 @@ def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity=3
     returnList = list(itertools.chain.from_iterable(returnList))
     elements = int(len(returnList) / 9)
     returnList.insert(0, elements)
+    returnList.insert(0, fileID)
     returnList.insert(0, fileName)
     return returnList, elements
