@@ -182,7 +182,7 @@ def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity=3
              , plotFittedFunc=False, printParameters=False):
     # global mask
     fileArray = readLEEDImage(fileName)
-    fileArray = np.flipud(fileArray)
+    # fileArray = np.flipud(fileArray)
     returnArray = []
     centerArray = getSpotRoughRange(fileArray, searchThreshold, mask, scaleDownFactor=scaleDownFactor, showSpots=showSpots,
                                     plotSensitivity=plotSensitivity)
