@@ -36,6 +36,8 @@ def setPicDim(filePath):
     data = np.array(Image.open(filePath))
     picWidth = len(data[1])
     picHeight = len(data)
+    print("Width: ", picWidth, ", Height: ", picHeight)
+    print("Image Center: ",picWidth/2,picHeight/2)
 
 
 def readLEEDImage(filePath):
