@@ -36,6 +36,8 @@ def setPicDim(filePath):
     data = np.array(Image.open(filePath))
     picWidth = len(data[1])
     picHeight = len(data)
+    print("Width: ", picWidth, ", Height: ", picHeight)
+    print("Image Center: ",picWidth/2,picHeight/2)
 
 
 def readLEEDImage(filePath):
@@ -101,6 +103,7 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
     objects_list = sep.extract(imgArray, searchThreshold, err=bkg.globalrms)
 
     if showSpots == True:
+        imgArray = np.flipud(imgArray)
         plotSpots(imgArray, objects_list, plotSensitivity)
 
     if fullInformation == True:
@@ -149,7 +152,7 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
                     intConfigGuess[3], intConfigGuess[4], intConfigGuess[5]]
 
 
-        pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound) #, method='lm' does not support bounds
+        pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0 = intGuess, bounds=guessBound) #, method='lm' does not support bounds
 
 
         ####do cord transform
@@ -179,6 +182,7 @@ def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity=3
              , plotFittedFunc=False, printParameters=False):
     # global mask
     fileArray = readLEEDImage(fileName)
+    fileArray = np.flipud(fileArray)
     returnArray = []
     centerArray = getSpotRoughRange(fileArray, searchThreshold, mask, scaleDownFactor=scaleDownFactor, showSpots=showSpots,
                                     plotSensitivity=plotSensitivity)
