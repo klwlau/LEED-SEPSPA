@@ -10,11 +10,11 @@ import time
 
 def mainLoop():
     #init first row in CSV file
-    writeBufferArray = [["File Name","File Number","Number of Spots","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C"]]
+    writeBufferArray = [["FileID","File Name","Number of Spots","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C"]]
     counter = 0
     fileAmount = len(fileList)
     for fileName in fileList:
-        counter += 1
+
         #need to add all parameters back
         templist, numberOfSpots = findSpot(fileName, configList["findSpotParameters"]["searchThreshold"]
                                            , mask, scaleDownFactor=configList["findSpotParameters"]["scaleDownFactor"],
@@ -27,6 +27,7 @@ def mainLoop():
             writeBufferArray = []
         if counter == fileAmount:
             saveToCSV(writeBufferArray, CSVName)
+        counter += 1
 
 print("---Initializing---")
 start_time = time.time()
