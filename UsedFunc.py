@@ -90,6 +90,7 @@ def plotSpots(imgArray, objects_list, plotSensitivity=3):
 
     plt.colorbar()
     plt.show()
+    # plt.savefig("test.png")
 
 
 def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array, \
