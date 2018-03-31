@@ -5,8 +5,6 @@ import glob
 import datetime
 import time
 
-# rcParams['figure.figsize'] = [10., 8.]
-
 
 def mainLoop():
     #init first row in CSV file
@@ -36,12 +34,12 @@ start_time = time.time()
 #setup
 timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M')
 CSVName = timeStamp + ".csv"
-folderName= configList["folderName"]
+dataFolderName= configList["dataFolderName"]
 # int parameter, make Mask, read file name in folder
-if not folderName:
+if not dataFolderName:
     fileList=glob.glob("./*.tif")
 else:
-    fileList = glob.glob("./" + folderName + "/*.tif")
+    fileList = glob.glob("./" + dataFolderName + "/*.tif")
 
 setPicDim(fileList[0])  # to set the picWidth,picHeight for findSpot function
 mask = makeMask(configList["maskConfig"]["mask_x_center"], configList["maskConfig"]["mask_y_center"]

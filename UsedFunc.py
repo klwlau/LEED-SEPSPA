@@ -71,7 +71,7 @@ def applyMask(imageArray, mask):
     return appliedMask
 
 
-def plotSpots(imgArray, objects_list, plotSensitivity=3):
+def plotSpots(imgArray, objects_list, plotSensitivity=3,saveMode= False,showSpot= False):
     # plot background-subtracted image
     fig, ax = plt.subplots()
     m, s = np.mean(imgArray), np.std(imgArray)
@@ -89,13 +89,18 @@ def plotSpots(imgArray, objects_list, plotSensitivity=3):
         ax.add_artist(e)
 
     plt.colorbar()
-    plt.show()
-    # plt.savefig("test.png")
+    if saveMode:
+        savePath = configList["saveFigModeParameters"]["saveFigFolderName"]
+        plt.savefig(savePath + "test.png")
+    if showSpot:
+        plt.show()
+    else:
+        plt.clf()
 
 
 def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array, \
                       scaleDownFactor: float = 10, plotSensitivity: float = 3, showSpots: bool = False, \
-                      fullInformation: bool = False) -> np.array:
+                      fullInformation: bool = False,saveMode=False) -> np.array:
     # plotFunc(imgArray)
     imgArray = compressImage(imgArray, scaleDownFactor)
     # plotFunc(imgArray)
@@ -105,9 +110,8 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
     bkg = sep.Background(imgArray)
     objects_list = sep.extract(imgArray, searchThreshold, err=bkg.globalrms)
 
-    if showSpots == True:
-        # imgArray = np.flipud(imgArray)
-        plotSpots(imgArray, objects_list, plotSensitivity)
+    if showSpots == True or saveMode == True:
+        plotSpots(imgArray, objects_list, plotSensitivity,showSpots=showSpots,saveMode=saveMode)
 
     if fullInformation == True:
         return objects_list
