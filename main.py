@@ -51,7 +51,7 @@ writeBuffer = 50
 if configList["testMode"]:
     #need to add testMode parameters
     print("File name: ",fileList[configList["testModeParameters"]["testModeFileID"]])
-    findSpot(fileList[configList["testModeParameters"]["testModeFileNumber"]], configList["findSpotParameters"]["searchThreshold"],
+    findSpot(fileList[configList["testModeParameters"]["testModeFileID"]], configList["findSpotParameters"]["searchThreshold"],
              mask,
              scaleDownFactor = configList["testModeParameters"]["scaleDownFactor"], plotSensitivity=3,
              showSpots=configList["testModeParameters"]["showSpots"],
