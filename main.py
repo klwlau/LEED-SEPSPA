@@ -11,7 +11,7 @@ import time
 def mainLoop():
     #init first row in CSV file
     writeBufferArray = [["File Name","File Number","Number of Spots","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C"]]
-    counter = 0;
+    counter = 0
     fileAmount = len(fileList)
     for fileName in fileList:
         counter += 1
@@ -22,7 +22,7 @@ def mainLoop():
         writeBufferArray.append(templist)
 
         print(counter, ",", numberOfSpots, ",", fileName, ",", counter / fileAmount * 100, "%")
-        if counter % writeBuffer == 0:
+        if counter % CSVwriteBuffer == 0:
             saveToCSV(writeBufferArray, CSVName)
             writeBufferArray = []
         if counter == fileAmount:
@@ -45,7 +45,7 @@ else:
 setPicDim(fileList[0])  # to set the picWidth,picHeight for findSpot function
 mask = makeMask(configList["maskConfig"]["mask_x_center"], configList["maskConfig"]["mask_y_center"]
                 , configList["maskConfig"]["innerRadius"], configList["maskConfig"]["outerRadius"])  # int mask
-writeBuffer = 50
+CSVwriteBuffer = configList["CSVwriteBuffer"]
 
 
 if configList["testMode"]:

@@ -1,4 +1,7 @@
 {
+  "folderName": "",
+  "CSVwriteBuffer": 35,
+
   "maskConfig": {
     "mask_x_center": 460,
     "mask_y_center": 435,
@@ -10,9 +13,6 @@
     "cropRange": 10,
     "scaleDownFactor":1
   },
-
-  "folderName": "",
-  "writeBuffer": 35,
 
   "fittingParameters": {
     "intGuess": [3, 3, 180, 0.2, 0.3, 40],
