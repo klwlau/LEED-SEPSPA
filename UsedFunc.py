@@ -42,7 +42,7 @@ def setPicDim(filePath):
 
 def readLEEDImage(filePath):
     data = np.array(Image.open(filePath))
-    data = np.flipud(data)
+    # data = np.flipud(data)
     return data
 
 

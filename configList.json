@@ -1,12 +1,12 @@
 {
   "folderName": "",
-  "CSVwriteBuffer": 35,
+  "CSVwriteBuffer": 50,
 
   "maskConfig": {
-    "mask_x_center": 460,
-    "mask_y_center": 435,
-    "innerRadius": 220,
-    "outerRadius": 300
+    "mask_x_center": 458,
+    "mask_y_center": 468,
+    "innerRadius": 0,
+    "outerRadius": 100
   },
   "findSpotParameters":{
     "searchThreshold":50,
@@ -20,7 +20,7 @@
     "guessLowBound": [0,0,0, 0.2, 0.2, 0, 0, 0, 0]
   },
 
-  "testMode": false,
+  "testMode": true,
   "testModeParameters":{
     "showSpots":true,
     "testModeFileID":0,
