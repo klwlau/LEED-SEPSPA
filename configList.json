@@ -20,11 +20,6 @@
     "guessLowBound": [0,0,0, 0.2, 0.2, 0, 0, 0, 0]
   },
 
-  "saveFigMode":false,
-  "saveFigModeParameters":{
-    "saveFigFolderName":""
-  },
-
   "testMode": true,
   "testModeParameters":{
     "showSpots":true,
