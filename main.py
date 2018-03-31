@@ -34,7 +34,7 @@ start_time = time.time()
 
 
 #setup
-timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y_%m_%d_%H%M')
+timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M')
 CSVName = timeStamp + ".csv"
 folderName= configList["folderName"]
 # int parameter, make Mask, read file name in folder
