@@ -49,6 +49,7 @@ CSVwriteBuffer = configList["CSVwriteBuffer"]
 
 
 if configList["testMode"]:
+    print("testMode")
     #need to add testMode parameters
     print("File name: ",fileList[configList["testModeParameters"]["testModeFileID"]])
     findSpot(fileList[configList["testModeParameters"]["testModeFileID"]], configList["findSpotParameters"]["searchThreshold"],
@@ -58,6 +59,7 @@ if configList["testMode"]:
              plotFittedFunc= configList["testModeParameters"]["plotFittedFunc"],
              printParameters=configList["testModeParameters"]["printParameters"])
 else:
+    print("fittingMode")
     mainLoop()
 
 
