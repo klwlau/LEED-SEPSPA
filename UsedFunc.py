@@ -191,6 +191,6 @@ def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity=3
     returnList = list(itertools.chain.from_iterable(returnList))
     elements = int(len(returnList) / 9)
     returnList.insert(0, elements)
-    returnList.insert(0, fileID)
     returnList.insert(0, fileName)
+    returnList.insert(0, fileID)
     return returnList, elements

@@ -23,8 +23,7 @@
   "testMode": false,
   "testModeParameters":{
     "showSpots":true,
-    "testModeFileNumber":0,
-    "searchThreshold":50,
+    "testModeFileID":0,
     "plotSensitivity":3,
     "scaleDownFactor":1,
     "plotFittedFunc": false,
