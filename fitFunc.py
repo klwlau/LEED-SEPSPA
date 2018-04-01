@@ -1,5 +1,8 @@
 import numpy as np
+from numba import jit
 
+
+@jit
 def fitFunc(xy,Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C):
 #     global cccounter
 #     cccounter+=1

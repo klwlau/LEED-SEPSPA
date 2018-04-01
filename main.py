@@ -1,11 +1,11 @@
+import time
+start_time = time.time()
 print("Program Started, Loading Libraries")
 from matplotlib import rcParams
 from UsedFunc import *
 import glob
 import datetime
-import time
 
-# rcParams['figure.figsize'] = [10., 8.]
 
 
 def mainLoop():
@@ -30,7 +30,7 @@ def mainLoop():
         counter += 1
 
 print("---Initializing---")
-start_time = time.time()
+
 
 
 #setup
