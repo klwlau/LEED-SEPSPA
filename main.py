@@ -25,10 +25,10 @@ def mainLoop():
         if counter % CSVwriteBuffer == 0:
             saveToCSV(writeBufferArray, CSVName)
             writeBufferArray = []
-            print("save to CSV")
+            print("---------------save to CSV---------------")
         if counter == (fileAmount-1):
             saveToCSV(writeBufferArray, CSVName)
-            print("save to CSV")
+            print("---------------save to CSV---------------")
         counter += 1
 
 print("---Initializing---")
@@ -69,3 +69,4 @@ else:
 
 print("--- %s Minutes ---" % ((time.time() - start_time)/60))
 print("done")
+print("save to :" + CSVName)
