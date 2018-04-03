@@ -1,3 +1,5 @@
+import time
+start_time = time.time()
 print("Program Started, Loading Libraries")
 from matplotlib import rcParams
 from UsedFunc import *
@@ -23,8 +25,10 @@ def mainLoop():
         if counter % CSVwriteBuffer == 0:
             saveToCSV(writeBufferArray, CSVName)
             writeBufferArray = []
-        if counter == fileAmount:
+            print("---------------save to CSV---------------")
+        if counter == (fileAmount-1):
             saveToCSV(writeBufferArray, CSVName)
+            print("---------------save to CSV---------------")
         counter += 1
 
 print("---Initializing---")
@@ -49,6 +53,7 @@ CSVwriteBuffer = configList["CSVwriteBuffer"]
 
 if configList["testMode"]:
     print("testMode")
+    print("save to :" + CSVName)
     #need to add testMode parameters
     print("File name: ",fileList[configList["testModeParameters"]["testModeFileID"]])
     findSpot(fileList[configList["testModeParameters"]["testModeFileID"]], configList["findSpotParameters"]["searchThreshold"],
@@ -64,3 +69,4 @@ else:
 
 print("--- %s Minutes ---" % ((time.time() - start_time)/60))
 print("done")
+print("save to :" + CSVName)
