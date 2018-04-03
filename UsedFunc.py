@@ -71,7 +71,7 @@ def applyMask(imageArray, mask):
     return appliedMask
 
 
-def plotSpots(imgArray, objects_list, plotSensitivity=3,saveMode= False,showSpot= False):
+def plotSpots(imgArray, objects_list, plotSensitivity=3,saveMode= False,showSpots= False):
     # plot background-subtracted image
     fig, ax = plt.subplots()
     m, s = np.mean(imgArray), np.std(imgArray)
@@ -93,7 +93,7 @@ def plotSpots(imgArray, objects_list, plotSensitivity=3,saveMode= False,showSpot
         savePath = configList["saveFigModeParameters"]["saveFigFolderName"]
         plt.savefig(savePath + "test.png")
 
-    if showSpot:
+    if showSpots:
         plt.show()
     else:
         plt.clf()
@@ -112,7 +112,7 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
     objects_list = sep.extract(imgArray, searchThreshold, err=bkg.globalrms)
 
     if showSpots == True or saveMode == True:
-        plotSpots(imgArray, objects_list, plotSensitivity,showSpots=showSpots,saveMode=saveMode)
+        plotSpots(imgArray, objects_list, plotSensitivity,saveMode=saveMode,showSpots=showSpot)
 
     if fullInformation == True:
         return objects_list
@@ -187,13 +187,13 @@ def saveToCSV(RowArray, fileName):
 
 
 def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity=3, scaleDownFactor=10
-             , plotFittedFunc=False, printParameters=False, fileID=0):
+             , plotFittedFunc=False, printParameters=False, fileID=0,saveMode=False):
     # global mask
     fileArray = readLEEDImage(fileName)
     # fileArray = np.flipud(fileArray)
     returnArray = []
     centerArray = getSpotRoughRange(fileArray, searchThreshold, mask, scaleDownFactor=scaleDownFactor, showSpots=showSpots,
-                                    plotSensitivity=plotSensitivity)
+                                    plotSensitivity=plotSensitivity,saveMode=saveMode)
     returnArray.append(fitCurve(fileArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters))
     returnList = list(itertools.chain.from_iterable(returnArray))
     returnList = list(itertools.chain.from_iterable(returnList))

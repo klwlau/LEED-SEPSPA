@@ -1,6 +1,7 @@
 {
   "dataFolderName": "",
   "CSVwriteBuffer": 50,
+  "saveMode":false,
 
   "maskConfig": {
     "mask_x_center": 458,
@@ -29,6 +30,7 @@
     "plotFittedFunc": false,
     "printParameters":true
   }
+
 
 
 

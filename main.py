@@ -1,7 +1,6 @@
 import time
 start_time = time.time()
 print("Program Started, Loading Libraries")
-from matplotlib import rcParams
 from UsedFunc import *
 import glob
 import datetime
@@ -18,7 +17,7 @@ def mainLoop():
         #need to add all parameters back
         templist, numberOfSpots = findSpot(fileName, configList["findSpotParameters"]["searchThreshold"]
                                            , mask, scaleDownFactor=configList["findSpotParameters"]["scaleDownFactor"],
-                                           showSpots=False, fileID=counter)
+                                           showSpots=False, fileID=counter,saveMode=configList["saveMode"])
         writeBufferArray.append(templist)
 
         print(counter, ",", numberOfSpots, ",", fileName, ",", counter / fileAmount * 100, "%")
@@ -32,7 +31,7 @@ def mainLoop():
         counter += 1
 
 print("---Initializing---")
-start_time = time.time()
+
 
 
 #setup
