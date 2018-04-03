@@ -10,14 +10,14 @@
   },
   "findSpotParameters":{
     "searchThreshold":50,
-    "cropRange": 25,
+    "cropRange": 10,
     "scaleDownFactor":1
   },
 
   "fittingParameters": {
     "intGuess": [3, 3, 180, 0.2, 0.3, 40],
-    "guessUpBound": [100000, 1000, 1000, 15, 15, 180, 100, 100, 65535],
-    "guessLowBound": [0,0,0, 0.2, 0.2, -180, -100, -100, 0]
+    "guessUpBound": [100000, 1000, 1000, 15, 15,   180,  100,  100, 65535],
+    "guessLowBound": [0,      0,    0,  0.2, 0.2, -180, -100, -100,   0]
   },
 
   "testMode": true,
