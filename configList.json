@@ -1,7 +1,6 @@
 {
   "dataFolderName": "",
   "CSVwriteBuffer": 50,
-  "saveMode":false,
 
   "maskConfig": {
     "mask_x_center": 458,
@@ -21,7 +20,7 @@
     "guessLowBound": [0,      0,    0,  0.2, 0.2, -180, -100, -100,   0]
   },
 
-  "testMode": true,
+  "testMode": false,
   "testModeParameters":{
     "showSpots":true,
     "testModeFileID":0,
@@ -29,6 +28,11 @@
     "scaleDownFactor":1,
     "plotFittedFunc": false,
     "printParameters":true
+  },
+
+  "saveMode":true,
+  "saveFigModeParameters":{
+    "saveFigFolderName":""
   }
 
 

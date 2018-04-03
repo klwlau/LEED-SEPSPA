@@ -71,7 +71,7 @@ def applyMask(imageArray, mask):
     return appliedMask
 
 
-def plotSpots(imgArray, objects_list, plotSensitivity=3,saveMode= False,showSpots= False):
+def plotSpots(imgArray, objects_list, plotSensitivity=3,saveMode= False,saveFileName="test",showSpots= False):
     # plot background-subtracted image
     fig, ax = plt.subplots()
     m, s = np.mean(imgArray), np.std(imgArray)
@@ -91,7 +91,7 @@ def plotSpots(imgArray, objects_list, plotSensitivity=3,saveMode= False,showSpot
     plt.colorbar()
     if saveMode:
         savePath = configList["saveFigModeParameters"]["saveFigFolderName"]
-        plt.savefig(savePath + "test.png")
+        plt.savefig(savePath + saveFileName + ".png")
 
     if showSpots:
         plt.show()
@@ -101,7 +101,7 @@ def plotSpots(imgArray, objects_list, plotSensitivity=3,saveMode= False,showSpot
 
 def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array, \
                       scaleDownFactor: float = 10, plotSensitivity: float = 3, showSpots: bool = False, \
-                      fullInformation: bool = False,saveMode=False) -> np.array:
+                      fullInformation: bool = False,saveMode=False,saveFileName="test") -> np.array:
     # plotFunc(imgArray)
     imgArray = compressImage(imgArray, scaleDownFactor)
     # plotFunc(imgArray)
@@ -112,7 +112,7 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
     objects_list = sep.extract(imgArray, searchThreshold, err=bkg.globalrms)
 
     if showSpots == True or saveMode == True:
-        plotSpots(imgArray, objects_list, plotSensitivity,saveMode=saveMode,showSpots=showSpot)
+        plotSpots(imgArray, objects_list, plotSensitivity,showSpots=showSpots,saveMode=saveMode,saveFileName=saveFileName)
 
     if fullInformation == True:
         return objects_list
@@ -193,7 +193,7 @@ def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity=3
     # fileArray = np.flipud(fileArray)
     returnArray = []
     centerArray = getSpotRoughRange(fileArray, searchThreshold, mask, scaleDownFactor=scaleDownFactor, showSpots=showSpots,
-                                    plotSensitivity=plotSensitivity,saveMode=saveMode)
+                                    plotSensitivity=plotSensitivity,saveMode=saveMode,saveFileName=fileName)
     returnArray.append(fitCurve(fileArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters))
     returnList = list(itertools.chain.from_iterable(returnArray))
     returnList = list(itertools.chain.from_iterable(returnList))
