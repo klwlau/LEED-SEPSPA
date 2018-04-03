@@ -30,7 +30,7 @@
     "printParameters":true
   },
 
-  "saveMode":true,
+  "saveMode":false,
   "saveFigModeParameters":{
     "saveFigFolderName":""
   }
