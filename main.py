@@ -53,6 +53,7 @@ CSVwriteBuffer = configList["CSVwriteBuffer"]
 
 if configList["testMode"]:
     print("testMode")
+    print("save to :" + CSVName)
     #need to add testMode parameters
     print("File name: ",fileList[configList["testModeParameters"]["testModeFileID"]])
     findSpot(fileList[configList["testModeParameters"]["testModeFileID"]], configList["findSpotParameters"]["searchThreshold"],
