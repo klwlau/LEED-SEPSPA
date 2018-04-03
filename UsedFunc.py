@@ -72,7 +72,6 @@ def applyMask(imageArray, mask):
 
 
 def plotSpots(imgArray, objects_list, plotSensitivity=3):
-    # plot background-subtracted image
     fig, ax = plt.subplots()
     m, s = np.mean(imgArray), np.std(imgArray)
     plt.imshow(imgArray, interpolation='nearest', cmap='gray',
