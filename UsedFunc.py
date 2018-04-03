@@ -92,6 +92,7 @@ def plotSpots(imgArray, objects_list, plotSensitivity=3,saveMode= False,showSpot
     if saveMode:
         savePath = configList["saveFigModeParameters"]["saveFigFolderName"]
         plt.savefig(savePath + "test.png")
+
     if showSpot:
         plt.show()
     else:
