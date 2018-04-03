@@ -25,7 +25,7 @@ def mainLoop():
         if counter % CSVwriteBuffer == 0:
             saveToCSV(writeBufferArray, CSVName)
             writeBufferArray = []
-        if counter == fileAmount:
+        if counter == (fileAmount-1):
             saveToCSV(writeBufferArray, CSVName)
         counter += 1
 
