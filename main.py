@@ -9,7 +9,7 @@ import time
 
 def mainLoop():
     #init first row in CSV file
-    writeBufferArray = [["FileID","File Name","Number of Spots","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","theta","A","B","C"]]
+    writeBufferArray = [["FileID","File Name","Number of Spots","Am","x_0","y_0","sigma_x","sigma_y","shape_x","shape_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","shape_x","shape_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","shape_x","shape_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","shape_x","shape_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","shape_x","shape_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","shape_x","shape_y","theta","A","B","C","Am","x_0","y_0","sigma_x","sigma_y","shape_x","shape_y","theta","A","B","C"]]
     counter = 0
     fileAmount = len(fileList)
     for fileName in fileList:
