@@ -157,13 +157,13 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
         xy = x, y
         i = z.argmax()
         intGuess = [z[i], x[i], y[i], intConfigGuess[0], intConfigGuess[1], intConfigGuess[2],
-                    intConfigGuess[3], intConfigGuess[4], intConfigGuess[5]]
+                    intConfigGuess[3], intConfigGuess[4], intConfigGuess[5],intConfigGuess[6],intConfigGuess[7]]
 
 
         pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0 = intGuess, bounds=guessBound) #, method='lm' does not support bounds
 
 
-        ####do cord transform?
+        ####do cord transform
         pred_params[1] = pred_params[1] - cropRange + centerArray[spotNumber][0]
         pred_params[2] = pred_params[2] - cropRange + centerArray[spotNumber][1]
 
@@ -197,7 +197,7 @@ def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity=3
     returnArray.append(fitCurve(fileArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters))
     returnList = list(itertools.chain.from_iterable(returnArray))
     returnList = list(itertools.chain.from_iterable(returnList))
-    elements = int(len(returnList) / 9)
+    elements = int(len(returnList) / 11)
     returnList.insert(0, elements)
     returnList.insert(0, fileName)
     returnList.insert(0, fileID)
