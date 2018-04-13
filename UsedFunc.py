@@ -156,11 +156,13 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
         #           showSpots=showSpots, saveMode=saveMode, saveFileName=saveFileName)
 
     if fittingMode is True:
-        return np.array([objects_list['peak'], objects_list['x'],objects_list['y'],
-                         objects_list['xmax'], objects_list['ymax'],
-                         objects_list['a'], objects_list['b'],objects_list['theta']]).T
-    else:
         return np.array([objects_list['x'], objects_list['y']]).T
+
+    else:
+        return np.array([objects_list['peak'], objects_list['x'], objects_list['y'],
+                         objects_list['xmax'], objects_list['ymax'],
+                         objects_list['a'], objects_list['b'], objects_list['theta']]).T
+
 
 
 def plotFitFunc(fit_params):  # (xy, zobs, pred_params):
@@ -238,7 +240,7 @@ def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_l
     centerArray = getSpotRoughRange(fileArray, searchThreshold, mask, scaleDownFactor=scaleDownFactor,
                                     showSpots=showSpots,
                                     plotSensitivity_low=plotSensitivity_low, plotSensitivity_up=plotSensitivity_up,
-                                    saveMode=saveMode, saveFileName=fileName)
+                                    saveMode=saveMode, saveFileName=fileName,fittingMode=fittingMode)
     # centerArray = getSpotRoughRange(fileArray, searchThreshold, mask,
     #                                 scaleDownFactor=scaleDownFactor, showSpots=showSpots,
     #                                 plotSensitivity=plotSensitivity, saveMode=saveMode,
@@ -257,4 +259,5 @@ def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_l
     returnList.insert(0, elements)
     returnList.insert(0, fileName)
     returnList.insert(0, fileID)
+    print(returnList)
     return returnList, elements
