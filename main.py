@@ -8,7 +8,7 @@ import datetime
 import time
 
 
-def mainLoop():
+def fittingMode():
     # init first row in CSV file
     writeBufferArray = [["FileID", "File Name", "Number of Spots",
                          "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
@@ -76,8 +76,11 @@ if configList["testMode"]:
     print("testMode")
     testMode()
 else:
-    print("fittingMode")
-    mainLoop()
+    if configList["fittingMode"]:
+        print("fittingMode")
+        fittingMode()
+    else:
+
 
 print("--- %s Minutes ---" % ((time.time() - start_time) / 60))
 print("done")

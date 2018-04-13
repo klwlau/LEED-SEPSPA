@@ -230,10 +230,8 @@ def saveToCSV(RowArray, fileName):
 #              plotFittedFunc=False, printParameters=False, fileID=0,saveMode=False):
 def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_low=0.0, plotSensitivity_up=0.5,
              scaleDownFactor=10,
-             plotFittedFunc=False, printParameters=False, fileID=0, saveMode=False):
-    # global mask
+             plotFittedFunc=False, printParameters=False, fileID=0, saveMode=False, fittingMode=True):
     fileArray = readLEEDImage(fileName)
-    # fileArray = np.flipud(fileArray)
     returnArray = []
     centerArray = getSpotRoughRange(fileArray, searchThreshold, mask, scaleDownFactor=scaleDownFactor,
                                     showSpots=showSpots,
@@ -243,10 +241,15 @@ def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_l
     #                                 scaleDownFactor=scaleDownFactor, showSpots=showSpots,
     #                                 plotSensitivity=plotSensitivity, saveMode=saveMode,
     #                                 saveFileName=fileName)
-    returnArray.append(fitCurve(fileArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters))
-    returnList = list(itertools.chain.from_iterable(returnArray))
-    returnList = list(itertools.chain.from_iterable(returnList))
-    elements = int(len(returnList) / 11)
+    if fittingMode:
+        returnArray.append(fitCurve(fileArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters))
+        returnList = list(itertools.chain.from_iterable(returnArray))
+        returnList = list(itertools.chain.from_iterable(returnList))
+        elements = int(len(returnList) / 11)
+    else:
+        returnArray.append(centerArray)
+
+
     returnList.insert(0, elements)
     returnList.insert(0, fileName)
     returnList.insert(0, fileID)

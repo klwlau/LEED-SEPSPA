@@ -13,6 +13,7 @@
     "cropRange": 10,
     "scaleDownFactor":1
   },
+  "fittingMode":false,
 
   "fittingParameters": {
     "intGuess": [3, 3, 0, 0, 90, 0.2, 0.3, 40],
