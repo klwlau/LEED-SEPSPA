@@ -135,6 +135,7 @@ def plotSpots(imgArray, objects_list, plotSensitivity_low=0.0, plotSensitivity_u
 # def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array,
 #                       scaleDownFactor: float = 10, plotSensitivity: float = 3, showSpots: bool = False,
 #                       fullInformation: bool = False, saveMode=False, saveFileName="test") -> np.array:
+@jit
 def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array, scaleDownFactor: float = 10,
                       plotSensitivity_low: float = 0.0, plotSensitivity_up: float = 0.5,
                       showSpots: bool = False, fittingMode: bool = False, saveMode=False,
@@ -232,6 +233,7 @@ def saveToCSV(RowArray, fileName):
 
 # def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity=3, scaleDownFactor=10,
 #              plotFittedFunc=False, printParameters=False, fileID=0,saveMode=False):
+@jit
 def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_low=0.0, plotSensitivity_up=0.5,
              scaleDownFactor=10,
              plotFittedFunc=False, printParameters=False, fileID=0, saveMode=False, fittingMode=True):
