@@ -6,6 +6,7 @@ from UsedFunc import *
 import glob
 import datetime
 
+
 def fittingMode():
     # init first row in CSV file
     writeBufferArray = [["FileID", "File Name", "Number of Spots",
@@ -39,6 +40,7 @@ def fittingMode():
             print("---------------save to CSV---------------")
         counter += 1
 
+
 def sepMode():
     # init first row in CSV file
     writeBufferArray = [["FileID", "File Name", "Number of Spots",
@@ -56,7 +58,8 @@ def sepMode():
         # need to add all parameters back
         templist, numberOfSpots = findSpot(fileName, configList["findSpotParameters"]["searchThreshold"],
                                            mask, scaleDownFactor=configList["findSpotParameters"]["scaleDownFactor"],
-                                           showSpots=False, fileID=counter, saveMode=configList["saveMode"],fittingMode=False)
+                                           showSpots=False, fileID=counter, saveMode=configList["saveMode"],
+                                           fittingMode=False)
         writeBufferArray.append(templist)
 
         print(counter, ",", numberOfSpots, ",", fileName, ",", counter / fileAmount * 100, "%")
@@ -70,6 +73,7 @@ def sepMode():
             saveToCSV(writeBufferArray, CSVName)
             print("---------------save to CSV---------------")
         counter += 1
+
 
 def testMode():
     # need to add testMode parameters
@@ -113,7 +117,6 @@ else:
     else:
         print("sepMode")
         sepMode()
-
 
 print("--- %s Minutes ---" % ((time.time() - start_time) / 60))
 print("done")

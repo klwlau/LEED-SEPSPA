@@ -37,6 +37,7 @@ def copyJsontoLog(timeStamp):
     shutil.copy(src_file, dst_file)
     print("Copied Json file to Log")
 
+
 def plotFunc(plot_data, plotSensitivity=3):
     m, s = np.mean(plot_data), np.std(plot_data)
     plt.imshow(plot_data, interpolation='nearest', cmap='jet',
@@ -178,7 +179,6 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
                          objects_list['a'], objects_list['b'], objects_list['theta']]).T
 
 
-
 def plotFitFunc(fit_params):  # (xy, zobs, pred_params):
     # x, y = xy
     xi, yi = np.mgrid[:cropRange * 2:30j, :cropRange * 2:30j]
@@ -255,13 +255,14 @@ def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_l
     centerArray = getSpotRoughRange(fileArray, searchThreshold, mask, scaleDownFactor=scaleDownFactor,
                                     showSpots=showSpots,
                                     plotSensitivity_low=plotSensitivity_low, plotSensitivity_up=plotSensitivity_up,
-                                    saveMode=saveMode, saveFileName=fileName,fittingMode=fittingMode)
+                                    saveMode=saveMode, saveFileName=fileName, fittingMode=fittingMode)
     # centerArray = getSpotRoughRange(fileArray, searchThreshold, mask,
     #                                 scaleDownFactor=scaleDownFactor, showSpots=showSpots,
     #                                 plotSensitivity=plotSensitivity, saveMode=saveMode,
     #                                 saveFileName=fileName)
     if fittingMode:
-        returnArray.append(fitCurve(fileArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters))
+        returnArray.append(
+            fitCurve(fileArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters))
         returnList = list(itertools.chain.from_iterable(returnArray))
         returnList = list(itertools.chain.from_iterable(returnList))
         elements = int(len(returnList) / 11)

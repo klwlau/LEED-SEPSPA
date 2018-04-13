@@ -2,25 +2,24 @@ import numpy as np
 from numba import jit
 from scipy.stats import norm
 
+
 @jit
 def pdf_skewnormal(x, location=0.0, scale=1.0, shape=0.0):
-    scale = scale**2
+    scale = scale ** 2
     t = (x - location) / scale
     return 2.0 / scale * norm.pdf(t) * norm.cdf(shape * t)
 
+
 @jit
-def fitFunc(xy,Amp,x_0,y_0,sigma_x,sigma_y,shape_x,shape_y,theta,A,B,C):
-    x,y=xy
+def fitFunc(xy, Amp, x_0, y_0, sigma_x, sigma_y, shape_x, shape_y, theta, A, B, C):
+    x, y = xy
     theta = np.deg2rad(theta)
-    x_rotated= x*np.cos(theta)-y*np.sin(theta)
-    y_rotated= x*np.sin(theta)+y*np.cos(theta)
-    g = Amp * pdf_skewnormal(x_rotated,x_0,sigma_x,shape_x) * \
-        pdf_skewnormal(y_rotated,y_0,sigma_y,shape_y)
-    g += A*x + B*y + C
+    x_rotated = x * np.cos(theta) - y * np.sin(theta)
+    y_rotated = x * np.sin(theta) + y * np.cos(theta)
+    g = Amp * pdf_skewnormal(x_rotated, x_0, sigma_x, shape_x) * \
+        pdf_skewnormal(y_rotated, y_0, sigma_y, shape_y)
+    g += A * x + B * y + C
     return g
-
-
-
 
 # @jit
 # def fitFunc(xy,Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C):
