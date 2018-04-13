@@ -259,5 +259,4 @@ def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_l
     returnList.insert(0, elements)
     returnList.insert(0, fileName)
     returnList.insert(0, fileID)
-    print(returnList)
     return returnList, elements
