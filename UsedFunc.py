@@ -1,4 +1,3 @@
-# import numpy as np
 from scipy.optimize import curve_fit
 import sep
 from PIL import Image
@@ -8,6 +7,8 @@ from fitFunc import *
 import csv
 import itertools
 import json
+import os
+import shutil
 
 configList = json.load(open("configList.json"))
 ######parameter list######
@@ -23,6 +24,18 @@ intConfigGuess = configList["fittingParameters"]["intGuess"]
 
 ######parameter list######
 
+
+def copyJsontoLog(timeStamp):
+    if not os.path.exists(os.path.join(os.curdir, "Log")):
+        os.makedirs(os.path.join(os.curdir, "Log"))
+
+    sourceDirectory = os.curdir
+    new_file_name = timeStamp + ".json"
+    finalDirectory = os.path.join(os.curdir, "Log")
+    dst_file = os.path.join(finalDirectory, new_file_name)
+    src_file = os.path.join(sourceDirectory, "configList.json")
+    shutil.copy(src_file, dst_file)
+    print("Copied Json file to Log")
 
 def plotFunc(plot_data, plotSensitivity=3):
     m, s = np.mean(plot_data), np.std(plot_data)

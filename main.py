@@ -5,7 +5,6 @@ print("Program Started, Loading Libraries")
 from UsedFunc import *
 import glob
 import datetime
-import time
 
 def fittingMode():
     # init first row in CSV file
@@ -82,7 +81,8 @@ def testMode():
              plotSensitivity_up=configList["testModeParameters"]["plotSensitivity_up"],
              showSpots=configList["testModeParameters"]["showSpots"],
              plotFittedFunc=configList["testModeParameters"]["plotFittedFunc"],
-             printParameters=configList["testModeParameters"]["printParameters"])
+             printParameters=configList["testModeParameters"]["printParameters"],
+             fittingMode=False)
 
 
 print("---Initializing---")
@@ -90,6 +90,7 @@ print("---Initializing---")
 timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S')
 dataFolderName = configList["dataFolderName"]
 CSVName = timeStamp + ".csv"
+copyJsontoLog(timeStamp)
 
 # int parameter, make Mask, read file name in folder
 if not dataFolderName:
