@@ -15,23 +15,25 @@
   },
 
   "fittingParameters": {
-    "intGuess": [3, 3,0,0, 90, 0.2, 0.3, 40],
-    "guessUpBound": [100000, 1000, 1000, 15, 15, 10, 10,   180,  100,  100, 65535],
-    "guessLowBound": [0,      0,    0,  0.2, 0.2,-10,-10, -180, -100, -100,   0]
+    "intGuess": [3, 3, 0, 0, 90, 0.2, 0.3, 40],
+    "guessUpBound": [100000, 1000, 1000, 15, 15, 10, 10, 180, 100, 100, 65535],
+    "guessLowBound": [0, 0, 0, 0.2, 0.2, -10, -10, -180, -100, -100, 0]
   },
 
   "testMode": false,
   "testModeParameters":{
-    "showSpots":true,
-    "testModeFileID":0,
-    "plotSensitivity":3,
-    "scaleDownFactor":1,
+    "showSpots": true,
+    "testModeFileID": 0,
+    "plotSensitivity": 3,
+    "plotSensitivity_low": 0.01,
+    "plotSensitivity_up": 0.7,
+    "scaleDownFactor": 1,
     "plotFittedFunc": false,
-    "printParameters":true
+    "printParameters": true
   },
 
-  "saveMode":false,
-  "saveFigModeParameters":{
+  "saveMode": false,
+  "saveFigModeParameters": {
     "saveFigFolderName":""
   }
 

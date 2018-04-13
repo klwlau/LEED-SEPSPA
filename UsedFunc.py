@@ -9,24 +9,26 @@ import csv
 import itertools
 import json
 
-configList=json.load(open("configList.json"))
+configList = json.load(open("configList.json"))
 ######parameter list######
 cropRange = configList["findSpotParameters"]["cropRange"]
 
 # Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
-guessUpBound =configList["fittingParameters"]["guessUpBound"]
-guessLowBound =configList["fittingParameters"]["guessLowBound"]
-guessBound = (guessLowBound,guessUpBound)
+guessUpBound = configList["fittingParameters"]["guessUpBound"]
+guessLowBound = configList["fittingParameters"]["guessLowBound"]
+guessBound = (guessLowBound, guessUpBound)
 #    sigma_x,sigma_y,theta,A,B,C
-intConfigGuess= configList["fittingParameters"]["intGuess"]
+intConfigGuess = configList["fittingParameters"]["intGuess"]
+
+
 ######parameter list######
 
 
 def plotFunc(plot_data, plotSensitivity=3):
     m, s = np.mean(plot_data), np.std(plot_data)
-    plt.imshow(plot_data, interpolation='nearest', cmap='gray', \
-               vmin=m - plotSensitivity * s, \
-               vmax=m + plotSensitivity * s, origin='lower')
+    plt.imshow(plot_data, interpolation='nearest', cmap='jet',
+               vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
+               origin='lower')
     plt.colorbar()
     plt.show()
 
@@ -37,7 +39,7 @@ def setPicDim(filePath):
     picWidth = len(data[1])
     picHeight = len(data)
     print("Width: ", picWidth, ", Height: ", picHeight)
-    print("Image Center: ",picWidth/2,picHeight/2)
+    print("Image Center: ", picWidth / 2, picHeight / 2)
 
 
 def readLEEDImage(filePath):
@@ -71,18 +73,49 @@ def applyMask(imageArray, mask):
     return appliedMask
 
 
-def plotSpots(imgArray, objects_list, plotSensitivity=3,saveMode= False,saveFileName="test",showSpots= False):
-    # plot background-subtracted image
+# def plotSpots(imgArray, objects_list, plotSensitivity=3, saveMode=False, saveFileName="test", showSpots=False):
+#     # plot background-subtracted image
+#     fig, ax = plt.subplots()
+#     m, s = np.mean(imgArray), np.std(imgArray)
+#     plt.imshow(imgArray, interpolation='nearest', cmap='gray',
+#                vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
+#                origin='lower')
+#
+#     # plot an ellipse for each object
+#     for i in range(len(objects_list)):
+#         e = Ellipse(xy=(objects_list['x'][i], objects_list['y'][i]),
+#                     width=6 * objects_list['a'][i],
+#                     height=6 * objects_list['b'][i],
+#                     angle=objects_list['theta'][i] * 180. / np.pi)
+#         e.set_facecolor('none')
+#         e.set_edgecolor('red')
+#         ax.add_artist(e)
+#
+#     plt.colorbar()
+#     if saveMode:
+#         savePath = configList["saveFigModeParameters"]["saveFigFolderName"]
+#         plt.savefig(savePath + saveFileName + ".png")
+#
+#     if showSpots:
+#         plt.show()
+#     else:
+#         plt.clf()
+
+# Tony: Change the plot anatomy
+def plotSpots(imgArray, objects_list, plotSensitivity_low=0.0, plotSensitivity_up=0.5,
+              saveMode=False, saveFileName="test", showSpots=False):
     fig, ax = plt.subplots()
-    m, s = np.mean(imgArray), np.std(imgArray)
-    plt.imshow(imgArray, interpolation='nearest', cmap='gray',
-                   vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s, origin='lower')
+    min_int, max_int = np.amin(imgArray), np.amax(imgArray)
+    plt.imshow(imgArray, interpolation='nearest', cmap='jet',
+               vmin=min_int + (max_int - min_int) * plotSensitivity_low,
+               vmax=min_int + (max_int - min_int) * plotSensitivity_up,
+               origin='lower')
 
     # plot an ellipse for each object
     for i in range(len(objects_list)):
         e = Ellipse(xy=(objects_list['x'][i], objects_list['y'][i]),
-                    width=6 * objects_list['a'][i],
-                    height=6 * objects_list['b'][i],
+                    width=3 * objects_list['a'][i],
+                    height=3 * objects_list['b'][i],
                     angle=objects_list['theta'][i] * 180. / np.pi)
         e.set_facecolor('none')
         e.set_edgecolor('red')
@@ -99,9 +132,13 @@ def plotSpots(imgArray, objects_list, plotSensitivity=3,saveMode= False,saveFile
         plt.clf()
 
 
-def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array, \
-                      scaleDownFactor: float = 10, plotSensitivity: float = 3, showSpots: bool = False, \
-                      fullInformation: bool = False,saveMode=False,saveFileName="test") -> np.array:
+# def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array,
+#                       scaleDownFactor: float = 10, plotSensitivity: float = 3, showSpots: bool = False,
+#                       fullInformation: bool = False, saveMode=False, saveFileName="test") -> np.array:
+def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array, scaleDownFactor: float = 10,
+                      plotSensitivity_low: float = 0.0, plotSensitivity_up: float = 0.5,
+                      showSpots: bool = False, fullInformation: bool = False, saveMode=False,
+                      saveFileName="test") -> np.array:
     # plotFunc(imgArray)
     imgArray = compressImage(imgArray, scaleDownFactor)
     # plotFunc(imgArray)
@@ -109,12 +146,16 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
     # plotFunc(imgArray)
 
     bkg = sep.Background(imgArray)
+    # imgArray = imgArray - bkg.rms()
     objects_list = sep.extract(imgArray, searchThreshold, err=bkg.globalrms)
 
-    if showSpots == True or saveMode == True:
-        plotSpots(imgArray, objects_list, plotSensitivity,showSpots=showSpots,saveMode=saveMode,saveFileName=saveFileName)
+    if showSpots is True or saveMode is True:
+        plotSpots(imgArray, objects_list, plotSensitivity_low, plotSensitivity_up,
+                  showSpots=showSpots, saveMode=saveMode, saveFileName=saveFileName)
+        # plotSpots(imgArray, objects_list, plotSensitivity,
+        #           showSpots=showSpots, saveMode=saveMode, saveFileName=saveFileName)
 
-    if fullInformation == True:
+    if fullInformation is True:
         return objects_list
     else:
         return np.array([objects_list['x'], objects_list['y']]).T
@@ -137,7 +178,7 @@ def plotFitFunc(fit_params):  # (xy, zobs, pred_params):
 
 
 def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=False):
-    global cropRange, guessBound,intConfigGuess
+    global cropRange, guessBound, intConfigGuess
     allFittedSpot = []
 
     for i in range(len(centerArray)):
@@ -146,7 +187,7 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
         # print(centerArray[spotNumber])
 
         cropedArray = imageArray[
-                      int(centerArray[spotNumber][1]) - cropRange: int(centerArray[spotNumber][1]) + cropRange, \
+                      int(centerArray[spotNumber][1]) - cropRange: int(centerArray[spotNumber][1]) + cropRange,
                       int(centerArray[spotNumber][0]) - cropRange: int(centerArray[spotNumber][0]) + cropRange]
 
         for i in range(len(cropedArray)):
@@ -157,11 +198,10 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
         xy = x, y
         i = z.argmax()
         intGuess = [z[i], x[i], y[i], intConfigGuess[0], intConfigGuess[1], intConfigGuess[2],
-                    intConfigGuess[3], intConfigGuess[4], intConfigGuess[5],intConfigGuess[6],intConfigGuess[7]]
+                    intConfigGuess[3], intConfigGuess[4], intConfigGuess[5], intConfigGuess[6], intConfigGuess[7]]
 
-
-        pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0 = intGuess, bounds=guessBound) #, method='lm' does not support bounds
-
+        pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
+        # , method='lm' does not support bounds
 
         ####do cord transform
         pred_params[1] = pred_params[1] - cropRange + centerArray[spotNumber][0]
@@ -186,14 +226,23 @@ def saveToCSV(RowArray, fileName):
             csvWriter.writerow(i)
 
 
-def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity=3, scaleDownFactor=10
-             , plotFittedFunc=False, printParameters=False, fileID=0,saveMode=False):
+# def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity=3, scaleDownFactor=10,
+#              plotFittedFunc=False, printParameters=False, fileID=0,saveMode=False):
+def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_low=0.0, plotSensitivity_up=0.5,
+             scaleDownFactor=10,
+             plotFittedFunc=False, printParameters=False, fileID=0, saveMode=False):
     # global mask
     fileArray = readLEEDImage(fileName)
     # fileArray = np.flipud(fileArray)
     returnArray = []
-    centerArray = getSpotRoughRange(fileArray, searchThreshold, mask, scaleDownFactor=scaleDownFactor, showSpots=showSpots,
-                                    plotSensitivity=plotSensitivity,saveMode=saveMode,saveFileName=fileName)
+    centerArray = getSpotRoughRange(fileArray, searchThreshold, mask, scaleDownFactor=scaleDownFactor,
+                                    showSpots=showSpots,
+                                    plotSensitivity_low=plotSensitivity_low, plotSensitivity_up=plotSensitivity_up,
+                                    saveMode=saveMode, saveFileName=fileName)
+    # centerArray = getSpotRoughRange(fileArray, searchThreshold, mask,
+    #                                 scaleDownFactor=scaleDownFactor, showSpots=showSpots,
+    #                                 plotSensitivity=plotSensitivity, saveMode=saveMode,
+    #                                 saveFileName=fileName)
     returnArray.append(fitCurve(fileArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters))
     returnList = list(itertools.chain.from_iterable(returnArray))
     returnList = list(itertools.chain.from_iterable(returnList))
