@@ -41,6 +41,39 @@ def fittingMode():
             print("---------------save to CSV---------------")
         counter += 1
 
+def sepMode():
+    # init first row in CSV file
+    writeBufferArray = [["FileID", "File Name", "Number of Spots",
+                         "Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta",
+                         "Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta",
+                         "Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta",
+                         "Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta",
+                         "Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta",
+                         "Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta",
+                         "Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta"]]
+    counter = 0
+    fileAmount = len(fileList)
+
+    for fileName in fileList:
+        # need to add all parameters back
+        templist, numberOfSpots = findSpot(fileName, configList["findSpotParameters"]["searchThreshold"],
+                                           mask, scaleDownFactor=configList["findSpotParameters"]["scaleDownFactor"],
+                                           showSpots=False, fileID=counter, saveMode=configList["saveMode"],fittingMode=False)
+        writeBufferArray.append(templist)
+
+        print(counter, ",", numberOfSpots, ",", fileName, ",", counter / fileAmount * 100, "%")
+
+        if counter % CSVwriteBuffer == 0:
+            saveToCSV(writeBufferArray, CSVName)
+            writeBufferArray = []
+            print("---------------save to CSV---------------")
+
+        if counter == (fileAmount - 1):
+            saveToCSV(writeBufferArray, CSVName)
+            print("---------------save to CSV---------------")
+        counter += 1
+
+
 
 def testMode():
     # need to add testMode parameters
@@ -80,6 +113,8 @@ else:
         print("fittingMode")
         fittingMode()
     else:
+        print("sepMode")
+        sepMode()
 
 
 print("--- %s Minutes ---" % ((time.time() - start_time) / 60))

@@ -137,7 +137,7 @@ def plotSpots(imgArray, objects_list, plotSensitivity_low=0.0, plotSensitivity_u
 #                       fullInformation: bool = False, saveMode=False, saveFileName="test") -> np.array:
 def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array, scaleDownFactor: float = 10,
                       plotSensitivity_low: float = 0.0, plotSensitivity_up: float = 0.5,
-                      showSpots: bool = False, fullInformation: bool = False, saveMode=False,
+                      showSpots: bool = False, fittingMode: bool = False, saveMode=False,
                       saveFileName="test") -> np.array:
     # plotFunc(imgArray)
     imgArray = compressImage(imgArray, scaleDownFactor)
@@ -155,8 +155,10 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
         # plotSpots(imgArray, objects_list, plotSensitivity,
         #           showSpots=showSpots, saveMode=saveMode, saveFileName=saveFileName)
 
-    if fullInformation is True:
-        return objects_list
+    if fittingMode is True:
+        return np.array([objects_list['peak'], objects_list['x'],objects_list['y'],
+                         objects_list['xmax'], objects_list['ymax'],
+                         objects_list['a'], objects_list['b'],objects_list['theta']]).T
     else:
         return np.array([objects_list['x'], objects_list['y']]).T
 
@@ -248,7 +250,9 @@ def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_l
         elements = int(len(returnList) / 11)
     else:
         returnArray.append(centerArray)
-
+        returnList = list(itertools.chain.from_iterable(returnArray))
+        returnList = list(itertools.chain.from_iterable(returnList))
+        elements = int(len(returnList) / 8)
 
     returnList.insert(0, elements)
     returnList.insert(0, fileName)
