@@ -30,11 +30,11 @@ def copyJsontoLog(timeStamp):
         os.makedirs(os.path.join(os.curdir, "Log"))
 
     sourceDirectory = os.curdir
-    new_file_name = timeStamp + ".json"
+    newFileName = timeStamp + ".json"
     finalDirectory = os.path.join(os.curdir, "Log")
-    dst_file = os.path.join(finalDirectory, new_file_name)
-    src_file = os.path.join(sourceDirectory, "configList.json")
-    shutil.copy(src_file, dst_file)
+    dstFile = os.path.join(finalDirectory, newFileName)
+    sourceFile = os.path.join(sourceDirectory, "configList.json")
+    shutil.copy(sourceFile, dstFile)
     print("Copied Json file to Log")
 
 
