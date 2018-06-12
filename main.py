@@ -1,7 +1,7 @@
 import time
-
 start_time = time.time()
 print("Program Started, Loading Libraries")
+
 from UsedFunc import *
 import glob
 import datetime
@@ -114,10 +114,12 @@ else:
     if configList["fittingMode"]:
         print("fittingMode")
         fittingMode()
+        print("save to :" + CSVName)
     else:
         print("sepMode")
         sepMode()
+        print("save to :" + CSVName)
 
 print("--- %s Minutes ---" % ((time.time() - start_time) / 60))
 print("done")
-print("save to :" + CSVName)
+

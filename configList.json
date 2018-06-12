@@ -1,15 +1,15 @@
 {
-  "dataFolderName": "",
+  "dataFolderName": "/Users/wilsonlau/Desktop/PC and Mac/20180528/IV1/IV1_1",
   "CSVwriteBuffer": 50,
 
   "maskConfig": {
-    "mask_x_center": 458,
-    "mask_y_center": 468,
-    "innerRadius": 200,
-    "outerRadius": 300
+    "mask_x_center": 428,
+    "mask_y_center": 438,
+    "innerRadius": 20,
+    "outerRadius": 150
   },
   "findSpotParameters":{
-    "searchThreshold":50,
+    "searchThreshold":60,
     "cropRange": 10,
     "scaleDownFactor":1
   },
@@ -23,8 +23,8 @@
 
   "testMode": true,
   "testModeParameters":{
+    "testModeFileID": 32,
     "showSpots": true,
-    "testModeFileID": 0,
     "plotSensitivity": 3,
     "plotSensitivity_low": 0.01,
     "plotSensitivity_up": 0.7,
