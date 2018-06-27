@@ -27,7 +27,7 @@
     "printParameters": true
   },
 
-  "fittingMode":true,
+  "fittingMode":false,
   "fittingParameters": {
     "intGuess": [3, 3,  90, 0.2, 0.3, 40],
     "guessUpBound": [100000, 1000, 1000, 15, 15, 180, 100, 100, 65535],
