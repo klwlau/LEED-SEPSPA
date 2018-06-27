@@ -248,6 +248,7 @@ def saveToCSV(RowArray, fileName):
 
 # def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity=3, scaleDownFactor=10,
 #              plotFittedFunc=False, printParameters=False, fileID=0,saveMode=False):
+
 @jit
 def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_low=0.0, plotSensitivity_up=0.5,
              scaleDownFactor=10,
@@ -267,7 +268,7 @@ def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_l
             fitCurve(fileArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters))
         returnList = list(itertools.chain.from_iterable(returnArray))
         returnList = list(itertools.chain.from_iterable(returnList))
-        elements = int(len(returnList) / 11)
+        elements = int(len(returnList) / 9)
     else:
         returnArray.append(centerArray)
         returnList = list(itertools.chain.from_iterable(returnArray))
