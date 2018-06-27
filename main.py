@@ -9,15 +9,28 @@ import datetime
 
 def fittingMode():
     # init first row in CSV file
+    # writeBufferArray for 2D normal distribution
     writeBufferArray = [["FileID", "File Name", "Number of Spots",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C"]]
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C"]]
+
+    # writeBufferArray for 2D Skew normal distribution
+    # writeBufferArray = [["FileID", "File Name", "Number of Spots",
+    #                      "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
+    #                      "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
+    #                      "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
+    #                      "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
+    #                      "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
+    #                      "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
+    #                      "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
+    #                      "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C"]]
+    #
     counter = 0
     fileAmount = len(fileList)
 

@@ -1,29 +1,29 @@
 {
-  "dataFolderName": "/Users/wilsonlau/Desktop/PC and Mac/20180528/IV1/IV1_1",
+  "dataFolderName": "/Users/wilsonlau/Desktop/PC and Mac/scan01",
   "CSVwriteBuffer": 50,
 
   "maskConfig": {
     "mask_x_center": 428,
     "mask_y_center": 438,
-    "innerRadius": 20,
-    "outerRadius": 150
+    "innerRadius": 0,
+    "outerRadius": 60
   },
   "findSpotParameters":{
-    "searchThreshold":60,
-    "cropRange": 10,
+    "searchThreshold":700,
+    "cropRange": 20,
     "scaleDownFactor":1
   },
 
-  "fittingMode":false,
+  "fittingMode":true,
   "fittingParameters": {
-    "intGuess": [3, 3, 0, 0, 90, 0.2, 0.3, 40],
-    "guessUpBound": [100000, 1000, 1000, 15, 15, 10, 10, 180, 100, 100, 65535],
-    "guessLowBound": [0, 0, 0, 0.2, 0.2, -10, -10, -180, -100, -100, 0]
+    "intGuess": [3, 3,  90, 0.2, 0.3, 40],
+    "guessUpBound": [100000, 1000, 1000, 15, 15, 180, 100, 100, 65535],
+    "guessLowBound": [0, 0, 0, 0.2, 0.2 , -180, -100, -100, 0]
   },
 
-  "testMode": true,
+  "testMode": false,
   "testModeParameters":{
-    "testModeFileID": 32,
+    "testModeFileID": 1728,
     "showSpots": true,
     "plotSensitivity": 3,
     "plotSensitivity_low": 0.01,

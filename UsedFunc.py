@@ -215,8 +215,11 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
         x, y, z = np.array(xyzArray).T
         xy = x, y
         i = z.argmax()
-        intGuess = [z[i], x[i], y[i], intConfigGuess[0], intConfigGuess[1], intConfigGuess[2],
-                    intConfigGuess[3], intConfigGuess[4], intConfigGuess[5], intConfigGuess[6], intConfigGuess[7]]
+        # intGuess = [z[i], x[i], y[i], intConfigGuess[0], intConfigGuess[1], intConfigGuess[2],
+        #             intConfigGuess[3], intConfigGuess[4], intConfigGuess[5]]
+
+        intGuess  = [z[i], x[i], y[i]]
+        intGuess = intGuess + intConfigGuess
 
         pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
         # , method='lm' does not support bounds
