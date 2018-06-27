@@ -220,7 +220,6 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
 
         intGuess  = [z[i], x[i], y[i]]
         intGuess = intGuess + intConfigGuess
-
         pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
         # , method='lm' does not support bounds
 
