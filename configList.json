@@ -1,24 +1,24 @@
 {
-  "dataFolderName": "/Users/wilsonlau/Downloads/20180623 scan1/20180623 scan1/",
+  "dataFolderName": "/Users/wilsonlau/Downloads/drive-download-20180628T034448Z-001/scan2/",
   "CSVwriteBuffer": 50,
-  "csvNameRemark":"scan1FirstOrderSpot6",
+  "csvNameRemark":"20180627_scan2_moire_spot3",
 
   "maskConfig": {
-    "mask_x_center": 280,
-    "mask_y_center": 547,
+    "mask_x_center": 457,
+    "mask_y_center": 437,
     "innerRadius": 0,
     "outerRadius": 30
   },
 
   "findSpotParameters":{
     "searchThreshold":300,
-    "cropRange": 15,
+    "cropRange": 20,
     "scaleDownFactor":1
   },
 
-  "testMode": false,
+  "testMode": true,
   "testModeParameters":{
-    "testModeFileID": 477,
+    "testModeFileID": 4,
     "showSpots": true,
     "plotSensitivity": 3,
     "plotSensitivity_low": 0.01,

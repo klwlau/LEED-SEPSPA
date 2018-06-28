@@ -109,7 +109,7 @@ print("---Initializing---")
 timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S')
 dataFolderName = configList["dataFolderName"]
 makeResultDir()
-CSVName = "./result/"+timeStamp +"_" +configList["csvNameRemark"] + ".csv"
+CSVName = "./Result/"+timeStamp +"_" +configList["csvNameRemark"] + ".csv"
 copyJsontoLog(timeStamp)
 
 # int parameter, make Mask, read file name in folderimport json
@@ -117,6 +117,7 @@ if not dataFolderName:
     fileList = glob.glob("./*.tif")
 else:
     fileList = glob.glob(dataFolderName + "/*.tif")
+fileList = sorted(fileList)
 
 setPicDim(fileList[0])  # to set the picWidth,picHeight for findSpot function
 mask = makeMask(configList["maskConfig"]["mask_x_center"], configList["maskConfig"]["mask_y_center"],
