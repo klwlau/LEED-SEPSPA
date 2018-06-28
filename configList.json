@@ -1,23 +1,24 @@
 {
   "dataFolderName": "/Users/wilsonlau/Downloads/20180623 scan1/20180623 scan1/",
   "CSVwriteBuffer": 50,
+  "csvNameRemark":"scan1FirstOrderSpot6",
 
   "maskConfig": {
-    "mask_x_center": 433,
-    "mask_y_center": 453,
-    "innerRadius": 150,
-    "outerRadius": 200
+    "mask_x_center": 280,
+    "mask_y_center": 547,
+    "innerRadius": 0,
+    "outerRadius": 30
   },
 
   "findSpotParameters":{
-    "searchThreshold":6,
+    "searchThreshold":300,
     "cropRange": 15,
     "scaleDownFactor":1
   },
 
   "testMode": false,
   "testModeParameters":{
-    "testModeFileID": 1599,
+    "testModeFileID": 477,
     "showSpots": true,
     "plotSensitivity": 3,
     "plotSensitivity_low": 0.01,
@@ -27,7 +28,7 @@
     "printParameters": true
   },
 
-  "fittingMode":false,
+  "fittingMode":true,
   "fittingParameters": {
     "intGuess": [3, 3,  90, 0.2, 0.3, 40],
     "guessUpBound": [100000, 1000, 1000, 15, 15, 180, 100, 100, 65535],

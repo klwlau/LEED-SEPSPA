@@ -47,11 +47,11 @@ def fittingMode():
         if counter % CSVwriteBuffer == 0:
             saveToCSV(writeBufferArray, CSVName)
             writeBufferArray = []
-            print("---------------save to CSV---------------")
+            print("---------------save to" + CSVName + "---------------")
 
         if counter == (fileAmount - 1):
             saveToCSV(writeBufferArray, CSVName)
-            print("---------------save to CSV---------------")
+            print("---------------save to" + CSVName + "---------------")
         counter += 1
 
 
@@ -81,11 +81,11 @@ def sepMode():
         if counter % CSVwriteBuffer == 0:
             saveToCSV(writeBufferArray, CSVName)
             writeBufferArray = []
-            print("---------------save to CSV---------------")
+            print("---------------save to"+ CSVName + "---------------")
 
         if counter == (fileAmount - 1):
             saveToCSV(writeBufferArray, CSVName)
-            print("---------------save to CSV---------------")
+            print("---------------save to"+ CSVName + "---------------")
         counter += 1
 
 
@@ -107,7 +107,7 @@ print("---Initializing---")
 # setup
 timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S')
 dataFolderName = configList["dataFolderName"]
-CSVName = timeStamp + ".csv"
+CSVName = timeStamp +"_" +configList["csvNameRemark"] + ".csv"
 copyJsontoLog(timeStamp)
 
 # int parameter, make Mask, read file name in folder
