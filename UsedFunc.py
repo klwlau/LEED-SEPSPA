@@ -13,21 +13,24 @@ import shutil
 configList = json.load(open("configList.json"))
 ######parameter list######
 cropRange = configList["findSpotParameters"]["cropRange"]
-
 # Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
 guessUpBound = configList["fittingParameters"]["guessUpBound"]
 guessLowBound = configList["fittingParameters"]["guessLowBound"]
 guessBound = (guessLowBound, guessUpBound)
 #    sigma_x,sigma_y,theta,A,B,C
 intConfigGuess = configList["fittingParameters"]["intGuess"]
-
-
 ######parameter list######
+
+def makeResultDir():
+    if not os.path.exists(os.path.join(os.curdir, "Result")):
+        os.makedirs(os.path.join(os.curdir, "Result"))
+        print("make Result Dir")
 
 
 def copyJsontoLog(timeStamp):
     if not os.path.exists(os.path.join(os.curdir, "Log")):
         os.makedirs(os.path.join(os.curdir, "Log"))
+        print("make Log Dir")
 
     sourceDirectory = os.curdir
     newFileName = timeStamp + ".json"

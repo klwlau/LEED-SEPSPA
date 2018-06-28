@@ -1,11 +1,12 @@
 import time
-
+import glob
 start_time = time.time()
 print("Program Started, Loading Libraries")
+import datetime
 
 from UsedFunc import *
-import glob
-import datetime
+
+
 
 
 def fittingMode():
@@ -107,10 +108,11 @@ print("---Initializing---")
 # setup
 timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S')
 dataFolderName = configList["dataFolderName"]
-CSVName = timeStamp +"_" +configList["csvNameRemark"] + ".csv"
+makeResultDir()
+CSVName = "./result/"+timeStamp +"_" +configList["csvNameRemark"] + ".csv"
 copyJsontoLog(timeStamp)
 
-# int parameter, make Mask, read file name in folder
+# int parameter, make Mask, read file name in folderimport json
 if not dataFolderName:
     fileList = glob.glob("./*.tif")
 else:
