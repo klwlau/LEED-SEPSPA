@@ -33,7 +33,7 @@ def copyJsontoLog(timeStamp):
         print("make Log Dir")
 
     sourceDirectory = os.curdir
-    newFileName = timeStamp + ".json"
+    newFileName = timeStamp + "_"+configList["csvNameRemark"]+ ".json"
     finalDirectory = os.path.join(os.curdir, "Log")
     dstFile = os.path.join(finalDirectory, newFileName)
     sourceFile = os.path.join(sourceDirectory, "configList.json")
