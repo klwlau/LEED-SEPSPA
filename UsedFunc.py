@@ -254,7 +254,7 @@ def saveToCSV(RowArray, fileName):
 
 @jit
 def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_low=0.0, plotSensitivity_up=0.5,
-             scaleDownFactor=10,
+             scaleDownFactor=1,
              plotFittedFunc=False, printParameters=False, fileID=0, saveMode=False, fittingMode=True):
     fileArray = readLEEDImage(fileName)
     returnArray = []
