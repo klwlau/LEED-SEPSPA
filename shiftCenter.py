@@ -12,14 +12,15 @@ import ntpath
 fig = plt.figure()
 plotSensitivity=3
 ims= []
-counter=0
+startID = 0
+endID = 1601
 
-
+counter = startID
 dataFolderName = configList["dataFolderName"]
 fileList = glob.glob(dataFolderName + "/*.tif")
 fileList = sorted(fileList)
-# fileList =fileList[:1]
-searchThreshold = 1000
+fileList = fileList[startID:endID]
+searchThreshold = 500
 aniPLotRange =10
 setIntCenter = False
 setPicDim(fileList[0])

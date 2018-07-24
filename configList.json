@@ -1,24 +1,24 @@
 {
-  "dataFolderName": "/Users/wilsonlau/Downloads/20180719 scan1/",
+  "dataFolderName": "/Users/wilsonlau/Downloads/20180723 scan2/ShiftCenterResult/",
   "CSVwriteBuffer": 50,
-  "csvNameRemark":"testShiftCenter",
+  "csvNameRemark":"20180723 scan2_spot06",
 
   "maskConfig": {
-    "mask_x_center": 457,
-    "mask_y_center": 437,
+    "mask_x_center": 384,
+    "mask_y_center": 432,
     "innerRadius": 0,
-    "outerRadius": 300
+    "outerRadius": 20
   },
 
   "findSpotParameters":{
-    "searchThreshold":300,
-    "cropRange": 20,
+    "searchThreshold":60,
+    "cropRange": 10,
     "scaleDownFactor":1
   },
 
   "testMode": true,
   "testModeParameters":{
-    "testModeFileID": 0,
+    "testModeFileID": 1503,
     "showSpots": true,
     "plotSensitivity": 3,
     "plotSensitivity_low": 0.01,
