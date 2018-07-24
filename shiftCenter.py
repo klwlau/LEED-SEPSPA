@@ -10,17 +10,30 @@ import matplotlib.animation as animation
 dataFolderName = configList["dataFolderName"]
 fileList = glob.glob(dataFolderName + "/*.tif")
 fileList = sorted(fileList)
-searchThreshold = 30
-
+fileList =fileList[:10]
+searchThreshold = 3000
+setIntCenter = False
 setPicDim(fileList[0])
+
 
 mask = makeMask(configList["maskConfig"]["mask_x_center"], configList["maskConfig"]["mask_y_center"],
                 0,1000)
 
 for fileName in fileList:
-    print(findSpot(fileName,searchThreshold,mask))
+    returnList,element = findSpot(fileName,searchThreshold,mask)
+    xCenter,yCenter = returnList[4],returnList[5]
+    xCenter, yCenter = int(xCenter), int(yCenter)
+    if setIntCenter != True:
+        intXCenter,intYCenter = xCenter, yCenter
+        setIntCenter = True
 
+
+    print(element)
+
+print(returnList)
+print(xCenter,yCenter)
 print("done")
+
 
 
 
