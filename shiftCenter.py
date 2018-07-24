@@ -79,9 +79,6 @@ print("done")
 
 
 
-
-
-
 # for fileName in fileList:
 #     plot_data = readLEEDImage(fileName)
 #     plot_data = plot_data[470:480,406:418]
