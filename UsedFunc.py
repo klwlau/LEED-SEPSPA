@@ -16,6 +16,9 @@ cropRange = configList["findSpotParameters"]["cropRange"]
 # Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
 guessUpBound = configList["fittingParameters"]["guessUpBound"]
 guessLowBound = configList["fittingParameters"]["guessLowBound"]
+if configList["fittingParameters"]["smartGuessUpBound"]:
+    guessUpBound[1] = (cropRange+1)*2
+    guessUpBound[2] = (cropRange+1)*2
 guessBound = (guessLowBound, guessUpBound)
 #    sigma_x,sigma_y,theta,A,B,C
 intConfigGuess = configList["fittingParameters"]["intGuess"]
@@ -242,7 +245,6 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
         if printParameters == True: print(pred_params)
         # Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
 
-    ###need to find the center spot
 
     return allFittedSpot
 
