@@ -26,6 +26,11 @@ def makeResultDir():
         os.makedirs(os.path.join(os.curdir, "Result"))
         print("make Result Dir")
 
+def makeShiftCenterResultDir(dataFolderName):
+    if not os.path.exists(os.path.join(dataFolderName, "ShiftCenterResult")):
+        os.makedirs(os.path.join(dataFolderName, "ShiftCenterResult"))
+        print("make ShiftCenterResult Dir")
+
 
 def copyJsontoLog(timeStamp):
     if not os.path.exists(os.path.join(os.curdir, "Log")):
@@ -255,20 +260,20 @@ def saveToCSV(RowArray, fileName):
 @jit
 def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_low=0.0, plotSensitivity_up=0.5,
              scaleDownFactor=1,
-             plotFittedFunc=False, printParameters=False, fileID=0, saveMode=False, fittingMode=True):
-    fileArray = readLEEDImage(fileName)
+             plotFittedFunc=False, printParameters=False, fileID=0, saveMode=False, fittingMode=True, shiftCenterMode = False):
+    imageArray = readLEEDImage(fileName)
     returnArray = []
-    centerArray = getSpotRoughRange(fileArray, searchThreshold, mask, scaleDownFactor=scaleDownFactor,
+    centerArray = getSpotRoughRange(imageArray, searchThreshold, mask, scaleDownFactor=scaleDownFactor,
                                     showSpots=showSpots,
                                     plotSensitivity_low=plotSensitivity_low, plotSensitivity_up=plotSensitivity_up,
                                     saveMode=saveMode, saveFileName=fileName, fittingMode=fittingMode)
-    # centerArray = getSpotRoughRange(fileArray, searchThreshold, mask,
+    # centerArray = getSpotRoughRange(imageArray, searchThreshold, mask,
     #                                 scaleDownFactor=scaleDownFactor, showSpots=showSpots,
     #                                 plotSensitivity=plotSensitivity, saveMode=saveMode,
     #                                 saveFileName=fileName)
     if fittingMode:
         returnArray.append(
-            fitCurve(fileArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters))
+            fitCurve(imageArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters))
         returnList = list(itertools.chain.from_iterable(returnArray))
         returnList = list(itertools.chain.from_iterable(returnList))
         elements = int(len(returnList) / 9)
@@ -281,4 +286,7 @@ def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_l
     returnList.insert(0, elements)
     returnList.insert(0, fileName)
     returnList.insert(0, fileID)
-    return returnList, elements
+    if shiftCenterMode:
+        return returnList, elements,imageArray
+    else:
+        return returnList, elements
