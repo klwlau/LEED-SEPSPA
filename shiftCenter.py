@@ -6,9 +6,7 @@ from UsedFunc import *
 from scipy.ndimage.interpolation import shift
 from PIL import Image
 import matplotlib.animation as animation
-
 import ntpath
-
 
 
 fig = plt.figure()
@@ -39,8 +37,8 @@ for filePath in fileList:
         intXCenter,intYCenter = xCenter, yCenter
         aniXUp, aniYUp = intXCenter + aniPLotRange, intYCenter + aniPLotRange
         aniXDown, aniYDown = intXCenter - aniPLotRange, intYCenter - aniPLotRange
-
         setIntCenter = True
+
     xShift = intXCenter - xCenter
     yShift = intYCenter - yCenter
     imageArray = shift(imageArray,[yShift,xShift])
@@ -64,9 +62,9 @@ print(len(ims))
 print("making animation")
 ani = animation.ArtistAnimation(fig, ims, interval=50, blit=True,
                                 repeat_delay=1000)
-print("saving")
+print("saving animation")
 ani.save('dynamic_images.mp4')
-print("ploting")
+print("ploting animation")
 plt.show()
 print("done")
 
