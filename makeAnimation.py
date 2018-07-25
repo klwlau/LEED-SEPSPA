@@ -11,12 +11,14 @@ fileList = glob.glob(dataFolderName + "/*.tif")
 fileList = sorted(fileList)
 counter = 0
 
+# fileList = fileList[:10]
 for filePath in fileList:
     plot_data = readLEEDImage(filePath)
     m, s = np.mean(plot_data), np.std(plot_data)
     im = plt.imshow(plot_data, interpolation='nearest', cmap='jet',
                     vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
                     origin='lower')
+
     ims.append([im])
     print(counter)
     counter+=1
