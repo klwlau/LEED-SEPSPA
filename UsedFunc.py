@@ -16,9 +16,12 @@ cropRange = configList["findSpotParameters"]["cropRange"]
 # Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
 guessUpBound = configList["fittingParameters"]["guessUpBound"]
 guessLowBound = configList["fittingParameters"]["guessLowBound"]
-if configList["fittingParameters"]["smartGuessUpBound"]:
-    guessUpBound[1] = (cropRange+1)*2
-    guessUpBound[2] = (cropRange+1)*2
+if configList["fittingParameters"]["smartGuessBound"]:
+    guessUpBound[1] = cropRange+1+1
+    guessUpBound[2] = cropRange+1+1
+    guessLowBound[1] = (cropRange + 1) -1
+    guessLowBound[2] = (cropRange + 1) -1
+
 guessBound = (guessLowBound, guessUpBound)
 #    sigma_x,sigma_y,theta,A,B,C
 intConfigGuess = configList["fittingParameters"]["intGuess"]
@@ -249,15 +252,15 @@ def saveToCSV(RowArray, fileName):
 
 
 @jit
-def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_low=0.0, plotSensitivity_up=0.5,
+def findSpot(filePath, searchThreshold, mask, showSpots=False, plotSensitivity_low=0.0, plotSensitivity_up=0.5,
              scaleDownFactor=1,
              plotFittedFunc=False, printParameters=False, fileID=0, saveMode=False, fittingMode=True, shiftCenterMode = False):
-    imageArray = readLEEDImage(fileName)
+    imageArray = readLEEDImage(filePath)
     returnArray = []
     centerArray = getSpotRoughRange(imageArray, searchThreshold, mask, scaleDownFactor=scaleDownFactor,
                                     showSpots=showSpots,
                                     plotSensitivity_low=plotSensitivity_low, plotSensitivity_up=plotSensitivity_up,
-                                    saveMode=saveMode, saveFileName=fileName, fittingMode=fittingMode)
+                                    saveMode=saveMode, saveFileName=filePath, fittingMode=fittingMode)
     if fittingMode:
         returnArray.append(
             fitCurve(imageArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters))
@@ -271,7 +274,7 @@ def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_l
         elements = int(len(returnList) / 8)
 
     returnList.insert(0, elements)
-    returnList.insert(0, fileName)
+    returnList.insert(0, filePath)
     returnList.insert(0, fileID)
     if shiftCenterMode:
         return returnList, elements, imageArray
