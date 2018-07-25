@@ -100,6 +100,7 @@ def testMode():
              showSpots=configList["testModeParameters"]["showSpots"],
              plotFittedFunc=configList["testModeParameters"]["plotFittedFunc"],
              printParameters=configList["testModeParameters"]["printParameters"],
+             printSpotRoughRangeArray=configList["testModeParameters"]["printSpotRoughRangeArray"],
              fittingMode=False)
 
 

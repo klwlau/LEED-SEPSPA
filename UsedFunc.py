@@ -166,7 +166,7 @@ def plotSpots(imgArray, objects_list, plotSensitivity_low=0.0, plotSensitivity_u
 @jit
 def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array, scaleDownFactor: float = 10,
                       plotSensitivity_low: float = 0.0, plotSensitivity_up: float = 0.5,
-                      showSpots: bool = False, fittingMode: bool = False, saveMode=False,
+                      showSpots: bool = False, fittingMode: bool = False, saveMode=False,printReturnArray=False,
                       saveFileName="test") -> np.array:
     imgArray = compressImage(imgArray, scaleDownFactor)
     imgArray = applyMask(imgArray, mask)
@@ -179,12 +179,18 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
                   showSpots=showSpots, saveMode=saveMode, saveFileName=saveFileName)
 
     if fittingMode is True:
-        return np.array([objects_list['x'], objects_list['y']]).T
+        returnArray = np.array([objects_list['x'], objects_list['y']]).T
+        if printReturnArray:
+            print(returnArray)
+        return returnArray
 
     else:
-        return np.array([objects_list['peak'], objects_list['x'], objects_list['y'],
+        returnArray =np.array([objects_list['peak'], objects_list['x'], objects_list['y'],
                          objects_list['xmax'], objects_list['ymax'],
                          objects_list['a'], objects_list['b'], objects_list['theta']]).T
+        if printReturnArray:
+            print(returnArray)
+        return returnArray
 
 
 def plotFitFunc(fit_params):
@@ -214,6 +220,7 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
         cropedArray = imageArray[
                       int(centerArray[spotNumber][1]) - cropRange: int(centerArray[spotNumber][1]) + cropRange,
                       int(centerArray[spotNumber][0]) - cropRange: int(centerArray[spotNumber][0]) + cropRange]
+
 
         for i in range(len(cropedArray)):
             for j in range(len(cropedArray[i])):
@@ -254,13 +261,13 @@ def saveToCSV(RowArray, fileName):
 @jit
 def findSpot(filePath, searchThreshold, mask, showSpots=False, plotSensitivity_low=0.0, plotSensitivity_up=0.5,
              scaleDownFactor=1,
-             plotFittedFunc=False, printParameters=False, fileID=0, saveMode=False, fittingMode=True, shiftCenterMode = False):
+             plotFittedFunc=False, printParameters=False, fileID=0, saveMode=False, fittingMode=True, shiftCenterMode = False,printSpotRoughRangeArray = False):
     imageArray = readLEEDImage(filePath)
     returnArray = []
     centerArray = getSpotRoughRange(imageArray, searchThreshold, mask, scaleDownFactor=scaleDownFactor,
                                     showSpots=showSpots,
                                     plotSensitivity_low=plotSensitivity_low, plotSensitivity_up=plotSensitivity_up,
-                                    saveMode=saveMode, saveFileName=filePath, fittingMode=fittingMode)
+                                    saveMode=saveMode, saveFileName=filePath, fittingMode=fittingMode,printReturnArray=printSpotRoughRangeArray)
     if fittingMode:
         returnArray.append(
             fitCurve(imageArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters))

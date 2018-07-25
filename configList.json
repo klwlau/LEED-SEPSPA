@@ -1,11 +1,11 @@
 {
-  "dataFolderName": "/Users/wilsonlau/Downloads/Raw_Tony_graphene/",
+  "dataFolderName": "/Users/wilsonlau/Downloads/Raw_Tony_graphene/ShiftCenterResult/",
   "CSVwriteBuffer": 50,
-  "csvNameRemark":"20180723 scan2_spot02",
+  "csvNameRemark":"Tony Test",
 
   "maskConfig": {
-    "mask_x_center": 441,
-    "mask_y_center": 433,
+    "mask_x_center": 454,
+    "mask_y_center": 415,
     "innerRadius": 0,
     "outerRadius": 10
   },
@@ -16,7 +16,7 @@
     "scaleDownFactor":1
   },
 
-  "testMode": false,
+  "testMode": true,
   "testModeParameters":{
     "testModeFileID": 158,
     "showSpots": true,
@@ -25,15 +25,16 @@
     "plotSensitivity_up": 0.7,
     "scaleDownFactor": 1,
     "plotFittedFunc": false,
-    "printParameters": true
+    "printParameters": true,
+    "printSpotRoughRangeArray":true
   },
 
   "fittingMode":true,
   "fittingParameters": {
     "intGuess": [3, 3,  90, 0.2, 0.3, 40],
-    "smartGuessUpBound": true,
-    "guessUpBound": [100000, 20, 20, 15, 15, 180, 100, 100, 65535],
-    "guessLowBound": [0, 0, 0, 0.2, 0.2 , -180, -100, -100, 0]
+    "smartGuessBound": false,
+    "guessUpBound": [100000, 20, 20, 15, 15, 180, 10, 10, 65535],
+    "guessLowBound": [0, 0, 0, 0.2, 0.2 , -180, -10, -10, 0]
   },
 
   "saveMode": false,
