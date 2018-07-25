@@ -101,7 +101,7 @@ def testMode():
              plotFittedFunc=configList["testModeParameters"]["plotFittedFunc"],
              printParameters=configList["testModeParameters"]["printParameters"],
              printSpotRoughRangeArray=configList["testModeParameters"]["printSpotRoughRangeArray"],
-             fittingMode=False)
+             fittingMode=configList["testModeParameters"]["fittingMode"])
 
 
 print("---Initializing---")
