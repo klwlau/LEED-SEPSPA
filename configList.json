@@ -11,20 +11,21 @@
   },
 
   "findSpotParameters":{
-    "searchThreshold":60,
+    "searchThreshold":600,
     "cropRange": 10,
     "scaleDownFactor":1
   },
 
   "testMode": true,
   "testModeParameters":{
-    "testModeFileID": 158,
+    "fittingMode":true,
+    "testModeFileID": 20,
     "showSpots": true,
     "plotSensitivity": 3,
     "plotSensitivity_low": 0.01,
     "plotSensitivity_up": 0.7,
     "scaleDownFactor": 1,
-    "plotFittedFunc": false,
+    "plotFittedFunc": true,
     "printParameters": true,
     "printSpotRoughRangeArray":true
   },

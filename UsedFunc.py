@@ -193,9 +193,16 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
         return returnArray
 
 
+# def plotFitFunc(fit_params):
+#     xi, yi = np.mgrid[:cropRange * 2:30j, :cropRange * 2:30j]
+#     xyi = np.vstack([xi.ravel(), yi.ravel()])
+#
+#     zpred = fitFunc(xyi, *fit_params)
+#     zpred.shape = xi.shape
+
 def plotFitFunc(fit_params):
 
-    xi, yi = np.mgrid[:cropRange * 2:30j, :cropRange * 2:30j]
+    xi, yi = np.mgrid[fit_params[1]-cropRange:fit_params[1]+cropRange:30j,fit_params[2]-cropRange:fit_params[2]+cropRange:30j]
     xyi = np.vstack([xi.ravel(), yi.ravel()])
 
     zpred = fitFunc(xyi, *fit_params)
