@@ -4,7 +4,6 @@ start_time = time.time()
 import datetime
 from UsedFunc import *
 from scipy.ndimage.interpolation import shift
-from PIL import Image
 import matplotlib.animation as animation
 import ntpath
 
@@ -12,13 +11,13 @@ import ntpath
 fig = plt.figure()
 plotSensitivity=3
 ims= []
-# startID = 0
-# endID = 1601
-
+startID = 0
 counter = startID
 dataFolderName = configList["dataFolderName"]
 fileList = glob.glob(dataFolderName + "/*.tif")
 fileList = sorted(fileList)
+# startID = 0
+# endID = 10
 # fileList = fileList[startID:endID]
 searchThreshold = 500
 aniPLotRange =10
@@ -43,9 +42,12 @@ for filePath in fileList:
     xShift = intXCenter - xCenter
     yShift = intYCenter - yCenter
     imageArray = shift(imageArray,[yShift,xShift])
-    saveArray = Image.fromarray(imageArray)
     fileName = ntpath.basename(filePath)
-    saveArray.save(dataFolderName+"ShiftCenterResult/"+fileName)
+
+    # saveArray = Image.fromarray(imageArray)
+    # saveArray.save(dataFolderName+"ShiftCenterResult/"+fileName)
+
+    saveImArrayTo(imageArray,dataFolderName+"ShiftCenterResult/"+fileName)
 
     plot_data = imageArray
     plot_data = plot_data[aniYDown:aniYUp, aniXDown:aniXUp]

@@ -165,21 +165,15 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
                       plotSensitivity_low: float = 0.0, plotSensitivity_up: float = 0.5,
                       showSpots: bool = False, fittingMode: bool = False, saveMode=False,
                       saveFileName="test") -> np.array:
-    # plotFunc(imgArray)
     imgArray = compressImage(imgArray, scaleDownFactor)
-    # plotFunc(imgArray)
     imgArray = applyMask(imgArray, mask)
-    # plotFunc(imgArray)
 
     bkg = sep.Background(imgArray)
-    # imgArray = imgArray - bkg.rms()
     objects_list = sep.extract(imgArray, searchThreshold, err=bkg.globalrms)
 
     if showSpots is True or saveMode is True:
         plotSpots(imgArray, objects_list, plotSensitivity_low, plotSensitivity_up,
                   showSpots=showSpots, saveMode=saveMode, saveFileName=saveFileName)
-        # plotSpots(imgArray, objects_list, plotSensitivity,
-        #           showSpots=showSpots, saveMode=saveMode, saveFileName=saveFileName)
 
     if fittingMode is True:
         return np.array([objects_list['x'], objects_list['y']]).T
@@ -190,8 +184,8 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
                          objects_list['a'], objects_list['b'], objects_list['theta']]).T
 
 
-def plotFitFunc(fit_params):  # (xy, zobs, pred_params):
-    # x, y = xy
+def plotFitFunc(fit_params):
+
     xi, yi = np.mgrid[:cropRange * 2:30j, :cropRange * 2:30j]
     xyi = np.vstack([xi.ravel(), yi.ravel()])
 
@@ -199,7 +193,7 @@ def plotFitFunc(fit_params):  # (xy, zobs, pred_params):
     zpred.shape = xi.shape
 
     fig, ax = plt.subplots()
-    #     ax.scatter(x, y, c=zobs, s=200, vmin=zpred.min(), vmax=zpred.max())
+
     im = ax.imshow(zpred, extent=(xi.min(), xi.max(), yi.max(), yi.min()), aspect='auto')
     fig.colorbar(im)
     ax.invert_yaxis()
@@ -292,3 +286,7 @@ def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_l
         return returnList, elements,imageArray
     else:
         return returnList, elements
+
+def saveImArrayTo(imageArray,fullPathAndFileName):
+    saveArray = Image.fromarray(imageArray)
+    saveArray.save(fullPathAndFileName)
