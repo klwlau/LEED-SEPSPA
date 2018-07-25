@@ -12,25 +12,36 @@ fig = plt.figure()
 plotSensitivity=3
 ims= []
 startID = 0
-counter = startID
 dataFolderName = configList["dataFolderName"]
 fileList = glob.glob(dataFolderName + "/*.tif")
 fileList = sorted(fileList)
-# startID = 0
-# endID = 10
+# startID = 1200
+# endID = 1210
 # fileList = fileList[startID:endID]
-searchThreshold = 500
+makeAnimation = False
+searchThreshold = 100
 aniPLotRange =10
-setIntCenter = False
-setPicDim(fileList[0])
 
+counter = startID
+setPicDim(fileList[0])
 makeShiftCenterResultDir(dataFolderName)
 
 mask = makeMask(configList["maskConfig"]["mask_x_center"], configList["maskConfig"]["mask_y_center"],
                 0,1000)
-
+errorList =[]
+setIntCenter = False
 for filePath in fileList:
-    returnList,element,imageArray = findSpot(filePath, searchThreshold, mask, shiftCenterMode=True)
+    while True:
+        returnList,element,imageArray = findSpot(filePath, searchThreshold, mask, shiftCenterMode=True)
+        if element == 1:
+            break
+        if element >1:
+            searchThreshold = searchThreshold*1.1
+        if element <1:
+            searchThreshold = searchThreshold*0.9
+        print("repeat ", counter, ", element: ", element, ", new searchThreshold: ", searchThreshold)
+
+
     xCenter,yCenter = returnList[4],returnList[5]
     xCenter, yCenter = int(xCenter), int(yCenter)
     if setIntCenter != True:
@@ -44,8 +55,6 @@ for filePath in fileList:
     imageArray = shift(imageArray,[yShift,xShift])
     fileName = ntpath.basename(filePath)
 
-    # saveArray = Image.fromarray(imageArray)
-    # saveArray.save(dataFolderName+"ShiftCenterResult/"+fileName)
 
     saveImArrayTo(imageArray,dataFolderName+"ShiftCenterResult/"+fileName)
 
@@ -56,19 +65,25 @@ for filePath in fileList:
                vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
                origin='lower')
     ims.append([im])
+
+    if element != 1:
+        errorList.append(counter)
+
     print(counter, element)
     counter+=1
 
 
-print(len(ims))
 
-print("making animation")
-ani = animation.ArtistAnimation(fig, ims, interval=50, blit=True,
-                                repeat_delay=1000)
-print("saving animation")
-ani.save('dynamic_images.mp4')
-print("ploting animation")
-plt.show()
+if makeAnimation:
+    print("making animation")
+    ani = animation.ArtistAnimation(fig, ims, interval=50, blit=True,
+                                    repeat_delay=1000)
+    print("saving animation")
+    ani.save('dynamic_images.mp4')
+    print("ploting animation")
+    plt.show()
+
+print("errorList: ", errorList)
 print("done")
 
 

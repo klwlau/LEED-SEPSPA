@@ -207,7 +207,6 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
     for i in range(len(centerArray)):
         spotNumber = i
         xyzArray = []
-        # print(centerArray[spotNumber])
 
         cropedArray = imageArray[
                       int(centerArray[spotNumber][1]) - cropRange: int(centerArray[spotNumber][1]) + cropRange,
@@ -220,13 +219,11 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
         x, y, z = np.array(xyzArray).T
         xy = x, y
         i = z.argmax()
-        # intGuess = [z[i], x[i], y[i], intConfigGuess[0], intConfigGuess[1], intConfigGuess[2],
-        #             intConfigGuess[3], intConfigGuess[4], intConfigGuess[5]]
 
         intGuess = [z[i], x[i], y[i]]
         intGuess = intGuess + intConfigGuess
         pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
-        # , method='lm' does not support bounds
+
 
         ####do cord transform
         pred_params[1] = pred_params[1] - cropRange + centerArray[spotNumber][0]
@@ -250,8 +247,6 @@ def saveToCSV(RowArray, fileName):
             csvWriter.writerow(i)
 
 
-# def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity=3, scaleDownFactor=10,
-#              plotFittedFunc=False, printParameters=False, fileID=0,saveMode=False):
 
 @jit
 def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_low=0.0, plotSensitivity_up=0.5,
@@ -263,10 +258,6 @@ def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_l
                                     showSpots=showSpots,
                                     plotSensitivity_low=plotSensitivity_low, plotSensitivity_up=plotSensitivity_up,
                                     saveMode=saveMode, saveFileName=fileName, fittingMode=fittingMode)
-    # centerArray = getSpotRoughRange(imageArray, searchThreshold, mask,
-    #                                 scaleDownFactor=scaleDownFactor, showSpots=showSpots,
-    #                                 plotSensitivity=plotSensitivity, saveMode=saveMode,
-    #                                 saveFileName=fileName)
     if fittingMode:
         returnArray.append(
             fitCurve(imageArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters))
@@ -283,7 +274,7 @@ def findSpot(fileName, searchThreshold, mask, showSpots=False, plotSensitivity_l
     returnList.insert(0, fileName)
     returnList.insert(0, fileID)
     if shiftCenterMode:
-        return returnList, elements,imageArray
+        return returnList, elements, imageArray
     else:
         return returnList, elements
 
