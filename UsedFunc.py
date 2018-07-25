@@ -52,7 +52,7 @@ def copyJsontoLog(timeStamp):
     print("Copied Json file to Log")
 
 
-def plotFunc(plot_data, plotSensitivity=3):
+def plotArray(plot_data, plotSensitivity=3):
     m, s = np.mean(plot_data), np.std(plot_data)
     plt.imshow(plot_data, interpolation='nearest', cmap='jet',
                vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
@@ -203,12 +203,7 @@ def plotFitFunc(fit_params):
 
     fig, ax = plt.subplots()
 
-    # im = ax.imshow(zpred, extent=(xi.min(), xi.max(), yi.max(), yi.min()), aspect='auto')
-    # fig.colorbar(im)
-    zpred = np.flipud(zpred)
     plt.contour( xi,yi,zpred)
-    # ax.clabel(cset, inline=True, fmt='%1.1f', fontsize=10)
-    ax.invert_yaxis()
     plt.show()
 
 
@@ -224,6 +219,7 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
                       int(centerArray[spotNumber][1]) - cropRange: int(centerArray[spotNumber][1]) + cropRange,
                       int(centerArray[spotNumber][0]) - cropRange: int(centerArray[spotNumber][0]) + cropRange]
 
+        plotArray(cropedArray)
 
         for i in range(len(cropedArray)):
             for j in range(len(cropedArray[i])):
