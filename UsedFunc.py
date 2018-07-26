@@ -17,13 +17,9 @@ cropRange = configList["findSpotParameters"]["cropRange"]
 # Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
 guessUpBound = configList["fittingParameters"]["guessUpBound"]
 guessLowBound = configList["fittingParameters"]["guessLowBound"]
-if configList["fittingParameters"]["smartGuessBound"]:
-    guessUpBound[1] = cropRange + 1 + 1
-    guessUpBound[2] = cropRange + 1 + 1
-    guessLowBound[1] = (cropRange + 1) - 1
-    guessLowBound[2] = (cropRange + 1) - 1
 
-guessBound = (guessLowBound, guessUpBound)
+
+guessBound = [guessLowBound, guessUpBound]
 dataFolderName = configList["dataFolderName"]
 #    sigma_x,sigma_y,theta,A,B,C
 intConfigGuess = configList["fittingParameters"]["intGuess"]
@@ -211,7 +207,7 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
 
 
 def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
-    global dataFolderName
+    global dataFolderName,configList
     xi, yi = np.mgrid[fit_params[1] - cropRange:fit_params[1] + cropRange:30j,
              fit_params[2] - cropRange:fit_params[2] + cropRange:30j]
     xyi = np.vstack([xi.ravel(), yi.ravel()])
@@ -239,7 +235,7 @@ def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False
 
 def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=False,
              saveFitFuncPlot=False, saveFitFuncFileName=""):
-    global cropRange, guessBound, intConfigGuess
+    global cropRange, guessBound, intConfigGuess,configList
     allFittedSpot = []
 
     for i in range(len(centerArray)):
@@ -262,7 +258,13 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
 
         intGuess = [z[i], x[i], y[i]]
         intGuess = intGuess + intConfigGuess
-        # pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
+
+        if configList["fittingParameters"]["smartXYGuessBound"]:
+            guessBound[0][1] = x[i]-configList["fittingParameters"]["smartXYGuessBoundRange"]
+            guessBound[1][1] = x[i]+configList["fittingParameters"]["smartXYGuessBoundRange"]
+            guessBound[0][2] = y[i]-configList["fittingParameters"]["smartXYGuessBoundRange"]
+            guessBound[1][2] = y[i]+configList["fittingParameters"]["smartXYGuessBoundRange"]
+
         pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
 
         if plotFittedFunc: plotFitFunc(pred_params, cropedArray)
