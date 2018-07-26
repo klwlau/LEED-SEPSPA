@@ -23,6 +23,7 @@ if configList["fittingParameters"]["smartGuessBound"]:
     guessLowBound[2] = (cropRange + 1) -1
 
 guessBound = (guessLowBound, guessUpBound)
+dataFolderName = configList["dataFolderName"]
 #    sigma_x,sigma_y,theta,A,B,C
 intConfigGuess = configList["fittingParameters"]["intGuess"]
 ######parameter list######
@@ -41,6 +42,7 @@ def makeDirInDataFolder(dataFolderName, dirName):
     if not os.path.exists(os.path.join(dataFolderName, dirName)):
         os.makedirs(os.path.join(dataFolderName, dirName))
         print("make ",dirName," Dir")
+    return os.path.join(dataFolderName, dirName)
 
 
 def copyJsontoLog(timeStamp):
@@ -198,8 +200,8 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
         return returnArray
 
 
-def plotFitFunc(fit_params,imageArray,plotSensitivity=3,saveFitFuncPlot=False,saveFigFullPath = "fitFuncFig"):
-
+def plotFitFunc(fit_params, imageArray, plotSensitivity=3, saveFitFuncPlot=False, fileName ="fitFuncFig"):
+    global dataFolderName
     xi, yi = np.mgrid[fit_params[1]-cropRange:fit_params[1]+cropRange:30j,fit_params[2]-cropRange:fit_params[2]+cropRange:30j]
     xyi = np.vstack([xi.ravel(), yi.ravel()])
 
@@ -214,11 +216,11 @@ def plotFitFunc(fit_params,imageArray,plotSensitivity=3,saveFitFuncPlot=False,sa
                origin='lower')
     ax2.contour( xi,yi,zpred,alpha=0.2)
     if saveFitFuncPlot:
-        if saveFigFullPath == "fitFuncFig":
-            plt.savefig(saveFigFullPath+".png")
+        if fileName == "fitFuncFig":
+            plt.savefig(fileName + ".png")
         else:
-
-            plt.savefig(saveFigFullPath + ".png")
+            saveFigFullPath = makeDirInDataFolder(dataFolderName, "fitFuncFig")
+            plt.savefig(saveFigFullPath + fileName+".png")
         plt.close(fig)
     plt.show()
 
