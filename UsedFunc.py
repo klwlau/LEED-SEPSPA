@@ -256,7 +256,9 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
 
         intGuess = [z[i], x[i], y[i]]
         intGuess = intGuess + intConfigGuess
+        # pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
         pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
+
         if plotFittedFunc: plotFitFunc(pred_params, cropedArray)
         if saveFitFuncPlot == True: plotFitFunc(pred_params, cropedArray, saveFitFuncPlot=saveFitFuncPlot,
                                                 saveFitFuncFileName=saveFitFuncFileName + "_" + str(spotNumber))

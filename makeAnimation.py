@@ -7,7 +7,9 @@ plotSensitivity=3
 ims= []
 startID = 0
 dataFolderName = configList["dataFolderName"]
-fileList = glob.glob(dataFolderName + "/*.tif")
+subFolder = "fitFuncFig/"
+dataFolderName = dataFolderName+subFolder
+fileList = glob.glob(dataFolderName + "/*.png")
 fileList = sorted(fileList)
 counter = 0
 
