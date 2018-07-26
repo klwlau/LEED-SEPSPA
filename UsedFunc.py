@@ -227,7 +227,8 @@ def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False
         if saveFitFuncFileName == "fitFuncFig":
             plt.savefig(saveFitFuncFileName + ".png")
         else:
-            saveFigFullPath = makeDirInDataFolder(dataFolderName, "fitFuncFig")
+            saveFigFullPath = makeDirInDataFolder(dataFolderName, "fitFuncFig_"
+                                                  +configList["fittingParameters"]["saveFitFuncPlotFileRemark"])
             plt.savefig(saveFigFullPath+"/" + saveFitFuncFileName + ".png")
         plt.close(fig)
     plt.show()
