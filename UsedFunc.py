@@ -205,7 +205,7 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
         return returnArray
 
 
-def plotFitFunc(fit_params, imageArray, plotSensitivity=3, saveFitFuncPlot=False, fileName="fitFuncFig"):
+def plotFitFunc(fit_params, imageArray, plotSensitivity=3, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
     global dataFolderName
     xi, yi = np.mgrid[fit_params[1] - cropRange:fit_params[1] + cropRange:30j,
              fit_params[2] - cropRange:fit_params[2] + cropRange:30j]
@@ -222,11 +222,11 @@ def plotFitFunc(fit_params, imageArray, plotSensitivity=3, saveFitFuncPlot=False
                origin='lower')
     ax2.contour(xi, yi, zpred, alpha=0.2)
     if saveFitFuncPlot:
-        if fileName == "fitFuncFig":
-            plt.savefig(fileName + ".png")
+        if saveFitFuncFileName == "fitFuncFig":
+            plt.savefig(saveFitFuncFileName + ".png")
         else:
             saveFigFullPath = makeDirInDataFolder(dataFolderName, "fitFuncFig")
-            plt.savefig(saveFigFullPath + fileName + ".png")
+            plt.savefig(saveFigFullPath+"/" + saveFitFuncFileName + ".png")
         plt.close(fig)
     plt.show()
 
@@ -287,7 +287,7 @@ def findSpot(filePath, searchThreshold, mask, showSpots=False, plotSensitivity_l
              plotFittedFunc=False, printParameters=False, fileID=0, fittingMode=True,
              shiftCenterMode=False, printSpotRoughRangeArray=False, saveFitFuncPlot=False):
     imageArray = readLEEDImage(filePath)
-    fileName = ntpath.basename(filePath)
+    fileName = ntpath.basename(filePath)[:-4]
     returnArray = []
     centerArray = getSpotRoughRange(imageArray, searchThreshold, mask, scaleDownFactor=scaleDownFactor,
                                     showSpots=showSpots,
