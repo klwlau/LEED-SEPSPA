@@ -19,8 +19,8 @@
   "testMode": true,
   "testModeParameters":{
     "fittingMode":true,
-    "testModeFileID": 20,
-    "showSpots": true,
+    "testModeFileID": 1,
+    "showSpots": false,
     "plotSensitivity": 3,
     "plotSensitivity_low": 0.01,
     "plotSensitivity_up": 0.7,
@@ -34,8 +34,8 @@
   "fittingParameters": {
     "intGuess": [3, 3,  90, 0.2, 0.3, 40],
     "smartGuessBound": false,
-    "guessUpBound": [100000, 20, 20, 15, 15, 180, 10, 10, 65535],
-    "guessLowBound": [0, 0, 0, 0.2, 0.2 , -180, -10, -10, 0]
+    "guessUpBound": [100000, 11, 11, 15, 15, 180, 10, 10, 65535],
+    "guessLowBound": [0, 9, 9, 0.2, 0.2 , -180, -10, -10, 0]
   },
 
   "saveMode": false,

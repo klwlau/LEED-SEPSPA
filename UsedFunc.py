@@ -193,7 +193,7 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
         return returnArray
 
 
-def plotFitFunc(fit_params):
+def plotFitFunc(fit_params,imageArray,plotSensitivity=3):
 
     xi, yi = np.mgrid[fit_params[1]-cropRange:fit_params[1]+cropRange:30j,fit_params[2]-cropRange:fit_params[2]+cropRange:30j]
     xyi = np.vstack([xi.ravel(), yi.ravel()])
@@ -201,9 +201,14 @@ def plotFitFunc(fit_params):
     zpred = fitFunc(xyi, *fit_params)
     zpred.shape = xi.shape
 
-    fig, ax = plt.subplots()
+    fig, ax1 = plt.subplots()
+    ax2 = ax1.twinx()
+    m, s = np.mean(imageArray), np.std(imageArray)
+    ax1.imshow(imageArray, interpolation='nearest', cmap='jet',
+               vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
+               origin='lower')
+    ax2.contour( xi,yi,zpred,alpha=0.2)
 
-    plt.contour( xi,yi,zpred)
     plt.show()
 
 
@@ -219,7 +224,7 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
                       int(centerArray[spotNumber][1]) - cropRange: int(centerArray[spotNumber][1]) + cropRange,
                       int(centerArray[spotNumber][0]) - cropRange: int(centerArray[spotNumber][0]) + cropRange]
 
-        plotArray(cropedArray)
+        # plotArray(cropedArray)
 
         for i in range(len(cropedArray)):
             for j in range(len(cropedArray[i])):
@@ -232,7 +237,8 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
         intGuess = [z[i], x[i], y[i]]
         intGuess = intGuess + intConfigGuess
         pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
-
+        print(pred_params)
+        if plotFittedFunc == True: plotFitFunc(pred_params,cropedArray)
 
         ####do cord transform
         pred_params[1] = pred_params[1] - cropRange + centerArray[spotNumber][0]
@@ -241,7 +247,6 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
         pred_params = pred_params.tolist()
         allFittedSpot.append(pred_params)
 
-        if plotFittedFunc == True: plotFitFunc(pred_params)
         if printParameters == True: print(pred_params)
         # Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
 
