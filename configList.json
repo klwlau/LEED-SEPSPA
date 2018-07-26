@@ -19,8 +19,8 @@
   "testMode": false,
   "testModeParameters":{
     "fittingMode":true,
-    "testModeFileID": 1,
-    "showSpots": false,
+    "testModeFileID": 0,
+    "showSpots": true,
     "plotSensitivity": 3,
     "plotSensitivity_low": 0.01,
     "plotSensitivity_up": 0.7,

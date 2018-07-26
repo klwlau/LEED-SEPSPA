@@ -1,7 +1,6 @@
 import time
 import glob
 start_time = time.time()
-import datetime
 from UsedFunc import *
 from scipy.ndimage.interpolation import shift
 import matplotlib.animation as animation

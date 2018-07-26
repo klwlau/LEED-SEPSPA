@@ -191,7 +191,12 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
                   showSpots=showSpots, saveMode=saveMode, saveFileName=saveFileName)
 
     if fittingMode is True:
-        returnArray = np.array([objects_list['x'], objects_list['y']]).T
+        # returnArray = np.array([objects_list['xmax'], objects_list['ymax']]).T
+        # print(returnArray)
+        returnArray = np.array([objects_list['xcpeak'], objects_list['ycpeak']]).T
+        # print(returnArray)
+        # returnArray = np.array([objects_list['x'], objects_list['y']]).T
+
         if printReturnArray:
             print(returnArray)
         return returnArray
@@ -205,7 +210,7 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
         return returnArray
 
 
-def plotFitFunc(fit_params, imageArray, plotSensitivity=3, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
+def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
     global dataFolderName
     xi, yi = np.mgrid[fit_params[1] - cropRange:fit_params[1] + cropRange:30j,
              fit_params[2] - cropRange:fit_params[2] + cropRange:30j]
@@ -220,7 +225,8 @@ def plotFitFunc(fit_params, imageArray, plotSensitivity=3, saveFitFuncPlot=False
     ax1.imshow(imageArray, interpolation='nearest', cmap='jet',
                vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
                origin='lower')
-    ax2.contour(xi, yi, zpred, alpha=0.2)
+    ax2.contour(xi, yi, zpred, cmap='jet',
+               vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,alpha=1)
     if saveFitFuncPlot:
         if saveFitFuncFileName == "fitFuncFig":
             plt.savefig(saveFitFuncFileName + ".png")
