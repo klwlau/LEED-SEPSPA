@@ -7,7 +7,8 @@ plotSensitivity=3
 ims= []
 startID = 0
 dataFolderName = configList["dataFolderName"]
-subFolder = "fitFuncFig/"
+subFolder = "fitFuncFig_xcp_ycp/"
+aniFileName = "xcp_ycp_intcon"
 dataFolderName = dataFolderName+subFolder
 fileList = glob.glob(dataFolderName + "/*.png")
 fileList = sorted(fileList)
@@ -31,7 +32,7 @@ print("making animation")
 ani = animation.ArtistAnimation(fig, ims, interval=50, blit=True,
                                 repeat_delay=1000)
 print("saving animation")
-ani.save('dynamic_images.mp4')
+ani.save(aniFileName+'.mp4')
 print("ploting animation")
 plt.show()
 
