@@ -167,44 +167,6 @@ def plotSpots(imgArray, objects_list, plotSensitivity_low=0.0, plotSensitivity_u
         plt.clf()
 
 
-# def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array,
-#                       scaleDownFactor: float = 10, plotSensitivity: float = 3, showSpots: bool = False,
-#                       fullInformation: bool = False, saveMode=False, saveFileName="test") -> np.array:
-@jit
-def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array, scaleDownFactor: float = 10,
-                      plotSensitivity_low: float = 0.0, plotSensitivity_up: float = 0.5,
-                      showSpots: bool = False, fittingMode: bool = False, saveMode=False, printReturnArray=False,
-                      saveFileName="test") -> np.array:
-    imgArray = compressImage(imgArray, scaleDownFactor)
-    imgArray = applyMask(imgArray, mask)
-
-    bkg = sep.Background(imgArray)
-    objects_list = sep.extract(imgArray, searchThreshold, err=bkg.globalrms)
-
-    if showSpots is True or saveMode is True:
-        plotSpots(imgArray, objects_list, plotSensitivity_low, plotSensitivity_up,
-                  showSpots=showSpots, saveMode=saveMode, saveFileName=saveFileName)
-
-    if fittingMode is True:
-        # returnArray = np.array([objects_list['xmax'], objects_list['ymax']]).T
-        # print(returnArray)
-        returnArray = np.array([objects_list['xcpeak'], objects_list['ycpeak']]).T
-        # print(returnArray)
-        # returnArray = np.array([objects_list['x'], objects_list['y']]).T
-
-        if printReturnArray:
-            print(returnArray)
-        return returnArray
-
-    else:
-        returnArray = np.array([objects_list['peak'], objects_list['x'], objects_list['y'],
-                                objects_list['xmax'], objects_list['ymax'],
-                                objects_list['a'], objects_list['b'], objects_list['theta']]).T
-        if printReturnArray:
-            print(returnArray)
-        return returnArray
-
-
 def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
     global dataFolderName, configList
     xi, yi = np.mgrid[fit_params[1] - cropRange:fit_params[1] + cropRange:30j,
@@ -231,6 +193,41 @@ def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False
             plt.savefig(saveFigFullPath + "/" + saveFitFuncFileName + ".png")
         plt.close(fig)
     plt.show()
+# def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array,
+#                       scaleDownFactor: float = 10, plotSensitivity: float = 3, showSpots: bool = False,
+#                       fullInformation: bool = False, saveMode=False, saveFileName="test") -> np.array:
+
+
+@jit
+def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array, scaleDownFactor: float = 10,
+                      plotSensitivity_low: float = 0.0, plotSensitivity_up: float = 0.5,
+                      showSpots: bool = False, fittingMode: bool = False, saveMode=False, printReturnArray=False,
+                      saveFileName="test") -> np.array:
+    imgArray = compressImage(imgArray, scaleDownFactor)
+    imgArray = applyMask(imgArray, mask)
+
+    bkg = sep.Background(imgArray)
+    objects_list = sep.extract(imgArray, searchThreshold, err=bkg.globalrms)
+
+    if showSpots is True or saveMode is True:
+        plotSpots(imgArray, objects_list, plotSensitivity_low, plotSensitivity_up,
+                  showSpots=showSpots, saveMode=saveMode, saveFileName=saveFileName)
+
+    if fittingMode is True:
+        returnArray = np.array([objects_list['xcpeak'], objects_list['ycpeak']]).T
+        # returnArray = np.array([objects_list['x'], objects_list['y']]).T
+
+        if printReturnArray:
+            print(returnArray)
+        return returnArray
+
+    else:
+        returnArray = np.array([objects_list['peak'], objects_list['x'], objects_list['y'],
+                                objects_list['xmax'], objects_list['ymax'],
+                                objects_list['a'], objects_list['b'], objects_list['theta']]).T
+        if printReturnArray:
+            print(returnArray)
+        return returnArray
 
 
 def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=False,
