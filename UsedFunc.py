@@ -18,7 +18,6 @@ cropRange = configList["findSpotParameters"]["cropRange"]
 guessUpBound = configList["fittingParameters"]["guessUpBound"]
 guessLowBound = configList["fittingParameters"]["guessLowBound"]
 
-
 guessBound = [guessLowBound, guessUpBound]
 dataFolderName = configList["dataFolderName"]
 #    sigma_x,sigma_y,theta,A,B,C
@@ -207,7 +206,7 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
 
 
 def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
-    global dataFolderName,configList
+    global dataFolderName, configList
     xi, yi = np.mgrid[fit_params[1] - cropRange:fit_params[1] + cropRange:30j,
              fit_params[2] - cropRange:fit_params[2] + cropRange:30j]
     xyi = np.vstack([xi.ravel(), yi.ravel()])
@@ -222,21 +221,21 @@ def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False
                vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
                origin='lower')
     ax2.contour(xi, yi, zpred, cmap='jet',
-               vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,alpha=1)
+                vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s, alpha=1)
     if saveFitFuncPlot:
         if saveFitFuncFileName == "fitFuncFig":
             plt.savefig(saveFitFuncFileName + ".png")
         else:
             saveFigFullPath = makeDirInDataFolder(dataFolderName, "fitFuncFig_"
-                                                  +configList["fittingParameters"]["saveFitFuncPlotFileRemark"])
-            plt.savefig(saveFigFullPath+"/" + saveFitFuncFileName + ".png")
+                                                  + configList["fittingParameters"]["saveFitFuncPlotFileRemark"])
+            plt.savefig(saveFigFullPath + "/" + saveFitFuncFileName + ".png")
         plt.close(fig)
     plt.show()
 
 
 def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=False,
              saveFitFuncPlot=False, saveFitFuncFileName=""):
-    global cropRange, guessBound, intConfigGuess,configList
+    global cropRange, guessBound, intConfigGuess, configList
     allFittedSpot = []
 
     for i in range(len(centerArray)):
@@ -261,10 +260,10 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
         intGuess = intGuess + intConfigGuess
 
         if configList["fittingParameters"]["smartXYGuessBound"]:
-            guessBound[0][1] = x[i]-configList["fittingParameters"]["smartXYGuessBoundRange"]
-            guessBound[1][1] = x[i]+configList["fittingParameters"]["smartXYGuessBoundRange"]
-            guessBound[0][2] = y[i]-configList["fittingParameters"]["smartXYGuessBoundRange"]
-            guessBound[1][2] = y[i]+configList["fittingParameters"]["smartXYGuessBoundRange"]
+            guessBound[0][1] = x[i] - configList["fittingParameters"]["smartXYGuessBoundRange"]
+            guessBound[1][1] = x[i] + configList["fittingParameters"]["smartXYGuessBoundRange"]
+            guessBound[0][2] = y[i] - configList["fittingParameters"]["smartXYGuessBoundRange"]
+            guessBound[1][2] = y[i] + configList["fittingParameters"]["smartXYGuessBoundRange"]
 
         pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
 
