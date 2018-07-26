@@ -39,8 +39,7 @@ def fittingMode():
         # need to add all parameters back
         templist, numberOfSpots = findSpot(filePath, configList["findSpotParameters"]["searchThreshold"],
                                            mask, scaleDownFactor=configList["findSpotParameters"]["scaleDownFactor"],
-                                           showSpots=False, fileID=counter,
-                                           saveFitFuncPlot=configList["findSpotParameters"]["saveFitFuncPlot"])
+                                           showSpots=False, fileID=counter,saveFitFuncPlot= configList["fittingParameters"]["saveFitFuncPlot"])
         writeBufferArray.append(templist)
 
         print(counter, ",", numberOfSpots, ",", filePath, ",", counter / fileAmount * 100, "%")

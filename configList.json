@@ -35,8 +35,8 @@
     "intGuess": [3, 3,  90, 0.2, 0.3, 40],
     "smartGuessBound": false,
     "guessUpBound": [100000, 20, 20, 15, 15, 180, 10, 10, 65535],
-    "guessLowBound": [0, 0, 0, 0.2, 0.2 , -180, -10, -10, 0]
-    "saveFitFuncPlot":false
+    "guessLowBound": [0, 0, 0, 0.2, 0.2 , -180, -10, -10, 0],
+    "saveFitFuncPlot":true
   },
 
   "saveMode": false,

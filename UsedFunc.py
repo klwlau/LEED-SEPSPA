@@ -18,15 +18,17 @@ cropRange = configList["findSpotParameters"]["cropRange"]
 guessUpBound = configList["fittingParameters"]["guessUpBound"]
 guessLowBound = configList["fittingParameters"]["guessLowBound"]
 if configList["fittingParameters"]["smartGuessBound"]:
-    guessUpBound[1] = cropRange+1+1
-    guessUpBound[2] = cropRange+1+1
-    guessLowBound[1] = (cropRange + 1) -1
-    guessLowBound[2] = (cropRange + 1) -1
+    guessUpBound[1] = cropRange + 1 + 1
+    guessUpBound[2] = cropRange + 1 + 1
+    guessLowBound[1] = (cropRange + 1) - 1
+    guessLowBound[2] = (cropRange + 1) - 1
 
 guessBound = (guessLowBound, guessUpBound)
 dataFolderName = configList["dataFolderName"]
 #    sigma_x,sigma_y,theta,A,B,C
 intConfigGuess = configList["fittingParameters"]["intGuess"]
+
+
 ######parameter list######
 
 def makeResultDir():
@@ -34,15 +36,17 @@ def makeResultDir():
         os.makedirs(os.path.join(os.curdir, "Result"))
         print("make Result Dir")
 
+
 def makeShiftCenterResultDir(dataFolderName):
     if not os.path.exists(os.path.join(dataFolderName, "ShiftCenterResult")):
         os.makedirs(os.path.join(dataFolderName, "ShiftCenterResult"))
         print("make ShiftCenterResult Dir")
 
+
 def makeDirInDataFolder(dataFolderName, dirName):
     if not os.path.exists(os.path.join(dataFolderName, dirName)):
         os.makedirs(os.path.join(dataFolderName, dirName))
-        print("make ",dirName," Dir")
+        print("make ", dirName, " Dir")
     return os.path.join(dataFolderName, dirName)
 
 
@@ -52,7 +56,7 @@ def copyJsontoLog(timeStamp):
         print("make Log Dir")
 
     sourceDirectory = os.curdir
-    newFileName = timeStamp + "_"+configList["csvNameRemark"]+ ".json"
+    newFileName = timeStamp + "_" + configList["csvNameRemark"] + ".json"
     finalDirectory = os.path.join(os.curdir, "Log")
     dstFile = os.path.join(finalDirectory, newFileName)
     sourceFile = os.path.join(sourceDirectory, "configList.json")
@@ -174,7 +178,7 @@ def plotSpots(imgArray, objects_list, plotSensitivity_low=0.0, plotSensitivity_u
 @jit
 def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array, scaleDownFactor: float = 10,
                       plotSensitivity_low: float = 0.0, plotSensitivity_up: float = 0.5,
-                      showSpots: bool = False, fittingMode: bool = False, saveMode=False,printReturnArray=False,
+                      showSpots: bool = False, fittingMode: bool = False, saveMode=False, printReturnArray=False,
                       saveFileName="test") -> np.array:
     imgArray = compressImage(imgArray, scaleDownFactor)
     imgArray = applyMask(imgArray, mask)
@@ -193,17 +197,18 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
         return returnArray
 
     else:
-        returnArray =np.array([objects_list['peak'], objects_list['x'], objects_list['y'],
-                         objects_list['xmax'], objects_list['ymax'],
-                         objects_list['a'], objects_list['b'], objects_list['theta']]).T
+        returnArray = np.array([objects_list['peak'], objects_list['x'], objects_list['y'],
+                                objects_list['xmax'], objects_list['ymax'],
+                                objects_list['a'], objects_list['b'], objects_list['theta']]).T
         if printReturnArray:
             print(returnArray)
         return returnArray
 
 
-def plotFitFunc(fit_params, imageArray, plotSensitivity=3, saveFitFuncPlot=False, fileName ="fitFuncFig"):
+def plotFitFunc(fit_params, imageArray, plotSensitivity=3, saveFitFuncPlot=False, fileName="fitFuncFig"):
     global dataFolderName
-    xi, yi = np.mgrid[fit_params[1]-cropRange:fit_params[1]+cropRange:30j,fit_params[2]-cropRange:fit_params[2]+cropRange:30j]
+    xi, yi = np.mgrid[fit_params[1] - cropRange:fit_params[1] + cropRange:30j,
+             fit_params[2] - cropRange:fit_params[2] + cropRange:30j]
     xyi = np.vstack([xi.ravel(), yi.ravel()])
 
     zpred = fitFunc(xyi, *fit_params)
@@ -215,18 +220,19 @@ def plotFitFunc(fit_params, imageArray, plotSensitivity=3, saveFitFuncPlot=False
     ax1.imshow(imageArray, interpolation='nearest', cmap='jet',
                vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
                origin='lower')
-    ax2.contour( xi,yi,zpred,alpha=0.2)
+    ax2.contour(xi, yi, zpred, alpha=0.2)
     if saveFitFuncPlot:
         if fileName == "fitFuncFig":
             plt.savefig(fileName + ".png")
         else:
             saveFigFullPath = makeDirInDataFolder(dataFolderName, "fitFuncFig")
-            plt.savefig(saveFigFullPath + fileName+".png")
+            plt.savefig(saveFigFullPath + fileName + ".png")
         plt.close(fig)
     plt.show()
 
 
-def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=False,saveFitFuncPlot=False,saveFitFuncFileName = ""):
+def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=False,
+             saveFitFuncPlot=False, saveFitFuncFileName=""):
     global cropRange, guessBound, intConfigGuess
     allFittedSpot = []
 
@@ -251,7 +257,9 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
         intGuess = [z[i], x[i], y[i]]
         intGuess = intGuess + intConfigGuess
         pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
-        if plotFittedFunc == True: plotFitFunc(pred_params,cropedArray,saveFitFuncPlot=saveFitFuncPlot,saveFitFuncFileName=saveFitFuncFileName)
+        if plotFittedFunc: plotFitFunc(pred_params, cropedArray)
+        if saveFitFuncPlot == True: plotFitFunc(pred_params, cropedArray, saveFitFuncPlot=saveFitFuncPlot,
+                                                saveFitFuncFileName=saveFitFuncFileName + "_" + str(spotNumber))
 
         ####do cord transform
         pred_params[1] = pred_params[1] - cropRange + centerArray[spotNumber][0]
@@ -263,7 +271,6 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
         if printParameters == True: print(pred_params)
         # Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
 
-
     return allFittedSpot
 
 
@@ -274,22 +281,23 @@ def saveToCSV(RowArray, fileName):
             csvWriter.writerow(i)
 
 
-
 @jit
 def findSpot(filePath, searchThreshold, mask, showSpots=False, plotSensitivity_low=0.0, plotSensitivity_up=0.5,
              scaleDownFactor=1,
              plotFittedFunc=False, printParameters=False, fileID=0, fittingMode=True,
-             shiftCenterMode = False,printSpotRoughRangeArray = False, saveFitFuncPlot=False):
+             shiftCenterMode=False, printSpotRoughRangeArray=False, saveFitFuncPlot=False):
     imageArray = readLEEDImage(filePath)
     fileName = ntpath.basename(filePath)
     returnArray = []
     centerArray = getSpotRoughRange(imageArray, searchThreshold, mask, scaleDownFactor=scaleDownFactor,
                                     showSpots=showSpots,
                                     plotSensitivity_low=plotSensitivity_low, plotSensitivity_up=plotSensitivity_up,
-                                    saveFileName=filePath, fittingMode=fittingMode,printReturnArray=printSpotRoughRangeArray)
+                                    saveFileName=filePath, fittingMode=fittingMode,
+                                    printReturnArray=printSpotRoughRangeArray)
     if fittingMode:
         returnArray.append(
-            fitCurve(imageArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters,saveFitFuncPlot= saveFitFuncPlot,saveFitFuncFileName=fileName))
+            fitCurve(imageArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters,
+                     saveFitFuncPlot=saveFitFuncPlot, saveFitFuncFileName=fileName))
         returnList = list(itertools.chain.from_iterable(returnArray))
         returnList = list(itertools.chain.from_iterable(returnList))
         elements = int(len(returnList) / 9)
@@ -307,6 +315,7 @@ def findSpot(filePath, searchThreshold, mask, showSpots=False, plotSensitivity_l
     else:
         return returnList, elements
 
-def saveImArrayTo(imageArray,fullPathAndFileName):
+
+def saveImArrayTo(imageArray, fullPathAndFileName):
     saveArray = Image.fromarray(imageArray)
     saveArray.save(fullPathAndFileName)
