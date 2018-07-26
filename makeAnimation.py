@@ -26,11 +26,12 @@ for filePath in fileList:
     counter+=1
 
 
+
 print("making animation")
 ani = animation.ArtistAnimation(fig, ims, interval=50, blit=True,
                                 repeat_delay=1000)
 print("saving animation")
-ani.save('dynamic_images.avi')
+ani.save('dynamic_images.mp4')
 print("ploting animation")
 plt.show()
 
