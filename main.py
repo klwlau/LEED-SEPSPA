@@ -35,14 +35,15 @@ def fittingMode():
     counter = 0
     fileAmount = len(fileList)
 
-    for fileName in fileList:
+    for filePath in fileList:
         # need to add all parameters back
-        templist, numberOfSpots = findSpot(fileName, configList["findSpotParameters"]["searchThreshold"],
+        templist, numberOfSpots = findSpot(filePath, configList["findSpotParameters"]["searchThreshold"],
                                            mask, scaleDownFactor=configList["findSpotParameters"]["scaleDownFactor"],
-                                           showSpots=False, fileID=counter)
+                                           showSpots=False, fileID=counter,
+                                           saveFitFuncPlot=configList["findSpotParameters"]["saveFitFuncPlot"])
         writeBufferArray.append(templist)
 
-        print(counter, ",", numberOfSpots, ",", fileName, ",", counter / fileAmount * 100, "%")
+        print(counter, ",", numberOfSpots, ",", filePath, ",", counter / fileAmount * 100, "%")
 
         if counter % CSVwriteBuffer == 0:
             saveToCSV(writeBufferArray, CSVName)
@@ -72,7 +73,7 @@ def sepMode():
         # need to add all parameters back
         templist, numberOfSpots = findSpot(fileName, configList["findSpotParameters"]["searchThreshold"],
                                            mask, scaleDownFactor=configList["findSpotParameters"]["scaleDownFactor"],
-                                           showSpots=False, fileID=counter, saveMode=configList["saveMode"],
+                                           showSpots=False, fileID=counter,
                                            fittingMode=False)
         writeBufferArray.append(templist)
 

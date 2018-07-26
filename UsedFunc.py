@@ -9,6 +9,7 @@ import itertools
 import json
 import os
 import shutil
+import ntpath
 
 configList = json.load(open("configList.json"))
 ######parameter list######
@@ -225,7 +226,7 @@ def plotFitFunc(fit_params, imageArray, plotSensitivity=3, saveFitFuncPlot=False
     plt.show()
 
 
-def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=False,saveFitFuncPlot=False):
+def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=False,saveFitFuncPlot=False,saveFitFuncFileName = ""):
     global cropRange, guessBound, intConfigGuess
     allFittedSpot = []
 
@@ -250,7 +251,7 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
         intGuess = [z[i], x[i], y[i]]
         intGuess = intGuess + intConfigGuess
         pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
-        if plotFittedFunc == True: plotFitFunc(pred_params,cropedArray,saveFitFuncPlot=saveFitFuncPlot)
+        if plotFittedFunc == True: plotFitFunc(pred_params,cropedArray,saveFitFuncPlot=saveFitFuncPlot,saveFitFuncFileName=saveFitFuncFileName)
 
         ####do cord transform
         pred_params[1] = pred_params[1] - cropRange + centerArray[spotNumber][0]
@@ -280,14 +281,15 @@ def findSpot(filePath, searchThreshold, mask, showSpots=False, plotSensitivity_l
              plotFittedFunc=False, printParameters=False, fileID=0, fittingMode=True,
              shiftCenterMode = False,printSpotRoughRangeArray = False, saveFitFuncPlot=False):
     imageArray = readLEEDImage(filePath)
+    fileName = ntpath.basename(filePath)
     returnArray = []
     centerArray = getSpotRoughRange(imageArray, searchThreshold, mask, scaleDownFactor=scaleDownFactor,
                                     showSpots=showSpots,
                                     plotSensitivity_low=plotSensitivity_low, plotSensitivity_up=plotSensitivity_up,
-                                    saveMode=saveMode, saveFileName=filePath, fittingMode=fittingMode,printReturnArray=printSpotRoughRangeArray)
+                                    saveFileName=filePath, fittingMode=fittingMode,printReturnArray=printSpotRoughRangeArray)
     if fittingMode:
         returnArray.append(
-            fitCurve(imageArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters,saveFitFuncPlot= saveFitFuncPlot))
+            fitCurve(imageArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters,saveFitFuncPlot= saveFitFuncPlot,saveFitFuncFileName=fileName))
         returnList = list(itertools.chain.from_iterable(returnArray))
         returnList = list(itertools.chain.from_iterable(returnList))
         elements = int(len(returnList) / 9)
