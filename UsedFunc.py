@@ -37,6 +37,11 @@ def makeShiftCenterResultDir(dataFolderName):
         os.makedirs(os.path.join(dataFolderName, "ShiftCenterResult"))
         print("make ShiftCenterResult Dir")
 
+def makeDirInDataFolder(dataFolderName, dirName):
+    if not os.path.exists(os.path.join(dataFolderName, dirName)):
+        os.makedirs(os.path.join(dataFolderName, dirName))
+        print("make ",dirName," Dir")
+
 
 def copyJsontoLog(timeStamp):
     if not os.path.exists(os.path.join(os.curdir, "Log")):
@@ -193,7 +198,7 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
         return returnArray
 
 
-def plotFitFunc(fit_params,imageArray,plotSensitivity=3):
+def plotFitFunc(fit_params,imageArray,plotSensitivity=3,saveFitFuncPlot=False,saveFigFullPath = "fitFuncFig"):
 
     xi, yi = np.mgrid[fit_params[1]-cropRange:fit_params[1]+cropRange:30j,fit_params[2]-cropRange:fit_params[2]+cropRange:30j]
     xyi = np.vstack([xi.ravel(), yi.ravel()])
@@ -208,11 +213,17 @@ def plotFitFunc(fit_params,imageArray,plotSensitivity=3):
                vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
                origin='lower')
     ax2.contour( xi,yi,zpred,alpha=0.2)
+    if saveFitFuncPlot:
+        if saveFigFullPath == "fitFuncFig":
+            plt.savefig(saveFigFullPath+".png")
+        else:
 
+            plt.savefig(saveFigFullPath + ".png")
+        plt.close(fig)
     plt.show()
 
 
-def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=False):
+def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=False,saveFitFuncPlot=False):
     global cropRange, guessBound, intConfigGuess
     allFittedSpot = []
 
@@ -237,8 +248,7 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
         intGuess = [z[i], x[i], y[i]]
         intGuess = intGuess + intConfigGuess
         pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
-        print(pred_params)
-        if plotFittedFunc == True: plotFitFunc(pred_params,cropedArray)
+        if plotFittedFunc == True: plotFitFunc(pred_params,cropedArray,saveFitFuncPlot=saveFitFuncPlot)
 
         ####do cord transform
         pred_params[1] = pred_params[1] - cropRange + centerArray[spotNumber][0]
@@ -265,7 +275,8 @@ def saveToCSV(RowArray, fileName):
 @jit
 def findSpot(filePath, searchThreshold, mask, showSpots=False, plotSensitivity_low=0.0, plotSensitivity_up=0.5,
              scaleDownFactor=1,
-             plotFittedFunc=False, printParameters=False, fileID=0, saveMode=False, fittingMode=True, shiftCenterMode = False,printSpotRoughRangeArray = False):
+             plotFittedFunc=False, printParameters=False, fileID=0, fittingMode=True,
+             shiftCenterMode = False,printSpotRoughRangeArray = False, saveFitFuncPlot=False):
     imageArray = readLEEDImage(filePath)
     returnArray = []
     centerArray = getSpotRoughRange(imageArray, searchThreshold, mask, scaleDownFactor=scaleDownFactor,
@@ -274,7 +285,7 @@ def findSpot(filePath, searchThreshold, mask, showSpots=False, plotSensitivity_l
                                     saveMode=saveMode, saveFileName=filePath, fittingMode=fittingMode,printReturnArray=printSpotRoughRangeArray)
     if fittingMode:
         returnArray.append(
-            fitCurve(imageArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters))
+            fitCurve(imageArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters,saveFitFuncPlot= saveFitFuncPlot))
         returnList = list(itertools.chain.from_iterable(returnArray))
         returnList = list(itertools.chain.from_iterable(returnList))
         elements = int(len(returnList) / 9)
