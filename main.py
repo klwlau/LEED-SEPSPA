@@ -119,6 +119,8 @@ else:
     fileList = glob.glob(dataFolderName + "/*.tif")
 fileList = sorted(fileList)
 
+fileList = fileList[:300]
+
 setPicDim(fileList[0])  # to set the picWidth,picHeight for findSpot function
 mask = makeMask(configList["maskConfig"]["mask_x_center"], configList["maskConfig"]["mask_y_center"],
                 configList["maskConfig"]["innerRadius"], configList["maskConfig"]["outerRadius"])  # int mask
@@ -139,3 +141,9 @@ else:
 
 print("--- %s Minutes ---" % ((time.time() - start_time) / 60))
 print("done")
+
+errorList = np.array(errorList)
+plt.plot(errorList)
+plt.show()
+plt.hist(errorList)
+plt.show()

@@ -7,18 +7,18 @@
     "mask_x_center": 454,
     "mask_y_center": 415,
     "innerRadius": 0,
-    "outerRadius": 10
+    "outerRadius": 80
   },
 
   "findSpotParameters":{
-    "searchThreshold":600,
+    "searchThreshold":60,
     "cropRange": 20,
     "scaleDownFactor":1
   },
 
   "testMode": false,
   "testModeParameters":{
-    "showSpots": false,
+    "showSpots": true,
     "printSpotRoughRangeArray":false,
     "fittingMode":true,
     "testModeFileID": 0,
@@ -37,8 +37,8 @@
     "smartXYGuessBoundRange":3,
     "guessUpBound": [100000, 20, 20, 15, 15, 180, 10, 10, 1000],
     "guessLowBound": [0, 0, 0, 0.2, 0.2 , -180, -10, -10, 0],
-    "saveFitFuncPlot":false,
-    "saveFitFuncPlotFileRemark": "test"
+    "saveFitFuncPlot":true,
+    "saveFitFuncPlotFileRemark": "60 crop range"
   },
 
   "saveMode": false,
