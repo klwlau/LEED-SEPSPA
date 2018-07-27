@@ -27,7 +27,7 @@
     "plotSensitivity_up": 0.7,
     "scaleDownFactor": 1,
     "printFittedParameters": true,
-    "plotFittedFunc": true
+    "plotFittedFunc": false
   },
 
   "fittingMode":true,

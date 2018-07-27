@@ -108,34 +108,6 @@ def applyMask(imageArray, mask):
     return appliedMask
 
 
-# def plotSpots(imgArray, objects_list, plotSensitivity=3, saveMode=False, saveFileName="test", showSpots=False):
-#     # plot background-subtracted image
-#     fig, ax = plt.subplots()
-#     m, s = np.mean(imgArray), np.std(imgArray)
-#     plt.imshow(imgArray, interpolation='nearest', cmap='gray',
-#                vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
-#                origin='lower')
-#
-#     # plot an ellipse for each object
-#     for i in range(len(objects_list)):
-#         e = Ellipse(xy=(objects_list['x'][i], objects_list['y'][i]),
-#                     width=6 * objects_list['a'][i],
-#                     height=6 * objects_list['b'][i],
-#                     angle=objects_list['theta'][i] * 180. / np.pi)
-#         e.set_facecolor('none')
-#         e.set_edgecolor('red')
-#         ax.add_artist(e)
-#
-#     plt.colorbar()
-#     if saveMode:
-#         savePath = configList["saveFigModeParameters"]["saveFigFolderName"]
-#         plt.savefig(savePath + saveFileName + ".png")
-#
-#     if showSpots:
-#         plt.show()
-#     else:
-#         plt.clf()
-
 # Tony: Change the plot anatomy
 def plotSpots(imgArray, objects_list, plotSensitivity_low=0.0, plotSensitivity_up=0.5,
               saveMode=False, saveFileName="test", showSpots=False):
@@ -168,8 +140,8 @@ def plotSpots(imgArray, objects_list, plotSensitivity_low=0.0, plotSensitivity_u
 
 
 def genFittedFuncArray(fit_params):
-    xi, yi = np.mgrid[fit_params[1] - cropRange:fit_params[1] + cropRange:30j,
-             fit_params[2] - cropRange:fit_params[2] + cropRange:30j]
+    xi, yi = np.mgrid[fit_params[1] - cropRange:fit_params[1] + cropRange:cropRange * 2 * j,
+             fit_params[2] - cropRange:fit_params[2] + cropRange:cropRange * 2 * j]
     xyi = np.vstack([xi.ravel(), yi.ravel()])
 
     zpred = fitFunc(xyi, *fit_params)
@@ -199,6 +171,8 @@ def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False
                                                   + configList["fittingParameters"]["saveFitFuncPlotFileRemark"])
             plt.savefig(saveFigFullPath + "/" + saveFitFuncFileName + ".png")
         plt.close(fig)
+        return
+
     plt.show()
 
 
