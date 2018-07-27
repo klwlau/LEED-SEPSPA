@@ -16,7 +16,7 @@
     "scaleDownFactor":1
   },
 
-  "testMode": true,
+  "testMode": false,
   "testModeParameters":{
     "showSpots": false,
     "printSpotRoughRangeArray":false,
@@ -27,7 +27,7 @@
     "plotSensitivity_up": 0.7,
     "scaleDownFactor": 1,
     "printFittedParameters": true,
-    "plotFittedFunc": false
+    "plotFittedFunc": true
   },
 
   "fittingMode":true,
@@ -37,8 +37,8 @@
     "smartXYGuessBoundRange":3,
     "guessUpBound": [100000, 20, 20, 15, 15, 180, 10, 10, 1000],
     "guessLowBound": [0, 0, 0, 0.2, 0.2 , -180, -10, -10, 0],
-    "saveFitFuncPlot":true,
-    "saveFitFuncPlotFileRemark": ""
+    "saveFitFuncPlot":false,
+    "saveFitFuncPlotFileRemark": "test"
   },
 
   "saveMode": false,

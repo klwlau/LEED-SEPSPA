@@ -140,14 +140,18 @@ def plotSpots(imgArray, objects_list, plotSensitivity_low=0.0, plotSensitivity_u
 
 
 def genFittedFuncArray(fit_params):
-    xi, yi = np.mgrid[fit_params[1] - cropRange:fit_params[1] + cropRange:cropRange * 2 * j,
-             fit_params[2] - cropRange:fit_params[2] + cropRange:cropRange * 2 * j]
+    xi, yi = np.mgrid[fit_params[1] - cropRange:fit_params[1] + cropRange:cropRange * 2 * 1j,
+             fit_params[2] - cropRange:fit_params[2] + cropRange:2*cropRange*1j]
     xyi = np.vstack([xi.ravel(), yi.ravel()])
 
     zpred = fitFunc(xyi, *fit_params)
     zpred.shape = xi.shape
 
     return xi, yi, zpred
+
+def calMeanError(zpred, cropArray):
+    return ((zpred-cropArray)**2).mean()
+
 
 
 def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
@@ -172,7 +176,8 @@ def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False
             plt.savefig(saveFigFullPath + "/" + saveFitFuncFileName + ".png")
         plt.close(fig)
         return
-
+    # print(zpred-imageArray)
+    # print(calMeanError(zpred,imageArray))
     plt.show()
 
 
@@ -245,20 +250,21 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printFittedParameter
             guessBound[0][2] = y[i] - configList["fittingParameters"]["smartXYGuessBoundRange"]
             guessBound[1][2] = y[i] + configList["fittingParameters"]["smartXYGuessBoundRange"]
 
-        pred_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
+        fitted_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
 
-        if plotFittedFunc: plotFitFunc(pred_params, cropedArray)
-        if saveFitFuncPlot == True: plotFitFunc(pred_params, cropedArray, saveFitFuncPlot=saveFitFuncPlot,
+        if plotFittedFunc: plotFitFunc(fitted_params, cropedArray)
+        if saveFitFuncPlot == True: plotFitFunc(fitted_params, cropedArray, saveFitFuncPlot=saveFitFuncPlot,
                                                 saveFitFuncFileName=saveFitFuncFileName + "_" + str(spotNumber))
 
+
         ####do cord transform
-        pred_params[1] = pred_params[1] - cropRange + centerArray[spotNumber][0]
-        pred_params[2] = pred_params[2] - cropRange + centerArray[spotNumber][1]
+        fitted_params[1] = fitted_params[1] - cropRange + centerArray[spotNumber][0]
+        fitted_params[2] = fitted_params[2] - cropRange + centerArray[spotNumber][1]
 
-        pred_params = pred_params.tolist()
-        allFittedSpot.append(pred_params)
+        fitted_params = fitted_params.tolist()
+        allFittedSpot.append(fitted_params)
 
-        if printFittedParameters == True: print("Fitted Parameters :", pred_params)
+        if printFittedParameters == True: print("Fitted Parameters :", fitted_params)
         # Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
 
     return allFittedSpot
