@@ -167,14 +167,21 @@ def plotSpots(imgArray, objects_list, plotSensitivity_low=0.0, plotSensitivity_u
         plt.clf()
 
 
-def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
-    global dataFolderName, configList
+def genFittedFuncArray(fit_params):
     xi, yi = np.mgrid[fit_params[1] - cropRange:fit_params[1] + cropRange:30j,
              fit_params[2] - cropRange:fit_params[2] + cropRange:30j]
     xyi = np.vstack([xi.ravel(), yi.ravel()])
 
     zpred = fitFunc(xyi, *fit_params)
     zpred.shape = xi.shape
+
+    return xi, yi, zpred
+
+
+def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
+    global dataFolderName, configList
+
+    xi, yi, zpred = genFittedFuncArray(fit_params)
 
     fig, ax1 = plt.subplots()
     ax2 = ax1.twinx()
