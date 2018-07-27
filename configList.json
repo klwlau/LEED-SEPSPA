@@ -16,25 +16,25 @@
     "scaleDownFactor":1
   },
 
-  "testMode": false,
+  "testMode": true,
   "testModeParameters":{
+    "showSpots": false,
+    "printSpotRoughRangeArray":false,
     "fittingMode":true,
     "testModeFileID": 0,
-    "showSpots": true,
     "plotSensitivity": 3,
     "plotSensitivity_low": 0.01,
     "plotSensitivity_up": 0.7,
     "scaleDownFactor": 1,
-    "plotFittedFunc": true,
-    "printParameters": true,
-    "printSpotRoughRangeArray":true
+    "printFittedParameters": true,
+    "plotFittedFunc": true
   },
 
   "fittingMode":true,
   "fittingParameters": {
     "intGuess": [3, 3,  90, 0, 0, 40],
     "smartXYGuessBound": true,
-    "smartXYGuessBoundRange":0.1,
+    "smartXYGuessBoundRange":3,
     "guessUpBound": [100000, 20, 20, 15, 15, 180, 10, 10, 1000],
     "guessLowBound": [0, 0, 0, 0.2, 0.2 , -180, -10, -10, 0],
     "saveFitFuncPlot":true,

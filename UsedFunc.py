@@ -230,7 +230,7 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
         return returnArray
 
 
-def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=False,
+def fitCurve(imageArray, centerArray, plotFittedFunc=False, printFittedParameters=False,
              saveFitFuncPlot=False, saveFitFuncFileName=""):
     global cropRange, guessBound, intConfigGuess, configList
     allFittedSpot = []
@@ -275,7 +275,7 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printParameters=Fals
         pred_params = pred_params.tolist()
         allFittedSpot.append(pred_params)
 
-        if printParameters == True: print(pred_params)
+        if printFittedParameters == True: print(pred_params)
         # Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
 
     return allFittedSpot
@@ -291,7 +291,7 @@ def saveToCSV(RowArray, fileName):
 @jit
 def findSpot(filePath, searchThreshold, mask, showSpots=False, plotSensitivity_low=0.0, plotSensitivity_up=0.5,
              scaleDownFactor=1,
-             plotFittedFunc=False, printParameters=False, fileID=0, fittingMode=True,
+             plotFittedFunc=False, printFittedParameters=False, fileID=0, fittingMode=True,
              shiftCenterMode=False, printSpotRoughRangeArray=False, saveFitFuncPlot=False):
     imageArray = readLEEDImage(filePath)
     fileName = ntpath.basename(filePath)[:-4]
@@ -303,7 +303,7 @@ def findSpot(filePath, searchThreshold, mask, showSpots=False, plotSensitivity_l
                                     printReturnArray=printSpotRoughRangeArray)
     if fittingMode:
         returnArray.append(
-            fitCurve(imageArray, centerArray, plotFittedFunc=plotFittedFunc, printParameters=printParameters,
+            fitCurve(imageArray, centerArray, plotFittedFunc=plotFittedFunc, printFittedParameters=printFittedParameters,
                      saveFitFuncPlot=saveFitFuncPlot, saveFitFuncFileName=fileName))
         returnList = list(itertools.chain.from_iterable(returnArray))
         returnList = list(itertools.chain.from_iterable(returnList))

@@ -99,7 +99,7 @@ def testMode():
              plotSensitivity_up=configList["testModeParameters"]["plotSensitivity_up"],
              showSpots=configList["testModeParameters"]["showSpots"],
              plotFittedFunc=configList["testModeParameters"]["plotFittedFunc"],
-             printParameters=configList["testModeParameters"]["printParameters"],
+             printFittedParameters=configList["testModeParameters"]["printFittedParameters"],
              printSpotRoughRangeArray=configList["testModeParameters"]["printSpotRoughRangeArray"],
              fittingMode=configList["testModeParameters"]["fittingMode"])
 
