@@ -38,7 +38,7 @@
     "guessUpBound": [100000, 20, 20, 15, 15, 180, 10, 10, 1000],
     "guessLowBound": [0, 0, 0, 0.2, 0.2 , -180, -10, -10, 0],
     "saveFitFuncPlot":true,
-    "saveFitFuncPlotFileRemark": "xyRange0.1_cropRange20_newintGuess"
+    "saveFitFuncPlotFileRemark": ""
   },
 
   "saveMode": false,

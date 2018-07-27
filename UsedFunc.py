@@ -193,6 +193,8 @@ def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False
             plt.savefig(saveFigFullPath + "/" + saveFitFuncFileName + ".png")
         plt.close(fig)
     plt.show()
+
+
 # def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array,
 #                       scaleDownFactor: float = 10, plotSensitivity: float = 3, showSpots: bool = False,
 #                       fullInformation: bool = False, saveMode=False, saveFileName="test") -> np.array:
@@ -275,7 +277,7 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printFittedParameter
         pred_params = pred_params.tolist()
         allFittedSpot.append(pred_params)
 
-        if printFittedParameters == True: print(pred_params)
+        if printFittedParameters == True: print("Fitted Parameters :", pred_params)
         # Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
 
     return allFittedSpot
@@ -303,7 +305,8 @@ def findSpot(filePath, searchThreshold, mask, showSpots=False, plotSensitivity_l
                                     printReturnArray=printSpotRoughRangeArray)
     if fittingMode:
         returnArray.append(
-            fitCurve(imageArray, centerArray, plotFittedFunc=plotFittedFunc, printFittedParameters=printFittedParameters,
+            fitCurve(imageArray, centerArray, plotFittedFunc=plotFittedFunc,
+                     printFittedParameters=printFittedParameters,
                      saveFitFuncPlot=saveFitFuncPlot, saveFitFuncFileName=fileName))
         returnList = list(itertools.chain.from_iterable(returnArray))
         returnList = list(itertools.chain.from_iterable(returnList))
