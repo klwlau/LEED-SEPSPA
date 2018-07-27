@@ -12,15 +12,15 @@
 
   "findSpotParameters":{
     "searchThreshold":600,
-    "cropRange": 10,
+    "cropRange": 20,
     "scaleDownFactor":1
   },
 
   "testMode": false,
   "testModeParameters":{
     "fittingMode":true,
-    "testModeFileID": 1,
-    "showSpots": false,
+    "testModeFileID": 0,
+    "showSpots": true,
     "plotSensitivity": 3,
     "plotSensitivity_low": 0.01,
     "plotSensitivity_up": 0.7,
@@ -32,11 +32,13 @@
 
   "fittingMode":true,
   "fittingParameters": {
-    "intGuess": [3, 3,  90, 0.2, 0.3, 40],
-    "smartGuessBound": false,
-    "guessUpBound": [1000000, 15, 15, 30, 30, 180, 10, 10, 65535],
-    "guessLowBound": [0, 5, 5, 0.01, 0.01 , -180, -10, -10, 0],
-    "saveFitFuncPlot":true
+    "intGuess": [3, 3,  90, 0, 0, 40],
+    "smartXYGuessBound": true,
+    "smartXYGuessBoundRange":0.1,
+    "guessUpBound": [100000, 20, 20, 15, 15, 180, 10, 10, 1000],
+    "guessLowBound": [0, 0, 0, 0.2, 0.2 , -180, -10, -10, 0],
+    "saveFitFuncPlot":true,
+    "saveFitFuncPlotFileRemark": "xyRange0.1_cropRange20_newintGuess"
   },
 
   "saveMode": false,

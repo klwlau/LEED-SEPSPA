@@ -7,7 +7,10 @@ plotSensitivity=3
 ims= []
 startID = 0
 dataFolderName = configList["dataFolderName"]
-fileList = glob.glob(dataFolderName + "/*.tif")
+subFolder = "fitFuncFig_xcp_ycp/"
+aniFileName = "xcp_ycp_intcon"
+dataFolderName = dataFolderName+subFolder
+fileList = glob.glob(dataFolderName + "/*.png")
 fileList = sorted(fileList)
 counter = 0
 
@@ -25,14 +28,29 @@ for filePath in fileList:
 
 
 
-
-
-
-
 print("making animation")
 ani = animation.ArtistAnimation(fig, ims, interval=50, blit=True,
                                 repeat_delay=1000)
 print("saving animation")
-ani.save('dynamic_images.mp4')
+ani.save(aniFileName+'.mp4')
 print("ploting animation")
 plt.show()
+
+
+# import cv2
+# import os
+#
+# image_folder = dataFolderName
+# video_name = 'video.avi'
+#
+# images = [img for img in os.listdir(image_folder) if img.endswith(".png")]
+# frame = cv2.imread(os.path.join(image_folder, images[0]))
+# height, width, layers = frame.shape
+#
+# video = cv2.VideoWriter(video_name, -1, 1, (width,height))
+#
+# for image in images:
+#     video.write(cv2.imread(os.path.join(image_folder, image)))
+#
+# cv2.destroyAllWindows()
+# video.release()
