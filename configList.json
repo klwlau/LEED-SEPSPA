@@ -1,5 +1,5 @@
 {
-  "dataFolderName": "/Users/wilsonlau/Downloads/Raw_Tony_graphene/ShiftCenterResult/",
+  "dataFolderName": "/Users/wilsonlau/Desktop/PC and Mac/Raw_Tony_graphene/ShiftCenterResult/",
   "CSVwriteBuffer": 50,
   "csvNameRemark":"Tony Test",
 
@@ -12,7 +12,7 @@
 
   "findSpotParameters":{
     "searchThreshold":60,
-    "cropRange": 20,
+    "cropRange": 60,
     "scaleDownFactor":1
   },
 

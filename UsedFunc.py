@@ -150,7 +150,14 @@ def genFittedFuncArray(fit_params):
     return xi, yi, zpred
 
 def calMeanError(zpred, cropArray):
-    return ((zpred-cropArray)**2).mean()
+    zpred = np.array(zpred)
+    # tempArray = zpred[2]
+
+    center = int(zpred[0].shape[0]/2)
+    tempArray = zpred[2][center-10:center+10,center-10:center+10]
+    cropArray = cropArray[center-10:center+10,center-10:center+10]
+
+    return ((tempArray-cropArray)**2).mean()
 
 
 
