@@ -22,7 +22,8 @@ guessBound = [guessLowBound, guessUpBound]
 dataFolderName = configList["dataFolderName"]
 #    sigma_x,sigma_y,theta,A,B,C
 intConfigGuess = configList["fittingParameters"]["intGuess"]
-errorList=[]
+errorList = []
+
 
 ######parameter list######
 
@@ -141,7 +142,7 @@ def plotSpots(imgArray, objects_list, plotSensitivity_low=0.0, plotSensitivity_u
 
 def genFittedFuncArray(fit_params):
     xi, yi = np.mgrid[fit_params[1] - cropRange:fit_params[1] + cropRange:cropRange * 2 * 1j,
-             fit_params[2] - cropRange:fit_params[2] + cropRange:2*cropRange*1j]
+             fit_params[2] - cropRange:fit_params[2] + cropRange:2 * cropRange * 1j]
     xyi = np.vstack([xi.ravel(), yi.ravel()])
 
     zpred = fitFunc(xyi, *fit_params)
@@ -149,16 +150,17 @@ def genFittedFuncArray(fit_params):
 
     return xi, yi, zpred
 
-def calMeanError(zpred, cropArray):
+
+def calMeanError(zpred, cropArray, meanArea=10):
     zpred = np.array(zpred)
     # tempArray = zpred[2]
+    center = int(zpred[0].shape[0] / 2)
+    tempArray = zpred[2][center - meanArea:center + meanArea,
+                center - meanArea:center + meanArea]
+    cropArray = cropArray[center - meanArea:center + meanArea,
+                center - meanArea:center + meanArea]
 
-    center = int(zpred[0].shape[0]/2)
-    tempArray = zpred[2][center-10:center+10,center-10:center+10]
-    cropArray = cropArray[center-10:center+10,center-10:center+10]
-
-    return ((tempArray-cropArray)**2).mean()
-
+    return ((tempArray - cropArray) ** 2).mean()
 
 
 def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
@@ -226,7 +228,7 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
 
 def fitCurve(imageArray, centerArray, plotFittedFunc=False, printFittedParameters=False,
              saveFitFuncPlot=False, saveFitFuncFileName=""):
-    global cropRange, guessBound, intConfigGuess, configList,errorList
+    global cropRange, guessBound, intConfigGuess, configList, errorList
     allFittedSpot = []
 
     for i in range(len(centerArray)):
@@ -261,7 +263,7 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printFittedParameter
         if plotFittedFunc: plotFitFunc(fit_params, cropedArray)
         if saveFitFuncPlot == True: plotFitFunc(fit_params, cropedArray, saveFitFuncPlot=saveFitFuncPlot,
                                                 saveFitFuncFileName=saveFitFuncFileName + "_" + str(spotNumber))
-        errorList.append(calMeanError(genFittedFuncArray(fit_params),cropedArray))
+        errorList.append(calMeanError(genFittedFuncArray(fit_params), cropedArray))
 
         ####do cord transform
         fit_params[1] = fit_params[1] - cropRange + centerArray[spotNumber][0]
