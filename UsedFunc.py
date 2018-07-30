@@ -256,8 +256,7 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printFittedParameter
         i = z.argmax()
 
         intGuess = [z[i], x[i], y[i]]
-        # print(z[i])
-        # intGuess = [0, x[i], y[i]]
+
         intGuess = intGuess + intConfigGuess
 
         if configList["fittingParameters"]["smartXYGuessBound"]:
