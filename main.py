@@ -119,7 +119,7 @@ else:
     fileList = glob.glob(dataFolderName + "/*.tif")
 fileList = sorted(fileList)
 
-fileList = fileList[:300]
+fileList = fileList[:10]
 
 setPicDim(fileList[0])  # to set the picWidth,picHeight for findSpot function
 mask = makeMask(configList["maskConfig"]["mask_x_center"], configList["maskConfig"]["mask_y_center"],

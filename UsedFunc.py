@@ -159,6 +159,9 @@ def calMeanError(zpred, cropArray, meanArea=10):
                 center - meanArea:center + meanArea]
     cropArray = cropArray[center - meanArea:center + meanArea,
                 center - meanArea:center + meanArea]
+    plt.plot(tempArray[10])
+    plt.plot(cropArray[10])
+    plt.show()
 
     return ((tempArray - cropArray) ** 2).mean()
 
