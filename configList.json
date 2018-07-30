@@ -1,7 +1,7 @@
 {
   "dataFolderName": "/Users/wilsonlau/Desktop/PC and Mac/Raw_Tony_graphene/ShiftCenterResult/",
   "CSVwriteBuffer": 50,
-  "csvNameRemark":"Tony Test",
+  "csvNameRemark":"Tony Test_branchMark",
 
   "maskConfig": {
     "mask_x_center": 454,
@@ -12,33 +12,33 @@
 
   "findSpotParameters":{
     "searchThreshold":60,
-    "cropRange": 60,
+    "cropRange": 20,
     "scaleDownFactor":1
   },
 
   "testMode": false,
   "testModeParameters":{
-    "showSpots": true,
-    "printSpotRoughRangeArray":false,
+    "showSpots": false,
+    "printSpotRoughRangeArray":true,
     "fittingMode":true,
-    "testModeFileID": 0,
+    "testModeFileID": 35,
     "plotSensitivity": 3,
     "plotSensitivity_low": 0.01,
     "plotSensitivity_up": 0.7,
     "scaleDownFactor": 1,
     "printFittedParameters": true,
-    "plotFittedFunc": true
+    "plotFittedFunc": false
   },
 
   "fittingMode":true,
   "fittingParameters": {
-    "intGuess": [3, 3,  90, 0, 0, 40],
+    "intGuess": [5, 5,  90, 0, 0, 0],
     "smartXYGuessBound": true,
     "smartXYGuessBoundRange":3,
-    "guessUpBound": [100000, 20, 20, 15, 15, 180, 10, 10, 1000],
-    "guessLowBound": [0, 0, 0, 0.2, 0.2 , -180, -10, -10, 0],
+    "guessUpBound": [100000, 200, 200, 15, 15, 180, 15, 15, 5000],
+    "guessLowBound": [0, -200, -20, 0.0001, 0.0001 , -180, -15, -15, 0],
     "saveFitFuncPlot":true,
-    "saveFitFuncPlotFileRemark": "60 crop range"
+    "saveFitFuncPlotFileRemark": "adjust XCenter by +1_YCenter by +1"
   },
 
   "saveMode": false,
