@@ -167,7 +167,7 @@ def calMeanError(zpred, cropArray, meanArea=10):
     return ((zpred - cropArray) ** 2).mean()
 
 
-def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
+def plotFitFunc(fit_params, imageArray, plotSensitivity=10, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
     global dataFolderName, configList
 
     fit_params[2] += 1
