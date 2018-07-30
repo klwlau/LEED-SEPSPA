@@ -140,30 +140,32 @@ def plotSpots(imgArray, objects_list, plotSensitivity_low=0.0, plotSensitivity_u
         plt.clf()
 
 
-def genFittedFuncArray(fit_params):
+def genFittedFuncArray(fit_params, outputZpredOnly=False):
     xi, yi = np.mgrid[fit_params[1] - cropRange:fit_params[1] + cropRange:cropRange * 2 * 1j,
              fit_params[2] - cropRange:fit_params[2] + cropRange:2 * cropRange * 1j]
     xyi = np.vstack([xi.ravel(), yi.ravel()])
 
     zpred = fitFunc(xyi, *fit_params)
+
     zpred.shape = xi.shape
 
-    return xi, yi, zpred
+    if outputZpredOnly:
+        return zpred
+    else:
+        return xi, yi, zpred
 
 
 def calMeanError(zpred, cropArray, meanArea=10):
-    zpred = np.array(zpred)
+    # zpred = np.array(zpred)
     # tempArray = zpred[2]
     center = int(zpred[0].shape[0] / 2)
-    tempArray = zpred[2][center - meanArea:center + meanArea,
-                center - meanArea:center + meanArea]
+    zpred = zpred[center - meanArea:center + meanArea,
+            center - meanArea:center + meanArea]
     cropArray = cropArray[center - meanArea:center + meanArea,
                 center - meanArea:center + meanArea]
-    plt.plot(tempArray[10])
-    plt.plot(cropArray[10])
-    plt.show()
 
-    return ((tempArray - cropArray) ** 2).mean()
+
+    return ((zpred - cropArray) ** 2).mean()
 
 
 def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
@@ -266,7 +268,7 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printFittedParameter
         if plotFittedFunc: plotFitFunc(fit_params, cropedArray)
         if saveFitFuncPlot == True: plotFitFunc(fit_params, cropedArray, saveFitFuncPlot=saveFitFuncPlot,
                                                 saveFitFuncFileName=saveFitFuncFileName + "_" + str(spotNumber))
-        errorList.append(calMeanError(genFittedFuncArray(fit_params), cropedArray))
+        errorList.append(calMeanError(genFittedFuncArray(fit_params, outputZpredOnly=True), cropedArray))
 
         ####do cord transform
         fit_params[1] = fit_params[1] - cropRange + centerArray[spotNumber][0]

@@ -142,8 +142,8 @@ else:
 print("--- %s Minutes ---" % ((time.time() - start_time) / 60))
 print("done")
 
-errorList = np.array(errorList)
-plt.plot(errorList)
-plt.show()
-plt.hist(errorList)
-plt.show()
+# errorList = np.array(errorList)
+# plt.plot(errorList)
+# plt.show()
+# plt.hist(errorList)
+# plt.show()
