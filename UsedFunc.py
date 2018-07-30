@@ -164,13 +164,14 @@ def calMeanError(zpred, cropArray, meanArea=10):
     cropArray = cropArray[center - meanArea:center + meanArea,
                 center - meanArea:center + meanArea]
 
-
     return ((zpred - cropArray) ** 2).mean()
 
 
 def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
     global dataFolderName, configList
 
+    fit_params[2] += 1
+    # fit_params[1] += 1
     xi, yi, zpred = genFittedFuncArray(fit_params)
 
     fig, ax1 = plt.subplots()
@@ -255,6 +256,8 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printFittedParameter
         i = z.argmax()
 
         intGuess = [z[i], x[i], y[i]]
+        # print(z[i])
+        # intGuess = [0, x[i], y[i]]
         intGuess = intGuess + intConfigGuess
 
         if configList["fittingParameters"]["smartXYGuessBound"]:
