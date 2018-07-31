@@ -1,32 +1,32 @@
 {
   "dataFolderName": "/Users/wilsonlau/Desktop/PC and Mac/Raw_Tony_graphene/ShiftCenterResult/",
-  "CSVwriteBuffer": 50,
+  "CSVwriteBuffer": 10,
   "csvNameRemark":"Tony Test_branchMark",
 
   "maskConfig": {
     "mask_x_center": 454,
     "mask_y_center": 415,
-    "innerRadius": 0,
-    "outerRadius": 80
+    "innerRadius": 250,
+    "outerRadius": 400
   },
 
   "findSpotParameters":{
-    "searchThreshold":60,
+    "searchThreshold":80,
     "cropRange": 20,
     "scaleDownFactor":1
   },
 
   "testMode": false,
   "testModeParameters":{
-    "showSpots": false,
+    "showSpots": true,
     "printSpotRoughRangeArray":true,
     "fittingMode":true,
-    "testModeFileID": 35,
+    "testModeFileID": 0,
     "plotSensitivity": 3,
     "plotSensitivity_low": 0.01,
     "plotSensitivity_up": 0.7,
     "scaleDownFactor": 1,
-    "printFittedParameters": true,
+    "printFittedParameters": false,
     "plotFittedFunc": false
   },
 
@@ -37,7 +37,7 @@
     "smartXYGuessBoundRange":3,
     "guessUpBound": [100000, 200, 200, 15, 15, 180, 15, 15, 5000],
     "guessLowBound": [0, -200, -20, 0.0001, 0.0001 , -180, -15, -15, 0],
-    "saveFitFuncPlot":true,
+    "saveFitFuncPlot":false,
     "saveFitFuncPlotFileRemark": "adjust XCenter by +1_YCenter by +1"
   },
 
