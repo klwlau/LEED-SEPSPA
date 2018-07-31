@@ -47,11 +47,11 @@ def fittingMode():
         if counter % CSVwriteBuffer == 0:
             saveToCSV(writeBufferArray, CSVName)
             writeBufferArray = []
-            print("---------------save to" + CSVName + "---------------")
+            print("---------------save to" + CSVName + "--------- %.2f Minutes ---" % ((time.time() - start_time) / 60))
 
         if counter == (fileAmount - 1):
             saveToCSV(writeBufferArray, CSVName)
-            print("---------------save to" + CSVName + "---------------")
+            print("---------------save to" + CSVName + "--------- %.2f Minutes ---" % ((time.time() - start_time) / 60))
         counter += 1
 
 
@@ -81,11 +81,11 @@ def sepMode():
         if counter % CSVwriteBuffer == 0:
             saveToCSV(writeBufferArray, CSVName)
             writeBufferArray = []
-            print("---------------save to"+ CSVName + "---------------")
+            print("---------------save to" + CSVName + "--------- %.2f Minutes ---" % ((time.time() - start_time) / 60))
 
         if counter == (fileAmount - 1):
             saveToCSV(writeBufferArray, CSVName)
-            print("---------------save to"+ CSVName + "---------------")
+            print("---------------save to" + CSVName + "--------- %.2f Minutes ---" % ((time.time() - start_time) / 60))
         counter += 1
 
 
@@ -139,7 +139,7 @@ else:
         sepMode()
         print("save to :" + CSVName)
 
-print("--- %s Minutes ---" % ((time.time() - start_time) / 60))
+print("--- %.2f Minutes ---" % ((time.time() - start_time) / 60))
 print("done")
 
 # errorList = np.array(errorList)
