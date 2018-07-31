@@ -6,9 +6,19 @@ import datetime
 from UsedFunc import *
 
 
+def printSaveStatus():
+    global counter
+    if counter != 0:
+        elapsedTime = ((time.time() - start_time) / 60)
+        totalTime = elapsedTime/(counter / fileAmount)
+        timeLeft = totalTime - elapsedTime
 
+        print( "---Elapsed Time: %.2f / %.2f Minutes ---" % (elapsedTime,totalTime)
+               +"---Time Left: %.2f  Minutes ---" % timeLeft
+               +"--save to" + CSVName )
 
 def fittingMode():
+    global counter
     # init first row in CSV file
     # writeBufferArray for 2D normal distribution
     writeBufferArray = [["FileID", "File Name", "Number of Spots",
@@ -21,16 +31,6 @@ def fittingMode():
                          "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C",
                          "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C"]]
 
-    # writeBufferArray for 2D Skew normal distribution
-    # writeBufferArray = [["FileID", "File Name", "Number of Spots",
-    #                      "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
-    #                      "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
-    #                      "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
-    #                      "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
-    #                      "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
-    #                      "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
-    #                      "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C",
-    #                      "Am", "x_0", "y_0", "sigma_x", "sigma_y", "shape_x", "shape_y", "theta", "A", "B", "C"]]
     #
     counter = 0
     fileAmount = len(fileList)
@@ -47,15 +47,16 @@ def fittingMode():
         if counter % CSVwriteBuffer == 0:
             saveToCSV(writeBufferArray, CSVName)
             writeBufferArray = []
-            print("---------------save to" + CSVName + "--------- %.2f Minutes ---" % ((time.time() - start_time) / 60))
+            printSaveStatus()
 
         if counter == (fileAmount - 1):
             saveToCSV(writeBufferArray, CSVName)
-            print("---------------save to" + CSVName + "--------- %.2f Minutes ---" % ((time.time() - start_time) / 60))
+            printSaveStatus()
         counter += 1
 
 
 def sepMode():
+    global counter
     # init first row in CSV file
     writeBufferArray = [["FileID", "File Name", "Number of Spots",
                          "Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta",
@@ -81,11 +82,11 @@ def sepMode():
         if counter % CSVwriteBuffer == 0:
             saveToCSV(writeBufferArray, CSVName)
             writeBufferArray = []
-            print("---------------save to" + CSVName + "--------- %.2f Minutes ---" % ((time.time() - start_time) / 60))
+            printSaveStatus()
 
         if counter == (fileAmount - 1):
             saveToCSV(writeBufferArray, CSVName)
-            print("---------------save to" + CSVName + "--------- %.2f Minutes ---" % ((time.time() - start_time) / 60))
+            printSaveStatus()
         counter += 1
 
 
@@ -119,7 +120,10 @@ else:
     fileList = glob.glob(dataFolderName + "/*.tif")
 fileList = sorted(fileList)
 
-# fileList = fileList[:10]
+# fileList = fileList[:30]
+
+counter = 0
+fileAmount = len(fileList)
 
 setPicDim(fileList[0])  # to set the picWidth,picHeight for findSpot function
 mask = makeMask(configList["maskConfig"]["mask_x_center"], configList["maskConfig"]["mask_y_center"],
@@ -139,7 +143,7 @@ else:
         sepMode()
         print("save to :" + CSVName)
 
-print("--- %.2f Minutes ---" % ((time.time() - start_time) / 60))
+print("--- Total Time: %.2f Minutes ---" % ((time.time() - start_time) / 60))
 print("done")
 
 # errorList = np.array(errorList)
