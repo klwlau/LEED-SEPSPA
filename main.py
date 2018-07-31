@@ -17,6 +17,10 @@ def printSaveStatus():
                +"---Time Left: %.2f  Minutes ---" % timeLeft
                +"--save to" + CSVName )
 
+def printCurrentStatus(counter,numberOfSpots,filePath):
+    print(counter, ", ", "%.2f" % (counter / fileAmount * 100), "%, ", numberOfSpots, ",", filePath)
+
+
 def fittingMode():
     global counter
     # init first row in CSV file
@@ -42,7 +46,8 @@ def fittingMode():
                                            showSpots=False, fileID=counter,saveFitFuncPlot= configList["fittingParameters"]["saveFitFuncPlot"])
         writeBufferArray.append(templist)
 
-        print(counter, ",", numberOfSpots, ",", filePath, ",", counter / fileAmount * 100, "%")
+        # print(counter, ",", numberOfSpots, ",", filePath, ",", counter / fileAmount * 100, "%")
+        printCurrentStatus(counter, numberOfSpots, filePath)
 
         if counter % CSVwriteBuffer == 0:
             saveToCSV(writeBufferArray, CSVName)
@@ -69,15 +74,16 @@ def sepMode():
     counter = 0
     fileAmount = len(fileList)
 
-    for fileName in fileList:
+    for filePath in fileList:
         # need to add all parameters back
-        templist, numberOfSpots = findSpot(fileName, configList["findSpotParameters"]["searchThreshold"],
+        templist, numberOfSpots = findSpot(filePath, configList["findSpotParameters"]["searchThreshold"],
                                            mask, scaleDownFactor=configList["findSpotParameters"]["scaleDownFactor"],
                                            showSpots=False, fileID=counter,
                                            fittingMode=False)
         writeBufferArray.append(templist)
 
-        print(counter, ",", numberOfSpots, ",", fileName, ",", counter / fileAmount * 100, "%")
+        # print(counter, ",", numberOfSpots, ",", fileName, ",", counter / fileAmount * 100, "%")
+        printCurrentStatus(counter, numberOfSpots, filePath)
 
         if counter % CSVwriteBuffer == 0:
             saveToCSV(writeBufferArray, CSVName)

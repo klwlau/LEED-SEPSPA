@@ -171,6 +171,7 @@ def calMeanError(zpred, cropArray, meanArea=10):
 def plotFitFunc(fit_params, imageArray, plotSensitivity=10, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
     global dataFolderName, configList
 
+
     xi, yi, zpred = genFittedFuncArray(fit_params)
 
     fig, ax1 = plt.subplots()
