@@ -168,7 +168,7 @@ def calMeanError(zpred, cropArray, meanArea=10):
     return ((zpred - cropArray) ** 2).mean()
 
 
-def plotFitFunc(fit_params, imageArray, plotSensitivity=10, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
+def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
     global dataFolderName, configList
 
 
@@ -177,11 +177,12 @@ def plotFitFunc(fit_params, imageArray, plotSensitivity=10, saveFitFuncPlot=Fals
     fig, ax1 = plt.subplots()
     ax2 = ax1.twinx()
     m, s = np.mean(imageArray), np.std(imageArray)
-    ax1.imshow(imageArray, interpolation='nearest', cmap='jet',
+    cs = ax1.imshow(imageArray, interpolation='nearest', cmap='jet',
                vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
                origin='lower')
     ax2.contour(xi, yi, zpred, cmap='jet',
                 vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s, alpha=1)
+    fig.colorbar(cs)
     if saveFitFuncPlot:
         if saveFitFuncFileName == "fitFuncFig":
             plt.savefig(saveFitFuncFileName + ".png")
