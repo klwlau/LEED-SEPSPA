@@ -1,7 +1,7 @@
 {
-  "dataFolderName": "/Users/wilsonlau/Desktop/PC and Mac/Raw_Tony_graphene/ShiftCenterResult/",
-  "CSVwriteBuffer": 3,
-  "csvNameRemark":"Tony Test_branchMark",
+  "dataFolderName": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180221_scan01_Raw/",
+  "CSVwriteBuffer": 20,
+  "csvNameRemark":"Tony_20180221_scan01_Raw",
 
   "maskConfig": {
     "mask_x_center": 454,
@@ -16,7 +16,7 @@
     "scaleDownFactor":1
   },
 
-  "testMode": false,
+  "testMode": true,
   "testModeParameters":{
     "showSpots": true,
     "printSpotRoughRangeArray":true,
@@ -37,8 +37,8 @@
     "smartXYGuessBoundRange":3,
     "guessUpBound": [100000, 200, 200, 15, 15, 180, 15, 15, 5000],
     "guessLowBound": [0, -200, -20, 0.0001, 0.0001 , -180, -15, -15, 0],
-    "saveFitFuncPlot":true,
-    "saveFitFuncPlotFileRemark": "firstOrderFitting"
+    "saveFitFuncPlot":false,
+    "saveFitFuncPlotFileRemark": "firstOrderFitting_win10"
   },
 
   "saveMode": false,

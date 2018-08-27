@@ -3,13 +3,13 @@ import sep
 from PIL import Image
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
-from fitFunc import *
 import csv
 import itertools
 import json
 import os
 import shutil
 import ntpath
+from fitFunc import *
 
 configList = json.load(open("configList.json"))
 ######parameter list######
