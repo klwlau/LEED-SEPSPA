@@ -18,7 +18,7 @@ fileList = sorted(fileList)
 # endID = 1210
 # fileList = fileList[startID:endID]
 makeAnimation = False
-searchThreshold = 100
+searchThreshold = 1000
 aniPLotRange =10
 
 counter = startID
