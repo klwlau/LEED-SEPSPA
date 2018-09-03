@@ -221,6 +221,7 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
         # returnArray = np.array([objects_list['x'], objects_list['y']]).T
 
         if printReturnArray:
+            print(len(returnArray))
             print(returnArray)
         return returnArray
 
@@ -229,6 +230,7 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
                                 objects_list['xmax'], objects_list['ymax'],
                                 objects_list['a'], objects_list['b'], objects_list['theta']]).T
         if printReturnArray:
+            print(len(returnArray))
             print(returnArray)
         return returnArray
 
