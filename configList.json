@@ -1,32 +1,32 @@
 {
-  "dataFolderName": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180221_scan01_Raw/",
+  "dataFolderName": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180221_scan01_Raw/ShiftCenterResult/",
   "CSVwriteBuffer": 20,
-  "csvNameRemark":"Tony_20180221_scan01_Raw",
+  "csvNameRemark":"Tony_20180221_scan01_Raw_sepOnly_highSearchThreshold",
 
   "maskConfig": {
-    "mask_x_center": 454,
-    "mask_y_center": 415,
+    "mask_x_center": 452,
+    "mask_y_center": 410,
     "innerRadius": 250,
-    "outerRadius": 400
+    "outerRadius": 411
   },
 
   "findSpotParameters":{
-    "searchThreshold":80,
+    "searchThreshold":100,
     "cropRange": 10,
     "scaleDownFactor":1
   },
 
-  "testMode": true,
+  "testMode": false,
   "testModeParameters":{
     "showSpots": true,
     "printSpotRoughRangeArray":true,
     "fittingMode":true,
-    "testModeFileID": 0,
+    "testModeFileID": 1057,
     "plotSensitivity": 3,
     "plotSensitivity_low": 0.01,
     "plotSensitivity_up": 0.7,
     "scaleDownFactor": 1,
-    "printFittedParameters": false,
+    "printFittedParameters": true,
     "plotFittedFunc": false
   },
 
@@ -34,9 +34,9 @@
   "fittingParameters": {
     "intGuess": [5, 5,  90, 0, 0, 0],
     "smartXYGuessBound": true,
-    "smartXYGuessBoundRange":3,
+    "smartXYGuessBoundRange":10,
     "guessUpBound": [100000, 200, 200, 15, 15, 180, 15, 15, 5000],
-    "guessLowBound": [0, -200, -20, 0.0001, 0.0001 , -180, -15, -15, 0],
+    "guessLowBound": [0, -200, -200, 0.001, 0.001 , -180, -15, -15, 0],
     "saveFitFuncPlot":false,
     "saveFitFuncPlotFileRemark": "firstOrderFitting_win10"
   },
