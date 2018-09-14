@@ -1,15 +1,15 @@
 import time
 import glob
+
 start_time = time.time()
 from UsedFunc import *
 from scipy.ndimage.interpolation import shift
 import matplotlib.animation as animation
 import ntpath
 
-
 fig = plt.figure()
-plotSensitivity=3
-ims= []
+plotSensitivity = 3
+ims = []
 startID = 0
 dataFolderName = configList["dataFolderName"]
 fileList = glob.glob(dataFolderName + "/*.tif")
@@ -19,59 +19,55 @@ fileList = sorted(fileList)
 # fileList = fileList[startID:endID]
 makeAnimation = False
 searchThreshold = 1000
-aniPLotRange =10
+aniPLotRange = 10
 
 counter = startID
 setPicDim(fileList[0])
 makeShiftCenterResultDir(dataFolderName)
 
 mask = makeMask(configList["maskConfig"]["mask_x_center"], configList["maskConfig"]["mask_y_center"],
-                0,1000)
-errorList =[]
+                0, 1000)
+errorList = []
 setIntCenter = False
 for filePath in fileList:
     while True:
-        returnList,element,imageArray = findSpot(filePath, searchThreshold, mask, shiftCenterMode=True)
+        returnList, element, imageArray = findSpot(filePath, searchThreshold, mask, shiftCenterMode=True)
         if element == 1:
             break
-        if element >1:
-            searchThreshold = searchThreshold*1.1
-        if element <1:
-            searchThreshold = searchThreshold*0.9
+        if element > 1:
+            searchThreshold = searchThreshold * 1.1
+        if element < 1:
+            searchThreshold = searchThreshold * 0.9
         print("repeat ", counter, ", element: ", element, ", new searchThreshold: ", searchThreshold)
 
-
-    xCenter,yCenter = returnList[4],returnList[5]
+    xCenter, yCenter = returnList[4], returnList[5]
     xCenter, yCenter = int(xCenter), int(yCenter)
     if setIntCenter != True:
-        intXCenter,intYCenter = xCenter, yCenter
+        intXCenter, intYCenter = xCenter, yCenter
         aniXUp, aniYUp = intXCenter + aniPLotRange, intYCenter + aniPLotRange
         aniXDown, aniYDown = intXCenter - aniPLotRange, intYCenter - aniPLotRange
         setIntCenter = True
 
     xShift = intXCenter - xCenter
     yShift = intYCenter - yCenter
-    imageArray = shift(imageArray,[yShift,xShift])
+    imageArray = shift(imageArray, [yShift, xShift])
     fileName = ntpath.basename(filePath)
 
-
-    saveImArrayTo(imageArray,dataFolderName+"ShiftCenterResult/"+fileName)
+    saveImArrayTo(imageArray, dataFolderName + "ShiftCenterResult/" + fileName)
 
     plot_data = imageArray
     plot_data = plot_data[aniYDown:aniYUp, aniXDown:aniXUp]
     m, s = np.mean(plot_data), np.std(plot_data)
     im = plt.imshow(plot_data, interpolation='nearest', cmap='jet',
-               vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
-               origin='lower')
+                    vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
+                    origin='lower')
     ims.append([im])
 
     if element != 1:
         errorList.append(counter)
 
     print(counter, element)
-    counter+=1
-
-
+    counter += 1
 
 if makeAnimation:
     print("making animation")
@@ -84,15 +80,6 @@ if makeAnimation:
 
 print("errorList: ", errorList)
 print("done")
-
-
-
-
-
-
-
-
-
 
 # for fileName in fileList:
 #     plot_data = readLEEDImage(fileName)
@@ -115,4 +102,3 @@ print("done")
 # ani.save('dynamic_images.mp4')
 # print("ploting")
 # plt.show()
-
