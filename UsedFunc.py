@@ -168,18 +168,19 @@ def calMeanError(zpred, cropArray, meanArea=10):
     return ((zpred - cropArray) ** 2).mean()
 
 
-def plotFitFunc(fit_params, imageArray, plotSensitivity=5, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
+def plotFitFunc(fit_params, cropedArray, plotSensitivity=5, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
     global dataFolderName, configList
-
+    # cropedArray = np.fliplr(cropedArray)
+    # cropedArray = np.flipud(cropedArray)
 
     xi, yi, zpred = genFittedFuncArray(fit_params)
 
     fig, ax1 = plt.subplots()
     ax2 = ax1.twinx()
-    m, s = np.mean(imageArray), np.std(imageArray)
-    cs = ax1.imshow(imageArray, interpolation='nearest', cmap='jet',
-               vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
-               origin='lower')
+    m, s = np.mean(cropedArray), np.std(cropedArray)
+    cs = ax1.imshow(cropedArray, interpolation='nearest', cmap='jet',
+                    vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
+                    origin='lower')
     ax2.contour(xi, yi, zpred, cmap='jet',
                 vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s, alpha=1)
     fig.colorbar(cs)
