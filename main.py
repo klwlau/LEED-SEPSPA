@@ -1,8 +1,10 @@
 import time
 import glob
+
 start_time = time.time()
 print("Program Started, Loading Libraries")
 import datetime
+
 print("Start Loading UsedFunc")
 from UsedFunc import *
 
@@ -11,14 +13,15 @@ def printSaveStatus():
     global counter
     if counter != 0:
         elapsedTime = ((time.time() - start_time) / 60)
-        totalTime = elapsedTime/(counter / fileAmount)
+        totalTime = elapsedTime / (counter / fileAmount)
         timeLeft = totalTime - elapsedTime
 
-        print( "---Elapsed Time: %.2f / %.2f Minutes ---" % (elapsedTime,totalTime)
-               +"---Time Left: %.2f  Minutes ---" % timeLeft
-               +"--save to" + CSVName )
+        print("---Elapsed Time: %.2f / %.2f Minutes ---" % (elapsedTime, totalTime)
+              + "---Time Left: %.2f  Minutes ---" % timeLeft
+              + "--save to" + CSVName)
 
-def printCurrentStatus(counter,numberOfSpots,filePath):
+
+def printCurrentStatus(counter, numberOfSpots, filePath):
     print(counter, ", ", "%.2f" % (counter / fileAmount * 100), "%, ", numberOfSpots, ",", filePath)
 
 
@@ -27,14 +30,14 @@ def fittingMode():
     # init first row in CSV file
     # writeBufferArray for 2D normal distribution
     writeBufferArray = [["FileID", "File Name", "Number of Spots",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C"]]
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "R^2",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "R^2",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "R^2",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "R^2",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "R^2",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "R^2",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "R^2",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "R^2"]]
 
     #
     counter = 0
@@ -44,7 +47,8 @@ def fittingMode():
         # need to add all parameters back
         templist, numberOfSpots = findSpot(filePath, configList["findSpotParameters"]["searchThreshold"],
                                            mask, scaleDownFactor=configList["findSpotParameters"]["scaleDownFactor"],
-                                           showSpots=False, fileID=counter,saveFitFuncPlot= configList["fittingParameters"]["saveFitFuncPlot"])
+                                           showSpots=False, fileID=counter,
+                                           saveFitFuncPlot=configList["fittingParameters"]["saveFitFuncPlot"])
         writeBufferArray.append(templist)
 
         # print(counter, ",", numberOfSpots, ",", filePath, ",", counter / fileAmount * 100, "%")
@@ -117,7 +121,7 @@ print("---Initializing---")
 timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S')
 dataFolderName = configList["dataFolderName"]
 makeResultDir()
-CSVName = "./Result/"+timeStamp +"_" +configList["csvNameRemark"] + ".csv"
+CSVName = "./Result/" + timeStamp + "_" + configList["csvNameRemark"] + ".csv"
 copyJsontoLog(timeStamp)
 
 # int parameter, make Mask, read file name in folderimport json

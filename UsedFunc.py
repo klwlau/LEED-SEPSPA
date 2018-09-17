@@ -157,6 +157,13 @@ def genFittedFuncArray(fit_params, outputZpredOnly=False):
     else:
         return xi, yi, zpred
 
+@jit
+def calRSquareError(array1, array2):
+    error = array1 - array2
+    errorSquare = error**2
+    numberOfElement = array1.size
+    return np.sum(errorSquare)/numberOfElement
+
 
 def calMeanError(zpred, cropArray, meanArea=10):
     # zpred = np.array(zpred)
@@ -271,17 +278,20 @@ def fitCurve(imageArray, centerArray, objectList, plotFittedFunc=False, printFit
         if saveFitFuncPlot == True: plotFitFunc(fit_params, cropedArray, saveFitFuncPlot=saveFitFuncPlot,
                                                 saveFitFuncFileName=saveFitFuncFileName + "_" + str(spotNumber))
 
-        errorList.append(calMeanError(genFittedFuncArray(fit_params, outputZpredOnly=True), cropedArray))
+        RSquare = calRSquareError(genFittedFuncArray(fit_params, outputZpredOnly=True),cropedArray)
 
         ####do cord transform
         fit_params[1] = fit_params[1] - cropRange + centerArray[spotNumber][0]
         fit_params[2] = fit_params[2] - cropRange + centerArray[spotNumber][1]
 
+
+
         fit_params = fit_params.tolist()
+        fit_params.append(RSquare)
         allFittedSpot.append(fit_params)
 
         if printFittedParameters == True: print("Fitted Parameters :", fit_params)
-        # Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
+        # Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C,R^2
 
     return allFittedSpot
 
