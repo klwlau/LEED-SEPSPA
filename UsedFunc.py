@@ -172,6 +172,7 @@ def plotFitFunc(fit_params, cropedArray, plotSensitivity=5, saveFitFuncPlot=Fals
     global dataFolderName, configList
     # cropedArray = np.fliplr(cropedArray)
     # cropedArray = np.flipud(cropedArray)
+    # fit_params[4], fit_params[3] = fit_params[3], fit_params[4]
 
     xi, yi, zpred = genFittedFuncArray(fit_params)
 
@@ -224,7 +225,7 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
         if printReturnArray:
             print(len(returnArray))
             print(returnArray)
-        return returnArray
+        return returnArray, objects_list
 
     else:
         returnArray = np.array([objects_list['peak'], objects_list['x'], objects_list['y'],
@@ -236,13 +237,12 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
         return returnArray
 
 
-def fitCurve(imageArray, centerArray, plotFittedFunc=False, printFittedParameters=False,
+def fitCurve(imageArray, centerArray, objectList, plotFittedFunc=False, printFittedParameters=False,
              saveFitFuncPlot=False, saveFitFuncFileName=""):
     global cropRange, guessBound, intConfigGuess, configList, errorList
     allFittedSpot = []
 
-    for i in range(len(centerArray)):
-        spotNumber = i
+    for spotNumber in range(len(centerArray)):
         xyzArray = []
 
         cropedArray = imageArray[
@@ -251,17 +251,20 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printFittedParameter
 
         # plotArray(cropedArray)
 
-        for i in range(len(cropedArray)):
-            for j in range(len(cropedArray[i])):
-                xyzArray.append([i, j, cropedArray[i][j]])
+        for xx in range(len(cropedArray)):
+            for yy in range(len(cropedArray[xx])):
+                xyzArray.append([xx, yy, cropedArray[xx][yy]])
 
         x, y, z = np.array(xyzArray).T
         xy = x, y
         i = z.argmax()
 
         intGuess = [z[i], x[i], y[i]]
-
+        intConfigGuess[0] = objectList[spotNumber]["a"]
+        intConfigGuess[1] = objectList[spotNumber]["b"]
+        intConfigGuess[2] = np.rad2deg(objectList[spotNumber]["theta"])
         intGuess = intGuess + intConfigGuess
+
 
         if configList["fittingParameters"]["smartXYGuessBound"]:
             guessBound[0][1] = x[i] - configList["fittingParameters"]["smartXYGuessBoundRange"]
@@ -273,6 +276,13 @@ def fitCurve(imageArray, centerArray, plotFittedFunc=False, printFittedParameter
 
         fit_params[2] += 1
 
+        # if fit_params[3]>fit_params[4]:
+        #     fit_params[4],fit_params[3] = fit_params[3],fit_params[4]
+
+        print("-----------",intConfigGuess[2], fit_params[5])
+        # fit_params[5] = np.rad2deg(intConfigGuess[2])
+        # print(fit_params[5])
+        # if printFittedParameters == True: print("Fitted Parameters :", fit_params)
 
         if plotFittedFunc: plotFitFunc(fit_params, cropedArray)
         if saveFitFuncPlot == True: plotFitFunc(fit_params, cropedArray, saveFitFuncPlot=saveFitFuncPlot,
@@ -308,14 +318,16 @@ def findSpot(filePath, searchThreshold, mask, showSpots=False, plotSensitivity_l
     imageArray = readLEEDImage(filePath)
     fileName = ntpath.basename(filePath)[:-4]
     returnArray = []
-    centerArray = getSpotRoughRange(imageArray, searchThreshold, mask, scaleDownFactor=scaleDownFactor,
-                                    showSpots=showSpots,
-                                    plotSensitivity_low=plotSensitivity_low, plotSensitivity_up=plotSensitivity_up,
-                                    saveFileName=filePath, fittingMode=fittingMode,
-                                    printReturnArray=printSpotRoughRangeArray)
+    centerArray, objectList = getSpotRoughRange(imageArray, searchThreshold, mask, scaleDownFactor=scaleDownFactor,
+                                                showSpots=showSpots,
+                                                plotSensitivity_low=plotSensitivity_low,
+                                                plotSensitivity_up=plotSensitivity_up,
+                                                saveFileName=filePath, fittingMode=fittingMode,
+                                                printReturnArray=printSpotRoughRangeArray)
+
     if fittingMode:
         returnArray.append(
-            fitCurve(imageArray, centerArray, plotFittedFunc=plotFittedFunc,
+            fitCurve(imageArray, centerArray, objectList, plotFittedFunc=plotFittedFunc,
                      printFittedParameters=printFittedParameters,
                      saveFitFuncPlot=saveFitFuncPlot, saveFitFuncFileName=fileName))
         returnList = list(itertools.chain.from_iterable(returnArray))

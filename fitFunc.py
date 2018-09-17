@@ -14,6 +14,7 @@ def pdf_skewnormal(x, location=0.0, scale=1.0, shape=0.0):
 def fitFunc(xy, Amp, x_0, y_0, sigma_x, sigma_y, theta, A, B, C):
     #     global cccounter
     #     cccounter+=1
+
     x, y = xy
     theta = np.deg2rad(theta)
     a = np.cos(theta) ** 2 / (2 * sigma_x ** 2) + np.sin(theta) ** 2 / (2 * sigma_y ** 2)
