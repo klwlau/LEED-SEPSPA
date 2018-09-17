@@ -141,8 +141,11 @@ def plotSpots(imgArray, objects_list, plotSensitivity_low=0.0, plotSensitivity_u
 
 
 def genFittedFuncArray(fit_params, outputZpredOnly=False):
-    xi, yi = np.mgrid[fit_params[1] - cropRange:fit_params[1] + cropRange:cropRange * 2 * 1j,
-             fit_params[2] - cropRange:fit_params[2] + cropRange:2 * cropRange * 1j]
+    xi, yi = np.mgrid[0:cropRange * 2, 0:cropRange * 2]
+
+    # xi, yi = np.mgrid[fit_params[1] - cropRange:fit_params[1] + cropRange,
+    #          fit_params[2] - cropRange:fit_params[2] + cropRange] # :(cropRange * 2 ) * 1j
+
     xyi = np.vstack([xi.ravel(), yi.ravel()])
 
     zpred = fitFunc(xyi, *fit_params)
@@ -170,9 +173,6 @@ def calMeanError(zpred, cropArray, meanArea=10):
 
 def plotFitFunc(fit_params, cropedArray, plotSensitivity=5, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
     global dataFolderName, configList
-    # cropedArray = np.fliplr(cropedArray)
-    # cropedArray = np.flipud(cropedArray)
-    # fit_params[4], fit_params[3] = fit_params[3], fit_params[4]
 
     xi, yi, zpred = genFittedFuncArray(fit_params)
 
@@ -184,7 +184,7 @@ def plotFitFunc(fit_params, cropedArray, plotSensitivity=5, saveFitFuncPlot=Fals
                     origin='lower')
     fig.colorbar(cs)
     ax1.contour(yi, xi, zpred, cmap='jet',
-                vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s, alpha=1,origin='lower')
+                vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s, alpha=1, origin='lower')
     if saveFitFuncPlot:
         if saveFitFuncFileName == "fitFuncFig":
             plt.savefig(saveFitFuncFileName + ".png")
@@ -196,11 +196,6 @@ def plotFitFunc(fit_params, cropedArray, plotSensitivity=5, saveFitFuncPlot=Fals
         return
 
     plt.show()
-
-
-# def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array,
-#                       scaleDownFactor: float = 10, plotSensitivity: float = 3, showSpots: bool = False,
-#                       fullInformation: bool = False, saveMode=False, saveFileName="test") -> np.array:
 
 
 @jit
@@ -249,8 +244,6 @@ def fitCurve(imageArray, centerArray, objectList, plotFittedFunc=False, printFit
                       int(centerArray[spotNumber][1]) - cropRange: int(centerArray[spotNumber][1]) + cropRange,
                       int(centerArray[spotNumber][0]) - cropRange: int(centerArray[spotNumber][0]) + cropRange]
 
-        # plotArray(cropedArray)
-
         for xx in range(len(cropedArray)):
             for yy in range(len(cropedArray[xx])):
                 xyzArray.append([xx, yy, cropedArray[xx][yy]])
@@ -265,7 +258,6 @@ def fitCurve(imageArray, centerArray, objectList, plotFittedFunc=False, printFit
         intConfigGuess[2] = np.rad2deg(objectList[spotNumber]["theta"])
         intGuess = intGuess + intConfigGuess
 
-
         if configList["fittingParameters"]["smartXYGuessBound"]:
             guessBound[0][1] = x[i] - configList["fittingParameters"]["smartXYGuessBoundRange"]
             guessBound[1][1] = x[i] + configList["fittingParameters"]["smartXYGuessBoundRange"]
@@ -274,15 +266,6 @@ def fitCurve(imageArray, centerArray, objectList, plotFittedFunc=False, printFit
 
         fit_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
 
-        # fit_params[2] += 1
-
-        # if fit_params[3]>fit_params[4]:
-        #     fit_params[4],fit_params[3] = fit_params[3],fit_params[4]
-
-        print("-----------",intConfigGuess[2], fit_params[5])
-        # fit_params[5] = np.rad2deg(intConfigGuess[2])
-        # print(fit_params[5])
-        # if printFittedParameters == True: print("Fitted Parameters :", fit_params)
 
         if plotFittedFunc: plotFitFunc(fit_params, cropedArray)
         if saveFitFuncPlot == True: plotFitFunc(fit_params, cropedArray, saveFitFuncPlot=saveFitFuncPlot,
