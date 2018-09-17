@@ -177,14 +177,14 @@ def plotFitFunc(fit_params, cropedArray, plotSensitivity=5, saveFitFuncPlot=Fals
     xi, yi, zpred = genFittedFuncArray(fit_params)
 
     fig, ax1 = plt.subplots()
-    ax2 = ax1.twinx()
+    # ax2 = ax1.twinx()
     m, s = np.mean(cropedArray), np.std(cropedArray)
     cs = ax1.imshow(cropedArray, interpolation='nearest', cmap='jet',
                     vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
                     origin='lower')
-    ax2.contour(xi, yi, zpred, cmap='jet',
-                vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s, alpha=1)
     fig.colorbar(cs)
+    ax1.contour(yi, xi, zpred, cmap='jet',
+                vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s, alpha=1,origin='lower')
     if saveFitFuncPlot:
         if saveFitFuncFileName == "fitFuncFig":
             plt.savefig(saveFitFuncFileName + ".png")
@@ -274,7 +274,7 @@ def fitCurve(imageArray, centerArray, objectList, plotFittedFunc=False, printFit
 
         fit_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
 
-        fit_params[2] += 1
+        # fit_params[2] += 1
 
         # if fit_params[3]>fit_params[4]:
         #     fit_params[4],fit_params[3] = fit_params[3],fit_params[4]
