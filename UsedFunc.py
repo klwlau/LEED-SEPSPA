@@ -3,6 +3,7 @@ import sep
 from PIL import Image
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
+from pytictoc import TicToc
 import csv
 import itertools
 import json
@@ -10,6 +11,8 @@ import os
 import shutil
 import ntpath
 from fitFunc import *
+
+timer = TicToc()
 
 configList = json.load(open("configList.json"))
 ######parameter list######
@@ -157,12 +160,13 @@ def genFittedFuncArray(fit_params, outputZpredOnly=False):
     else:
         return xi, yi, zpred
 
+
 @jit
 def calRSquareError(array1, array2):
     error = array1 - array2
-    errorSquare = error**2
+    errorSquare = error ** 2
     numberOfElement = array1.size
-    return np.sum(errorSquare)/numberOfElement
+    return np.sum(errorSquare) / numberOfElement
 
 
 def calMeanError(zpred, cropArray, meanArea=10):
@@ -181,6 +185,9 @@ def calMeanError(zpred, cropArray, meanArea=10):
 def plotFitFunc(fit_params, cropedArray, plotSensitivity=5, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
     global dataFolderName, configList
 
+    R_square = fit_params[-1]
+    fit_params = fit_params[:-1]
+
     xi, yi, zpred = genFittedFuncArray(fit_params)
 
     fig, ax1 = plt.subplots()
@@ -190,8 +197,9 @@ def plotFitFunc(fit_params, cropedArray, plotSensitivity=5, saveFitFuncPlot=Fals
                     vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
                     origin='lower')
     fig.colorbar(cs)
-    ax1.contour(yi, xi, zpred, cmap='jet',
-                vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s, alpha=1, origin='lower')
+    plt.title("R^2= %.2f"%(R_square))
+    ax1.contour(yi, xi, zpred,
+                vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s, alpha=1, origin='lower')  # cmap='jet',
     if saveFitFuncPlot:
         if saveFitFuncFileName == "fitFuncFig":
             plt.savefig(saveFitFuncFileName + ".png")
@@ -273,21 +281,19 @@ def fitCurve(imageArray, centerArray, objectList, plotFittedFunc=False, printFit
 
         fit_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
 
+        RSquare = calRSquareError(genFittedFuncArray(fit_params, outputZpredOnly=True), cropedArray)
+        fit_params = fit_params.tolist()
+        fit_params.append(RSquare)
 
         if plotFittedFunc: plotFitFunc(fit_params, cropedArray)
         if saveFitFuncPlot == True: plotFitFunc(fit_params, cropedArray, saveFitFuncPlot=saveFitFuncPlot,
                                                 saveFitFuncFileName=saveFitFuncFileName + "_" + str(spotNumber))
-
-        RSquare = calRSquareError(genFittedFuncArray(fit_params, outputZpredOnly=True),cropedArray)
 
         ####do cord transform
         fit_params[1] = fit_params[1] - cropRange + centerArray[spotNumber][0]
         fit_params[2] = fit_params[2] - cropRange + centerArray[spotNumber][1]
 
 
-
-        fit_params = fit_params.tolist()
-        fit_params.append(RSquare)
         allFittedSpot.append(fit_params)
 
         if printFittedParameters == True: print("Fitted Parameters :", fit_params)

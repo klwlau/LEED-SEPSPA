@@ -29,7 +29,7 @@ def fittingMode():
     global counter
     # init first row in CSV file
     # writeBufferArray for 2D normal distribution
-    writeBufferArray = [["FileID", "File Name", "Number of Spots",
+    writeBufferArray = [["FileID", "File Name", "Number of Spots", "Elapsed Time",
                          "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "R^2",
                          "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "R^2",
                          "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "R^2",
@@ -44,11 +44,13 @@ def fittingMode():
     fileAmount = len(fileList)
 
     for filePath in fileList:
+        timer.tic()
         # need to add all parameters back
         templist, numberOfSpots = findSpot(filePath, configList["findSpotParameters"]["searchThreshold"],
                                            mask, scaleDownFactor=configList["findSpotParameters"]["scaleDownFactor"],
                                            showSpots=False, fileID=counter,
                                            saveFitFuncPlot=configList["fittingParameters"]["saveFitFuncPlot"])
+        templist.insert(3, timer.tocvalue())
         writeBufferArray.append(templist)
 
         # print(counter, ",", numberOfSpots, ",", filePath, ",", counter / fileAmount * 100, "%")
