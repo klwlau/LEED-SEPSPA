@@ -175,7 +175,7 @@ def calChiSquareError(fittedArray, rawArray):
     error = fittedArray - rawArray
     errorSquare = error ** 2
     # numberOfElement = fittedArray.size
-    return np.sum(errorSquare) / rawArray
+    return np.sum(errorSquare / rawArray)
 
 
 def calMeanError(zpred, cropArray, meanArea=10):
