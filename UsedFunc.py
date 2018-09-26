@@ -162,11 +162,20 @@ def genFittedFuncArray(fit_params, outputZpredOnly=False):
 
 
 @jit
-def calRSquareError(array1, array2):
-    error = array1 - array2
+def calRSquareError(fittedArray, rawArray):
+    error = fittedArray - rawArray
     errorSquare = error ** 2
-    numberOfElement = array1.size
+    numberOfElement = fittedArray.size
     return np.sum(errorSquare) / numberOfElement
+
+
+
+@jit
+def calChiSquareError(fittedArray, rawArray):
+    error = fittedArray - rawArray
+    errorSquare = error ** 2
+    # numberOfElement = fittedArray.size
+    return np.sum(errorSquare) / rawArray
 
 
 def calMeanError(zpred, cropArray, meanArea=10):
@@ -281,7 +290,7 @@ def fitCurve(imageArray, centerArray, objectList, plotFittedFunc=False, printFit
 
         fit_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
 
-        RSquare = calRSquareError(genFittedFuncArray(fit_params, outputZpredOnly=True), cropedArray)
+        RSquare = calChiSquareError(genFittedFuncArray(fit_params, outputZpredOnly=True), cropedArray)
         fit_params = fit_params.tolist()
         fit_params.append(RSquare)
 

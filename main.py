@@ -30,14 +30,14 @@ def fittingMode():
     # init first row in CSV file
     # writeBufferArray for 2D normal distribution
     writeBufferArray = [["FileID", "File Name", "Number of Spots", "Elapsed Time",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "R^2",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "R^2",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "R^2",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "R^2",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "R^2",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "R^2",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "R^2",
-                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "R^2"]]
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "Chi^2",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "Chi^2",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "Chi^2",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "Chi^2",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "Chi^2",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "Chi^2",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "Chi^2",
+                         "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "Chi^2"]]
 
     #
     counter = 0
