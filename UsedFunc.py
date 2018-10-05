@@ -340,20 +340,20 @@ def findSpot(filePath, searchThreshold, mask, showSpots=False, plotSensitivity_l
                      saveFitFuncPlot=saveFitFuncPlot, saveFitFuncFileName=fileName))
         returnList = list(itertools.chain.from_iterable(returnArray))
         returnList = list(itertools.chain.from_iterable(returnList))
-        elements = int(len(returnList) / 9)
+        numberOfSpots = int(len(returnList) / 10)
     else:
         returnArray.append(centerArray)
         returnList = list(itertools.chain.from_iterable(returnArray))
         returnList = list(itertools.chain.from_iterable(returnList))
-        elements = int(len(returnList) / 8)
+        numberOfSpots = int(len(returnList) / 8)
 
-    returnList.insert(0, elements)
+    returnList.insert(0, numberOfSpots)
     returnList.insert(0, filePath)
     returnList.insert(0, fileID)
     if shiftCenterMode:
-        return returnList, elements, imageArray
+        return returnList, numberOfSpots, imageArray
     else:
-        return returnList, elements
+        return returnList, numberOfSpots
 
 
 def saveImArrayTo(imageArray, fullPathAndFileName):
