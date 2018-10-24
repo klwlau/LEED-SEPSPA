@@ -194,7 +194,7 @@ def calMeanError(zpred, cropArray, meanArea=10):
 def plotFitFunc(fit_params, cropedArray, plotSensitivity=5, saveFitFuncPlot=False, saveFitFuncFileName="fitFuncFig"):
     global dataFolderName, configList
 
-    R_square = fit_params[-1]
+    Chi_square = fit_params[-1]
     fit_params = fit_params[:-1]
 
     xi, yi, zpred = genFittedFuncArray(fit_params)
@@ -206,7 +206,7 @@ def plotFitFunc(fit_params, cropedArray, plotSensitivity=5, saveFitFuncPlot=Fals
                     vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
                     origin='lower')
     fig.colorbar(cs)
-    plt.title("R^2= %.2f"%(R_square))
+    plt.title("Chi^2= %.2f"%(Chi_square))
     ax1.contour(yi, xi, zpred,
                 vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s, alpha=1, origin='lower')  # cmap='jet',
     if saveFitFuncPlot:
