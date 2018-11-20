@@ -143,11 +143,9 @@ def plotSpots(imgArray, objects_list, plotSensitivity_low=0.0, plotSensitivity_u
         plt.clf()
 
 
-def genFittedFuncArray(fit_params, outputZpredOnly=False):
+def genFittedFuncArray(fit_params,cropRange ,outputZpredOnly=False,):
     xi, yi = np.mgrid[0:cropRange * 2, 0:cropRange * 2]
 
-    # xi, yi = np.mgrid[fit_params[1] - cropRange:fit_params[1] + cropRange,
-    #          fit_params[2] - cropRange:fit_params[2] + cropRange] # :(cropRange * 2 ) * 1j
 
     xyi = np.vstack([xi.ravel(), yi.ravel()])
 
@@ -197,7 +195,7 @@ def plotFitFunc(fit_params, cropedArray, plotSensitivity=5, saveFitFuncPlot=Fals
     Chi_square = fit_params[-1]
     fit_params = fit_params[:-1]
 
-    xi, yi, zpred = genFittedFuncArray(fit_params)
+    xi, yi, zpred = genFittedFuncArray(fit_params,cropRange)
 
     fig, ax1 = plt.subplots()
     # ax2 = ax1.twinx()
@@ -262,45 +260,51 @@ def fitCurve(imageArray, centerArray, objectList, plotFittedFunc=False, printFit
     allFittedSpot = []
 
     for spotNumber in range(len(centerArray)):
-        xyzArray = []
+        RSquare = 100000
+        adcropRange = cropRange
 
-        cropedArray = imageArray[
-                      int(centerArray[spotNumber][1]) - cropRange: int(centerArray[spotNumber][1]) + cropRange,
-                      int(centerArray[spotNumber][0]) - cropRange: int(centerArray[spotNumber][0]) + cropRange]
+        while RSquare > configList["fittingParameters"]["ChiSqThreshold"]:
+            xyzArray = []
+            cropedArray = imageArray[
+                          int(centerArray[spotNumber][1]) - adcropRange: int(centerArray[spotNumber][1]) + adcropRange,
+                          int(centerArray[spotNumber][0]) - adcropRange: int(centerArray[spotNumber][0]) + adcropRange]
 
-        for xx in range(len(cropedArray)):
-            for yy in range(len(cropedArray[xx])):
-                xyzArray.append([xx, yy, cropedArray[xx][yy]])
+            for xx in range(len(cropedArray)):
+                for yy in range(len(cropedArray[xx])):
+                    xyzArray.append([xx, yy, cropedArray[xx][yy]])
 
-        x, y, z = np.array(xyzArray).T
-        xy = x, y
-        i = z.argmax()
+            x, y, z = np.array(xyzArray).T
+            xy = x, y
+            i = z.argmax()
 
-        intGuess = [z[i], x[i], y[i]]
-        intConfigGuess[0] = objectList[spotNumber]["a"]
-        intConfigGuess[1] = objectList[spotNumber]["b"]
-        intConfigGuess[2] = np.rad2deg(objectList[spotNumber]["theta"])
-        intGuess = intGuess + intConfigGuess
+            intGuess = [z[i], x[i], y[i]]
+            intConfigGuess[0] = objectList[spotNumber]["a"]
+            intConfigGuess[1] = objectList[spotNumber]["b"]
+            intConfigGuess[2] = np.rad2deg(objectList[spotNumber]["theta"])
+            intGuess = intGuess + intConfigGuess
 
-        if configList["fittingParameters"]["smartXYGuessBound"]:
-            guessBound[0][1] = x[i] - configList["fittingParameters"]["smartXYGuessBoundRange"]
-            guessBound[1][1] = x[i] + configList["fittingParameters"]["smartXYGuessBoundRange"]
-            guessBound[0][2] = y[i] - configList["fittingParameters"]["smartXYGuessBoundRange"]
-            guessBound[1][2] = y[i] + configList["fittingParameters"]["smartXYGuessBoundRange"]
+            if configList["fittingParameters"]["smartXYGuessBound"]:
+                guessBound[0][1] = x[i] - configList["fittingParameters"]["smartXYGuessBoundRange"]
+                guessBound[1][1] = x[i] + configList["fittingParameters"]["smartXYGuessBoundRange"]
+                guessBound[0][2] = y[i] - configList["fittingParameters"]["smartXYGuessBoundRange"]
+                guessBound[1][2] = y[i] + configList["fittingParameters"]["smartXYGuessBoundRange"]
 
-        fit_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
+            fit_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
+            RSquare = calChiSquareError(genFittedFuncArray(fit_params,adcropRange, outputZpredOnly=True), cropedArray)
+            adcropRange -= 2
 
-        RSquare = calChiSquareError(genFittedFuncArray(fit_params, outputZpredOnly=True), cropedArray)
+
         fit_params = fit_params.tolist()
         fit_params.append(RSquare)
+        # print(RSquare)
 
         if plotFittedFunc: plotFitFunc(fit_params, cropedArray)
         if saveFitFuncPlot == True: plotFitFunc(fit_params, cropedArray, saveFitFuncPlot=saveFitFuncPlot,
                                                 saveFitFuncFileName=saveFitFuncFileName + "_" + str(spotNumber))
 
         ####do cord transform
-        fit_params[1] = fit_params[1] - cropRange + centerArray[spotNumber][0]
-        fit_params[2] = fit_params[2] - cropRange + centerArray[spotNumber][1]
+        fit_params[1] = fit_params[1] - adcropRange + centerArray[spotNumber][0]
+        fit_params[2] = fit_params[2] - adcropRange + centerArray[spotNumber][1]
 
 
         allFittedSpot.append(fit_params)

@@ -1,7 +1,7 @@
 {
   "dataFolderName": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
   "CSVwriteBuffer": 20,
-  "csvNameRemark":"20180223_scan01_50X50",
+  "csvNameRemark":"20180223_scan01_adcrop",
 
   "maskConfig": {
     "mask_x_center": 456,
@@ -12,11 +12,11 @@
 
   "findSpotParameters":{
     "searchThreshold":80,
-    "cropRange": 25,
+    "cropRange": 10,
     "scaleDownFactor":1
   },
 
-  "testMode": false,
+  "testMode": true,
   "testModeParameters":{
     "showSpots": true,
     "printSpotRoughRangeArray":true,
@@ -26,19 +26,20 @@
     "plotSensitivity_low": 0.01,
     "plotSensitivity_up": 0.7,
     "scaleDownFactor": 1,
-    "printFittedParameters": false,
-    "plotFittedFunc": false
+    "printFittedParameters": true,
+    "plotFittedFunc": true
   },
 
-  "fittingMode":true,
+  "fittingMode":false,
   "fittingParameters": {
     "intGuess": [5, 5,  90, 0, 0, 0],
     "smartXYGuessBound": true,
     "smartXYGuessBoundRange":10,
     "guessUpBound": [100000, 200, 200, 30, 30, 180, 15, 15, 5000],
     "guessLowBound": [0, -200, -200, 0.001, 0.001 , -180, -15, -15, 0],
+    "ChiSqThreshold": 300,
     "saveFitFuncPlot":false,
-    "saveFitFuncPlotFileRemark": "20X20"
+    "saveFitFuncPlotFileRemark": "adjCrop"
   }
 
 
