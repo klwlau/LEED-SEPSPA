@@ -4,12 +4,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 from pytictoc import TicToc
-import csv
-import itertools
-import json
-import os
-import shutil
-import ntpath
+import csv, itertools, json, os, shutil, ntpath
 from fitFunc import *
 
 timer = TicToc()
@@ -143,9 +138,8 @@ def plotSpots(imgArray, objects_list, plotSensitivity_low=0.0, plotSensitivity_u
         plt.clf()
 
 
-def genFittedFuncArray(fit_params,cropRange ,outputZpredOnly=False,):
+def genFittedFuncArray(fit_params, cropRange, outputZpredOnly=False, ):
     xi, yi = np.mgrid[0:cropRange * 2, 0:cropRange * 2]
-
 
     xyi = np.vstack([xi.ravel(), yi.ravel()])
 
@@ -165,7 +159,6 @@ def calRSquareError(fittedArray, rawArray):
     errorSquare = error ** 2
     numberOfElement = fittedArray.size
     return np.sum(errorSquare) / numberOfElement
-
 
 
 @jit
@@ -195,7 +188,7 @@ def plotFitFunc(fit_params, cropedArray, plotSensitivity=5, saveFitFuncPlot=Fals
     Chi_square = fit_params[-1]
     fit_params = fit_params[:-1]
 
-    xi, yi, zpred = genFittedFuncArray(fit_params,cropRange)
+    xi, yi, zpred = genFittedFuncArray(fit_params, cropRange)
 
     fig, ax1 = plt.subplots()
     # ax2 = ax1.twinx()
@@ -204,7 +197,7 @@ def plotFitFunc(fit_params, cropedArray, plotSensitivity=5, saveFitFuncPlot=Fals
                     vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
                     origin='lower')
     fig.colorbar(cs)
-    plt.title("Chi^2= %.2f"%(Chi_square))
+    plt.title("Chi^2= %.2f" % (Chi_square))
     ax1.contour(yi, xi, zpred,
                 vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s, alpha=1, origin='lower')  # cmap='jet',
     if saveFitFuncPlot:
@@ -290,9 +283,8 @@ def fitCurve(imageArray, centerArray, objectList, plotFittedFunc=False, printFit
                 guessBound[1][2] = y[i] + configList["fittingParameters"]["smartXYGuessBoundRange"]
 
             fit_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
-            RSquare = calChiSquareError(genFittedFuncArray(fit_params,adcropRange, outputZpredOnly=True), cropedArray)
+            RSquare = calChiSquareError(genFittedFuncArray(fit_params, adcropRange, outputZpredOnly=True), cropedArray)
             adcropRange -= 2
-
 
         fit_params = fit_params.tolist()
         fit_params.append(RSquare)
@@ -305,7 +297,6 @@ def fitCurve(imageArray, centerArray, objectList, plotFittedFunc=False, printFit
         ####do cord transform
         fit_params[1] = fit_params[1] - adcropRange + centerArray[spotNumber][0]
         fit_params[2] = fit_params[2] - adcropRange + centerArray[spotNumber][1]
-
 
         allFittedSpot.append(fit_params)
 
