@@ -10,7 +10,7 @@ from fitFunc import *
 timer = TicToc()
 
 configList = json.load(open("configList.json"))
-######parameter list######
+# ##### parameter list######
 cropRange = configList["findSpotParameters"]["cropRange"]
 # Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
 guessUpBound = configList["fittingParameters"]["guessUpBound"]
@@ -18,12 +18,12 @@ guessLowBound = configList["fittingParameters"]["guessLowBound"]
 
 guessBound = [guessLowBound, guessUpBound]
 dataFolderName = configList["dataFolderName"]
-#    sigma_x,sigma_y,theta,A,B,C
+# sigma_x,sigma_y,theta,A,B,C
 intConfigGuess = configList["fittingParameters"]["intGuess"]
 errorList = []
 
 
-######parameter list######
+# ##### parameter list######
 
 def makeResultDir():
     if not os.path.exists(os.path.join(os.curdir, "Result")):
