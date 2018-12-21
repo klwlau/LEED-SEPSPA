@@ -34,6 +34,10 @@ def fitFunc(xy, Amp, x_0, y_0, sigma_x, sigma_y, theta, A, B, C):
 def fit2Gauss(xy, Amp_1, x_0_1, y_0_1, sigma_x_1, sigma_y_1, theta_1, Amp_2, x_0_2, y_0_2, sigma_x_2, sigma_y_2,
               theta_2, A, B, C):
     x, y = xy
+    g = gauss2D(x, y, Amp_1, x_0_1, y_0_1, sigma_x_1, sigma_y_1, theta_1)
+    g += gauss2D(x, y, Amp_2, x_0_2, y_0_2, sigma_x_2, sigma_y_2, theta_2)
+    g += backGroundEstimatedPlane(x, y, A, B, C)
+    return g
 
 # @jit
 # def fitFunc(xy, Amp, x_0, y_0, sigma_x, sigma_y, shape_x, shape_y, theta, A, B, C):
