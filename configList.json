@@ -1,5 +1,5 @@
 {
-  "dataFolderName": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
+  "dataFolderName": "D:/Resarch Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
   "CSVwriteBuffer": 20,
   "csvNameRemark":"20180223_scan01_adcrop",
 
@@ -35,9 +35,9 @@
     "intGuess": [5, 5,  90, 0, 0, 0],
     "smartXYGuessBound": true,
     "smartXYGuessBoundRange":10,
-    "guessUpBound": [100000, 200, 200, 30, 30, 180, 15, 15, 5000],
-    "guessLowBound": [0, -200, -200, 0.001, 0.001 , -180, -15, -15, 0],
-    "ChiSqThreshold": 300,
+    "guessUpBound": [100000, 200, 200,    30,     30,  180,  15,  15, 5000],
+    "guessLowBound": [0,    -200,-200, 0.001, 0.001 , -180, -15, -15,    0],
+    "ChiSqThreshold": 30000,
     "saveFitFuncPlot":false,
     "saveFitFuncPlotFileRemark": "adjCrop"
   }

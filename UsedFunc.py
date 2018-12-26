@@ -253,10 +253,10 @@ def fitCurve(imageArray, centerArray, objectList, plotFittedFunc=False, printFit
     allFittedSpot = []
 
     for spotNumber in range(len(centerArray)):
-        RSquare = 100000
+        ChiSquare = 100000
         adcropRange = cropRange
 
-        while RSquare > configList["fittingParameters"]["ChiSqThreshold"]:
+        while ChiSquare > configList["fittingParameters"]["ChiSqThreshold"]:
             xyzArray = []
             cropedArray = imageArray[
                           int(centerArray[spotNumber][1]) - adcropRange: int(centerArray[spotNumber][1]) + adcropRange,
@@ -283,12 +283,12 @@ def fitCurve(imageArray, centerArray, objectList, plotFittedFunc=False, printFit
                 guessBound[1][2] = y[i] + configList["fittingParameters"]["smartXYGuessBoundRange"]
 
             fit_params, uncert_cov = curve_fit(fitFunc, xy, z, p0=intGuess, bounds=guessBound)
-            RSquare = calChiSquareError(genFittedFuncArray(fit_params, adcropRange, outputZpredOnly=True), cropedArray)
+            ChiSquare = calChiSquareError(genFittedFuncArray(fit_params, adcropRange, outputZpredOnly=True), cropedArray)
             adcropRange -= 2
 
         fit_params = fit_params.tolist()
-        fit_params.append(RSquare)
-        # print(RSquare)
+        fit_params.append(ChiSquare)
+        # print(ChiSquare)
 
         if plotFittedFunc: plotFitFunc(fit_params, cropedArray)
         if saveFitFuncPlot == True: plotFitFunc(fit_params, cropedArray, saveFitFuncPlot=saveFitFuncPlot,
