@@ -26,18 +26,21 @@ errorList = []
 # ##### parameter list######
 
 def makeResultDir():
+    '''make a new directory storing fitting result if it does not exists'''
     if not os.path.exists(os.path.join(os.curdir, "Result")):
         os.makedirs(os.path.join(os.curdir, "Result"))
         print("make Result Dir")
 
 
 def makeShiftCenterResultDir(dataFolderName):
+    '''make a new directory storing centered LEED image if it does not exists'''
     if not os.path.exists(os.path.join(dataFolderName, "ShiftCenterResult")):
         os.makedirs(os.path.join(dataFolderName, "ShiftCenterResult"))
         print("make ShiftCenterResult Dir")
 
 
 def makeDirInDataFolder(dataFolderName, dirName):
+    '''make a new directory with dirName if it does not exists'''
     if not os.path.exists(os.path.join(dataFolderName, dirName)):
         os.makedirs(os.path.join(dataFolderName, dirName))
         print("make ", dirName, " Dir")
@@ -45,6 +48,8 @@ def makeDirInDataFolder(dataFolderName, dirName):
 
 
 def copyJsontoLog(timeStamp):
+    """copy the current json setting to Log dir with timestamp as name,
+        create one if it does not exists"""
     if not os.path.exists(os.path.join(os.curdir, "Log")):
         os.makedirs(os.path.join(os.curdir, "Log"))
         print("make Log Dir")
@@ -59,6 +64,7 @@ def copyJsontoLog(timeStamp):
 
 
 def plotArray(plot_data, plotSensitivity=3):
+    """plot an array"""
     m, s = np.mean(plot_data), np.std(plot_data)
     plt.imshow(plot_data, interpolation='nearest', cmap='jet',
                vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
@@ -68,6 +74,7 @@ def plotArray(plot_data, plotSensitivity=3):
 
 
 def setPicDim(filePath):
+    """init picWidth, picHeight"""
     global picWidth, picHeight
     data = np.array(Image.open(filePath))
     picWidth = len(data[1])
