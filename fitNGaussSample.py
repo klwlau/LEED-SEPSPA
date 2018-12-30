@@ -42,14 +42,11 @@ def genBound(numOfGauss):
 
 def fittingTest():
     # for i in range(1):
-    numberOfGauss = 2
+    numberOfGauss = 3
     fittingParamsSampleArray = np.ones(numberOfGauss * 6 + 3)
-    testguessBound = genBound(numberOfGauss)
-    print(len(fittingParamsSampleArray), len(testguessBound[0]), len(testguessBound[1]))
-
-    # fit_params, uncert_cov = curve_fit(NGauss(numberOfGauss), xyi, zSpace,
-    #                                    tuple(fittingParamsSampleArray), bounds=genBound(numberOfGauss))
-
+    fit_params, uncert_cov = curve_fit(NGauss(numberOfGauss), xyi, zSpace,
+                                       tuple(fittingParamsSampleArray), bounds=genBound(numberOfGauss))
+    print(fit_params)
 
 for i in range(3):
     zSpace = NGauss(2)(xyi, 0, 2, 0, 300, 0, 5, 4, 2, 120, 300, 3, 0, 1, 2, 120)
