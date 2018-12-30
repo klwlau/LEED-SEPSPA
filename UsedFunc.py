@@ -84,12 +84,14 @@ def setPicDim(filePath):
 
 
 def readLEEDImage(filePath):
+    """read a image file and convert it to np array"""
     data = np.array(Image.open(filePath))
     data = np.flipud(data)
     return data
 
 
 def makeMask(mask_x_center, mask_y_center, r1, r2):
+    """create a donut shape mask with r1 as inner diameter and r2 as outer diameter"""
     global picWidth, picHeight
     mask = [[0 for x in range(picWidth)] for y in range(picHeight)]
 
@@ -102,21 +104,21 @@ def makeMask(mask_x_center, mask_y_center, r1, r2):
 
 
 def compressImage(imageArray, scaleFactor):
+    """rescale the image intensity"""
     imageArray = imageArray / scaleFactor
-    #     imageArray=imageArray.astype(np.uint8)
     imageArray = imageArray
-    # print(imageArray.dtype)
     return imageArray
 
 
 def applyMask(imageArray, mask):
+    """apply the mask to an np array"""
     appliedMask = np.multiply(imageArray, mask)
     return appliedMask
 
 
-# Tony: Change the plot anatomy
 def plotSpots(imgArray, objects_list, plotSensitivity_low=0.0, plotSensitivity_up=0.5,
               saveMode=False, saveFileName="test", showSpots=False):
+    """plot sep result"""
     fig, ax = plt.subplots()
     min_int, max_int = np.amin(imgArray), np.amax(imgArray)
     plt.imshow(imgArray, interpolation='nearest', cmap='jet',
@@ -145,7 +147,8 @@ def plotSpots(imgArray, objects_list, plotSensitivity_low=0.0, plotSensitivity_u
         plt.clf()
 
 
-def genFittedFuncArray(fit_params, cropRange, outputZpredOnly=False, ):
+def genFittedFuncArray(fit_params, cropRange, outputZpredOnly=False):
+    """generate an image array from the fitted function"""
     xi, yi = np.mgrid[0:cropRange * 2, 0:cropRange * 2]
 
     xyi = np.vstack([xi.ravel(), yi.ravel()])
