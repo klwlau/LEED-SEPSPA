@@ -31,17 +31,6 @@ def fitFunc(xy, Amp, x_0, y_0, sigma_x, sigma_y, theta, A, B, C):
     return g
 
 
-@jit
-def fit2GaussFunc(xy, Amp_1, x_0_1, y_0_1, sigma_x_1, sigma_y_1, theta_1, Amp_2, x_0_2, y_0_2, sigma_x_2, sigma_y_2,
-                  theta_2, A, B, C):
-    x, y = xy
-    g = gauss2D(x, y, Amp_1, x_0_1, y_0_1, sigma_x_1, sigma_y_1, theta_1)
-    g += gauss2D(x, y, Amp_2, x_0_2, y_0_2, sigma_x_2, sigma_y_2, theta_2)
-    g += backGroundPlaneEstimation(x, y, A, B, C)
-    return g
-
-
-
 def NGauss(numOfGauss):
     def makeNGauss(xy, *parameters):
         xi, yi = xy
@@ -52,15 +41,14 @@ def NGauss(numOfGauss):
             g += gauss2D(xi, yi, gaussParams[i * 6], gaussParams[i * 6 + 1], gaussParams[i * 6 + 2],
                          gaussParams[i * 6 + 3], gaussParams[i * 6 + 4], gaussParams[i * 6 + 5])
         return g
+
     return makeNGauss
 
 # @jit
-# def fitFunc(xy, Amp, x_0, y_0, sigma_x, sigma_y, shape_x, shape_y, theta, A, B, C):
+# def fit2GaussFunc(xy, Amp_1, x_0_1, y_0_1, sigma_x_1, sigma_y_1, theta_1, Amp_2, x_0_2, y_0_2, sigma_x_2, sigma_y_2,
+#                   theta_2, A, B, C):
 #     x, y = xy
-#     theta = np.deg2rad(theta)
-#     x_rotated = x * np.cos(theta) - y * np.sin(theta)
-#     y_rotated = x * np.sin(theta) + y * np.cos(theta)
-#     g = Amp * pdf_skewnormal(x_rotated, x_0, sigma_x, shape_x) * \
-#         pdf_skewnormal(y_rotated, y_0, sigma_y, shape_y)
-#     g += A * x + B * y + C
+#     g = gauss2D(x, y, Amp_1, x_0_1, y_0_1, sigma_x_1, sigma_y_1, theta_1)
+#     g += gauss2D(x, y, Amp_2, x_0_2, y_0_2, sigma_x_2, sigma_y_2, theta_2)
+#     g += backGroundPlaneEstimation(x, y, A, B, C)
 #     return g
