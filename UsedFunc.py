@@ -165,6 +165,7 @@ def genFittedFuncArray(fit_params, cropRange, outputZpredOnly=False):
 
 @jit
 def calRSquareError(fittedArray, rawArray):
+    """calculate R Square error"""
     error = fittedArray - rawArray
     errorSquare = error ** 2
     numberOfElement = fittedArray.size
@@ -173,6 +174,7 @@ def calRSquareError(fittedArray, rawArray):
 
 @jit
 def calChiSquareError(fittedArray, rawArray):
+    """calculate Chi Square error"""
     error = fittedArray - rawArray
     errorSquare = error ** 2
     # numberOfElement = fittedArray.size
