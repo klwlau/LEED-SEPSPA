@@ -30,8 +30,8 @@ def genBound(numOfGauss):
     #              guessUpBoundTemp=guessUpBoundTemp, guessLowBoundTemp=guessLowBoundTemp):
 
 
-    guessUpBound = backgroundGuessUpBound
-    guessLowBound = backgroundGuessLowBound
+    guessUpBound = backgroundGuessUpBound.copy()
+    guessLowBound = backgroundGuessLowBound.copy()
 
     for num in range(numOfGauss):
         guessUpBound += guessUpBoundTemp
