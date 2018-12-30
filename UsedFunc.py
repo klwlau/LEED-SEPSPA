@@ -234,25 +234,25 @@ def getSpotRoughRange(imgArray: np.array, searchThreshold: float, mask: np.array
     imgArray = applyMask(imgArray, mask)
 
     bkg = sep.Background(imgArray)
-    objects_list = sep.extract(imgArray, searchThreshold, err=bkg.globalrms)
+    sep_objects_list = sep.extract(imgArray, searchThreshold, err=bkg.globalrms)
 
     if showSpots is True or saveMode is True:
-        plotSpots(imgArray, objects_list, plotSensitivity_low, plotSensitivity_up,
+        plotSpots(imgArray, sep_objects_list, plotSensitivity_low, plotSensitivity_up,
                   showSpots=showSpots, saveMode=saveMode, saveFileName=saveFileName)
 
     if fittingMode is True:
-        returnArray = np.array([objects_list['xcpeak'], objects_list['ycpeak']]).T
-        # returnArray = np.array([objects_list['x'], objects_list['y']]).T
+        returnArray = np.array([sep_objects_list['xcpeak'], sep_objects_list['ycpeak']]).T
+        # returnArray = np.array([sep_objects_list['x'], sep_objects_list['y']]).T
 
         if printReturnArray:
             print(len(returnArray))
             print(returnArray)
-        return returnArray, objects_list
+        return returnArray, sep_objects_list
 
     else:
-        returnArray = np.array([objects_list['peak'], objects_list['x'], objects_list['y'],
-                                objects_list['xmax'], objects_list['ymax'],
-                                objects_list['a'], objects_list['b'], objects_list['theta']]).T
+        returnArray = np.array([sep_objects_list['peak'], sep_objects_list['x'], sep_objects_list['y'],
+                                sep_objects_list['xmax'], sep_objects_list['ymax'],
+                                sep_objects_list['a'], sep_objects_list['b'], sep_objects_list['theta']]).T
         if printReturnArray:
             print(len(returnArray))
             print(returnArray)
