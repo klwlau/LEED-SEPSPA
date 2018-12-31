@@ -21,7 +21,7 @@ makeAnimation = False
 searchThreshold = 1000
 aniPLotRange = 10
 
-counter = startID
+globalCounter = startID
 setPicDim(fileList[0])
 makeShiftCenterResultDir(dataFolderName)
 
@@ -38,7 +38,7 @@ for filePath in fileList:
             searchThreshold = searchThreshold * 1.1
         if element < 1:
             searchThreshold = searchThreshold * 0.9
-        print("repeat ", counter, ", element: ", element, ", new searchThreshold: ", searchThreshold)
+        print("repeat ", globalCounter, ", element: ", element, ", new searchThreshold: ", searchThreshold)
 
     xCenter, yCenter = returnList[4], returnList[5]
     xCenter, yCenter = int(xCenter), int(yCenter)
@@ -64,10 +64,10 @@ for filePath in fileList:
     ims.append([im])
 
     if element != 1:
-        errorList.append(counter)
+        errorList.append(globalCounter)
 
-    print(counter, element)
-    counter += 1
+    print(globalCounter, element)
+    globalCounter += 1
 
 if makeAnimation:
     print("making animation")

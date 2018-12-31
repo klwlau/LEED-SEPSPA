@@ -19,6 +19,12 @@ class fitting:
         self.globalCounter = 0
         self.timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S')
         self.dataFolderName = self.configList["dataFolderName"]
+        if not self.dataFolderName:
+            self.fileList = glob.glob("./*.tif")
+        else:
+            self.fileList = glob.glob(self.dataFolderName + "/*.tif")
+            self.fileList = sorted(self.fileList)
+
 
     def makeResultDir(self):
         '''make a new directory storing fitting result if it does not exists'''
@@ -41,9 +47,10 @@ class fitting:
         shutil.copy(sourceFile, dstFile)
         print("Copied Json file to Log")
 
-    def initlizing(self):
+    def preStart(self):
         self.makeResultDir()
         self.CSVName = "./Result/" + self.timeStamp + "_" + self.configList["csvNameRemark"] + ".csv"
+        self.copyJsontoLog()
 
 
 
