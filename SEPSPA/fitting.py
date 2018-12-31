@@ -1,21 +1,19 @@
+print("SEPSPA Started, Loading Libraries")
+import time
+import glob
+import datetime
+from scipy.optimize import curve_fit
+import sep
+from PIL import Image
+import matplotlib.pyplot as plt
+from matplotlib.patches import Ellipse
+from pytictoc import TicToc
+import csv, itertools, json, os, shutil, ntpath
+
 class fitting:
 
-
     def __init__(self,configFilePath="configList.json"):
-        import time
-        import glob
         self.start_time = time.time()
-        print("Program Started, Loading Libraries")
-        import datetime
-        print("Start Loading UsedFunc")
-        from scipy.optimize import curve_fit
-        import sep
-        from PIL import Image
-        import matplotlib.pyplot as plt
-        from matplotlib.patches import Ellipse
-        from pytictoc import TicToc
-        import csv, itertools, json, os, shutil, ntpath
-
         self.configFilePath = configFilePath
         self.configList = json.load(open(self.configFilePath))
         self.globalCounter = 0
@@ -28,9 +26,25 @@ class fitting:
             os.makedirs(os.path.join(os.curdir, "Result"))
             print("make Result Dir")
 
+    def copyJsontoLog(self):
+        """copy the current json setting to Log dir with timestamp as name,
+            create one if it does not exists"""
+        if not os.path.exists(os.path.join(os.curdir, "Log")):
+            os.makedirs(os.path.join(os.curdir, "Log"))
+            print("make Log Dir")
+
+        sourceDirectory = os.curdir
+        newFileName = self.timeStamp + "_" + self.configList["csvNameRemark"] + ".json"
+        finalDirectory = os.path.join(os.curdir, "Log")
+        dstFile = os.path.join(finalDirectory, newFileName)
+        sourceFile = os.path.join(sourceDirectory, "configList.json")
+        shutil.copy(sourceFile, dstFile)
+        print("Copied Json file to Log")
+
     def initlizing(self):
         self.makeResultDir()
         self.CSVName = "./Result/" + self.timeStamp + "_" + self.configList["csvNameRemark"] + ".csv"
+
 
 
     def printSaveStatus(self):
@@ -45,9 +59,14 @@ class fitting:
 
 
 
-    def printConfigList(self):
-        for i in self.configList:
-            print (i)
+
+
+
+
+
+
+
+
 
     def testMode(self):
         print("TestMode")
