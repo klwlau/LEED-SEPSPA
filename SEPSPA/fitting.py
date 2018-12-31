@@ -119,7 +119,7 @@ class fitting:
 
         plt.colorbar()
         if saveMode:
-            savePath = configList["saveFigModeParameters"]["saveFigFolderName"]
+            savePath = self.configList["saveFigModeParameters"]["saveFigFolderName"]
             plt.savefig(savePath + saveFileName + ".png")
 
         if showSpots:
