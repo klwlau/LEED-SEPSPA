@@ -13,7 +13,7 @@ def printSaveStatus():
     global globalCounter
     if globalCounter != 0:
         elapsedTime = ((time.time() - start_time) / 60)
-        totalTime = elapsedTime / (globalCounter / fileAmount)
+        totalTime = elapsedTime / (globalCounter / totalFileNumber)
         timeLeft = totalTime - elapsedTime
 
         print("---Elapsed Time: %.2f / %.2f Minutes ---" % (elapsedTime, totalTime)
@@ -22,7 +22,7 @@ def printSaveStatus():
 
 
 def printCurrentStatus(counter, numberOfSpots, filePath):
-    print(counter, ", ", "%.2f" % (counter / fileAmount * 100), "%, ", numberOfSpots, ",", filePath)
+    print(counter, ", ", "%.2f" % (counter / totalFileNumber * 100), "%, ", numberOfSpots, ",", filePath)
 
 
 def fittingMode():
@@ -136,7 +136,7 @@ fileList = sorted(fileList)
 # fileList = fileList[:30]
 
 globalCounter = 0
-fileAmount = len(fileList)
+totalFileNumber = len(fileList)
 
 setPicDim(fileList[0])  # to set the picWidth,picHeight for findSpot function
 mask = makeMask(configList["maskConfig"]["mask_x_center"], configList["maskConfig"]["mask_y_center"],
