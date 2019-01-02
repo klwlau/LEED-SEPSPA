@@ -19,7 +19,13 @@ class fitting:
         self.configFilePath = configFilePath
         self.configList = json.load(open(self.configFilePath))
         self.timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S')
+        #loading confingList
         self.dataFolderName = self.configList["dataFolderName"]
+        self.cropRange = self.configList["findSpotParameters"]["cropRange"]
+        self.guessUpBound = self.configList["fittingParameters"]["guessUpBound"]
+        self.guessLowBound = self.configList["fittingParameters"]["guessLowBound"]
+        self.dataFolderName = self.configList["dataFolderName"]
+        self.intConfigGuess = self.configList["fittingParameters"]["intGuess"]
 
         if not self.dataFolderName:
             self.fileList = glob.glob("./*.tif")
@@ -27,6 +33,8 @@ class fitting:
             self.fileList = glob.glob(self.dataFolderName + "/*.tif")
             self.fileList = sorted(self.fileList)
         self.CSVwriteBuffer = self.configList["CSVwriteBuffer"]
+
+
 
     def preStart(self):
         self.makeResultDir()
@@ -62,7 +70,7 @@ class fitting:
     def printSaveStatus(self):
         if self.globalCounter != 0:
             elapsedTime = ((time.time() - self.start_time) / 60)
-            totalTime = elapsedTime / (self.globalCounter / fileAmount)
+            totalTime = elapsedTime / (self.globalCounter / self.totalFileNumber)
             timeLeft = totalTime - elapsedTime
 
             print("---Elapsed Time: %.2f / %.2f Minutes ---" % (elapsedTime, totalTime)
