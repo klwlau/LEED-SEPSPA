@@ -16,7 +16,8 @@
     "searchThreshold":80,
     "cropRange": 10,
     "scaleDownFactor":1.,
-    "saveSEPResult": false
+    "saveSEPResult": false,
+    "saveFigFolderName": "test"
   },
 
   "testMode": true,
