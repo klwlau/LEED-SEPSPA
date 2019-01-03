@@ -163,11 +163,14 @@ class fitting:
 
         bkg = sep.Background(imgArray)
         sepObjectsList = sep.extract(imgArray, self.searchThreshold, err=bkg.globalrms)
-        returnArray = np.array([sepObjectsList['peak'], sepObjectsList['x'], sepObjectsList['y'],
-                                sepObjectsList['xmax'], sepObjectsList['ymax'],
-                                sepObjectsList['a'], sepObjectsList['b'], sepObjectsList['theta']]).T
+        returnList = np.array([sepObjectsList['peak'], sepObjectsList['x'], sepObjectsList['y'],
+                               sepObjectsList['xmax'], sepObjectsList['ymax'],
+                               sepObjectsList['a'], sepObjectsList['b'], sepObjectsList['theta']]).T
 
-        return sepObjectsList, returnArray
+        returnList = list(itertools.chain.from_iterable(returnList))
+        returnList.insert(0, len(sepObjectsList))
+
+        return sepObjectsList, returnList
 
         # if showSpots is True or saveMode is True:
         #     self.plotSpots(imgArray, sepObjectsList,
@@ -223,18 +226,20 @@ class fitting:
         SEPparameterHeader = ["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta"]
         for i in range(15):
             sepCSVHeader += SEPparameterHeader
-        writeBufferArray.append(sepCSVHeader)
+        self.appendToCSV([sepCSVHeader], self.CSVName)
 
         for fileID, filePath in enumerate(self.fileList):
             imageArray = self.readLEEDImage(filePath)
             imageArray = self.applyMask(imageArray)
-            sepObject, sepWriteCSVArray = self.applySEPToImg(imageArray)
-            writeBufferArray.append(sepWriteCSVArray)
-            print(sepWriteCSVArray)
+            sepObject, sepWriteCSVList = self.applySEPToImg(imageArray)
+            sepWriteCSVList.insert(0, filePath)
+            sepWriteCSVList.insert(0, fileID)
+            writeBufferArray.append(sepWriteCSVList)
+
             self.appendSepObjectIntoDict(fileID, filePath, sepObject)
             if fileID % self.CSVwriteBuffer == 0:
-                self.appendToCSV(writeBufferArray,self.CSVName)
-                writeBufferArray=[]
+                self.appendToCSV(writeBufferArray, self.CSVName)
+                writeBufferArray = []
                 print(fileID)
 
         print("save to :" + self.CSVName)
