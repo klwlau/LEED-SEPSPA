@@ -65,6 +65,13 @@ class fitting:
             os.makedirs(os.path.join(os.curdir, "Result"))
             print("make Result Dir")
 
+    def makeDirInDataFolder(self, dirName):
+        '''make a new directory with dirName if it does not exists'''
+        if not os.path.exists(os.path.join(self.dataFolderName, dirName)):
+            os.makedirs(os.path.join(self.dataFolderName, dirName))
+            print("make ", dirName, " Dir")
+        return os.path.join(self.dataFolderName, dirName)
+
     def copyJsontoLog(self):
         """copy the current json setting to Log dir with timestamp as name,
             create one if it does not exists"""
@@ -124,8 +131,8 @@ class fitting:
         appliedMask = np.multiply(imageArray, self.mask)
         return appliedMask.astype(np.uint8)
 
-    def plotSpots(self, imgArray, objects_list,
-                  saveMode=False, saveFileName="test", showSpots=False):
+    def plotSEPReult(self, imgArray, objects_list,
+                     saveMode=False, saveFileName="test", showSpots=False):
         """plot sep result"""
         fig, ax = plt.subplots()
         min_int, max_int = np.amin(imgArray), np.amax(imgArray)

@@ -11,7 +11,7 @@ timer = TicToc()
 
 configList = json.load(open("configList.json"))
 # ##### parameter list######
-cropRange = configList["findSpotParameters"]["cropRange"]
+cropRange = configList["SEPParameters"]["cropRange"]
 # Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
 guessUpBound = configList["fittingParameters"]["guessUpBound"]
 guessLowBound = configList["fittingParameters"]["guessLowBound"]
