@@ -31,6 +31,8 @@ class fitting:
         self.dataFolderName = self.configList["dataFolderName"]
         self.plotSensitivity_low = self.configList["testModeParameters"]["plotSensitivity_low"]
         self.plotSensitivity_up = self.configList["testModeParameters"]["plotSensitivity_up"]
+        self.saveSEPResult = self.configList["SEPParameters"]["saveSEPResult"]
+        self.sepReultPlotFolderName = self.configList["SEPParameters"]["sepReultPlotFolderName"]
 
         if not self.dataFolderName:
             self.fileList = glob.glob("./*.tif")
@@ -51,6 +53,8 @@ class fitting:
         self.makeMask()
         self.copyJsontoLog()
         self.makeResultDir()
+        if self.saveSEPResult:
+            self.makeDirInDataFolder(self.sepReultPlotFolderName)
 
     def saveToCSV(self, RowArray, fileName):
         with open(fileName, 'a', newline='') as f:

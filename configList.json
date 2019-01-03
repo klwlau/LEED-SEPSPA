@@ -17,7 +17,7 @@
     "cropRange": 10,
     "scaleDownFactor":1.0,
     "saveSEPResult": false,
-    "saveFigFolderName": "test"
+    "sepReultPlotFolderName": "test"
   },
 
   "testMode": true,
