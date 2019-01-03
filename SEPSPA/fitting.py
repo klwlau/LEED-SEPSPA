@@ -36,6 +36,8 @@ class fitting:
             self.fileList = glob.glob(self.dataFolderName + "/*.tif")
             self.fileList = sorted(self.fileList)
         self.CSVwriteBuffer = self.configList["CSVwriteBuffer"]
+        self.preStart()
+
 
 
 
@@ -114,7 +116,7 @@ class fitting:
     def applyMask(self,imageArray):
         """apply the mask to an np array"""
         appliedMask = np.multiply(imageArray, self.mask)
-        return appliedMask
+        return appliedMask.astype(np.uint8)
 
     def plotSpots(self,imgArray, objects_list,
                   saveMode=False, saveFileName="test", showSpots=False):
@@ -159,27 +161,48 @@ class fitting:
         bkg = sep.Background(imgArray)
         sepObjectsList = sep.extract(imgArray, self.searchThreshold, err=bkg.globalrms)
 
-        if showSpots is True or saveMode is True:
-            self.plotSpots(imgArray, sepObjectsList,
-                      showSpots=showSpots, saveMode=saveMode, saveFileName=saveFileName)
+        return sepObjectsList
 
-        if fittingMode is True:
-            returnArray = np.array([sepObjectsList['xcpeak'], sepObjectsList['ycpeak']]).T
+        # if showSpots is True or saveMode is True:
+        #     self.plotSpots(imgArray, sepObjectsList,
+        #               showSpots=showSpots, saveMode=saveMode, saveFileName=saveFileName)
+        #
+        # if fittingMode is True:
+        #     returnArray = np.array([sepObjectsList['xcpeak'], sepObjectsList['ycpeak']]).T
+        #
+        #     if printReturnArray:
+        #         print(len(returnArray))
+        #         print(returnArray)
+        #     return returnArray, sepObjectsList
+        #
+        # else:
+        #     returnArray = np.array([sepObjectsList['peak'], sepObjectsList['x'], sepObjectsList['y'],
+        #                             sepObjectsList['xmax'], sepObjectsList['ymax'],
+        #                             sepObjectsList['a'], sepObjectsList['b'], sepObjectsList['theta']]).T
+        #     if printReturnArray:
+        #         print(len(returnArray))
+        #         print(returnArray)
+        #     return returnArray,sepObjectsList
+        #
 
-            if printReturnArray:
-                print(len(returnArray))
-                print(returnArray)
-            return returnArray, sepObjectsList
+    def appendSepObjectIntoDict(self,fileID,filePath, sepObject):
+        frameDict ={}
 
-        else:
-            returnArray = np.array([sepObjectsList['peak'], sepObjectsList['x'], sepObjectsList['y'],
-                                    sepObjectsList['xmax'], sepObjectsList['ymax'],
-                                    sepObjectsList['a'], sepObjectsList['b'], sepObjectsList['theta']]).T
-            if printReturnArray:
-                print(len(returnArray))
-                print(returnArray)
-            return returnArray,sepObjectsList
+        for spotID, spot in enumerate(sepObject):
+            tempSpotDict ={}
+            tempSpotDict["Am"] = spot['peak']
+            tempSpotDict["x"] = spot['x']
+            tempSpotDict["y"] = spot['y']
+            tempSpotDict["xpeak"] = spot['xmax']
+            tempSpotDict["ypeak"] = spot['ymax']
+            tempSpotDict["a"] = spot['a']
+            tempSpotDict["b"] = spot['b']
+            tempSpotDict["theta"] = spot['theta']
+            frameDict[str(spotID)] = tempSpotDict
 
+        frameDict["filePath"] = filePath
+        frameDict["numberOfSpot"] = len(sepObject)
+        self.SEPDict[str(fileID)] = frameDict
 
 
 
@@ -190,24 +213,17 @@ class fitting:
         print("TestMode")
 
     def SEPMode(self):
-        self.preStart()
         self.SEPDict ={}
         print("SEPMode")
         writeBufferArray =[]
         FileHeader=["FileID", "File Name", "Number of Spots"]
         SEPparameterArrray=["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta"]
-
-        for filePath in self.fileList:
+        print(self.fileList)
+        for fileID, filePath in enumerate(self.fileList):
             imageArray = self.readLEEDImage(filePath)
-            print(imageArray.dtype)
-            print(self.mask.dtype)
             imageArray = self.applyMask(imageArray)
-            print(imageArray.dtype)
-            z,b = self.getSpotRoughRange(imageArray)
-            print(z)
-            print(b)
-
-
+            sepObject = self.getSpotRoughRange(imageArray)
+            self.appendSepObjectIntoDict(fileID,filePath,sepObject)
 
 
         print("save to :" + self.CSVName)
