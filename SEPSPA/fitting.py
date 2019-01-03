@@ -12,14 +12,15 @@ import csv, itertools, json, os, shutil, ntpath
 from numba import jit
 import numpy as np
 
+
 class fitting:
 
-    def __init__(self,configFilePath="configList.json"):
+    def __init__(self, configFilePath="configList.json"):
         self.start_time = time.time()
         self.configFilePath = configFilePath
         self.configList = json.load(open(self.configFilePath))
         self.timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S')
-        #loading confingList
+        # loading confingList
         self.dataFolderName = self.configList["dataFolderName"]
         self.cropRange = self.configList["findSpotParameters"]["cropRange"]
         self.searchThreshold = self.configList["findSpotParameters"]["searchThreshold"]
@@ -37,10 +38,7 @@ class fitting:
             self.fileList = sorted(self.fileList)
         self.CSVwriteBuffer = self.configList["CSVwriteBuffer"]
         self.preStart()
-        self.maxSpot = 0
-
-
-
+        self.maxSpotInFrame = 0
 
     def preStart(self):
         self.makeResultDir()
@@ -53,6 +51,11 @@ class fitting:
         self.copyJsontoLog()
         self.makeResultDir()
 
+    def appendToCSV(self, RowArray, fileName):
+        with open(fileName, 'a', newline='') as f:
+            csvWriter = csv.writer(f)
+            for i in RowArray:
+                csvWriter.writerow(i)
 
     def makeResultDir(self):
         '''make a new directory storing fitting result if it does not exists'''
@@ -75,7 +78,7 @@ class fitting:
         shutil.copy(sourceFile, dstFile)
         print("Copied Json file to Log")
 
-    def readLEEDImage(self,filePath):
+    def readLEEDImage(self, filePath):
         """read a image file and convert it to np array"""
         data = np.array(Image.open(filePath))
         data = np.flipud(data)
@@ -112,14 +115,14 @@ class fitting:
                 if (x - mask_x_center) ** 2 + (y - mask_y_center) ** 2 > r1 ** 2 and (x - mask_x_center) ** 2 + (
                         y - mask_y_center) ** 2 < r2 ** 2:
                     mask[y][x] = 1
-        self.mask= np.array(mask).astype(np.uint8)
+        self.mask = np.array(mask).astype(np.uint8)
 
-    def applyMask(self,imageArray):
+    def applyMask(self, imageArray):
         """apply the mask to an np array"""
         appliedMask = np.multiply(imageArray, self.mask)
         return appliedMask.astype(np.uint8)
 
-    def plotSpots(self,imgArray, objects_list,
+    def plotSpots(self, imgArray, objects_list,
                   saveMode=False, saveFileName="test", showSpots=False):
         """plot sep result"""
         fig, ax = plt.subplots()
@@ -153,7 +156,7 @@ class fitting:
     #     if self.show
 
     @jit
-    def getSpotRoughRange(self,imgArray: np.array,
+    def getSpotRoughRange(self, imgArray: np.array,
                           showSpots: bool = False, fittingMode: bool = False, saveMode=False, printReturnArray=False,
                           saveFileName="test"):
 
@@ -186,11 +189,11 @@ class fitting:
         #     return returnArray,sepObjectsList
         #
 
-    def appendSepObjectIntoDict(self,fileID,filePath, sepObject):
-        frameDict ={}
+    def appendSepObjectIntoDict(self, fileID, filePath, sepObject):
+        frameDict = {}
 
         for spotID, spot in enumerate(sepObject):
-            tempSpotDict ={}
+            tempSpotDict = {}
             tempSpotDict["Am"] = spot['peak']
             tempSpotDict["x"] = spot['x']
             tempSpotDict["y"] = spot['y']
@@ -204,29 +207,23 @@ class fitting:
         frameDict["filePath"] = filePath
         frameDict["numberOfSpot"] = len(sepObject)
         self.sepDict[str(fileID)] = frameDict
-        self.maxSpot = max(frameDict["numberOfSpot"], self.maxSpot)
-
-
-
-
-
+        self.maxSpotInFrame = max(frameDict["numberOfSpot"], self.maxSpotInFrame)
+        self.sepDict["maxSpotInFrame"] = self.maxSpotInFrame
 
     def testMode(self):
         print("TestMode")
 
-
     def sepMode(self):
-        self.sepDict ={}
+        self.sepDict = {}
         print("SEPMode")
-        writeBufferArray =[]
-        FileHeader=["FileID", "File Name", "Number of Spots"]
-        SEPparameterArrray=["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta"]
+        writeBufferArray = []
+        FileHeader = ["FileID", "File Name", "Number of Spots"]
+        SEPparameterArrray = ["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta"]
         for fileID, filePath in enumerate(self.fileList):
             imageArray = self.readLEEDImage(filePath)
             imageArray = self.applyMask(imageArray)
             sepObject = self.getSpotRoughRange(imageArray)
-            self.appendSepObjectIntoDict(fileID,filePath,sepObject)
-
+            self.appendSepObjectIntoDict(fileID, filePath, sepObject)
 
         print("save to :" + self.CSVName)
         return self.sepDict

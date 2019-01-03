@@ -57,12 +57,12 @@ def fittingMode():
         printCurrentStatus(globalCounter, numberOfSpots, filePath)
 
         if globalCounter % CSVwriteBuffer == 0:
-            saveToCSV(writeBufferArray, CSVName)
+            appendToCSV(writeBufferArray, CSVName)
             writeBufferArray = []
             printSaveStatus()
 
         if globalCounter == (fileAmount - 1):
-            saveToCSV(writeBufferArray, CSVName)
+            appendToCSV(writeBufferArray, CSVName)
             printSaveStatus()
         globalCounter += 1
 
@@ -93,12 +93,12 @@ def sepMode():
         printCurrentStatus(globalCounter, numberOfSpots, filePath)
 
         if globalCounter % CSVwriteBuffer == 0:
-            saveToCSV(writeBufferArray, CSVName)
+            appendToCSV(writeBufferArray, CSVName)
             writeBufferArray = []
             printSaveStatus()
 
         if globalCounter == (fileAmount - 1):
-            saveToCSV(writeBufferArray, CSVName)
+            appendToCSV(writeBufferArray, CSVName)
             printSaveStatus()
         globalCounter += 1
 

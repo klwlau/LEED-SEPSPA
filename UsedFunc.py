@@ -318,7 +318,7 @@ def fitCurve(imageArray, centerArray, objectList, plotFittedFunc=False, printFit
     return allFittedSpot
 
 
-def saveToCSV(RowArray, fileName):
+def appendToCSV(RowArray, fileName):
     with open(fileName, 'a', newline='') as f:
         csvWriter = csv.writer(f)
         for i in RowArray:
