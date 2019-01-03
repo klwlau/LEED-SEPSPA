@@ -52,11 +52,12 @@ class fitting:
         self.copyJsontoLog()
         self.makeResultDir()
 
-    def appendToCSV(self, RowArray, fileName):
+    def saveToCSV(self, RowArray, fileName):
         with open(fileName, 'a', newline='') as f:
             csvWriter = csv.writer(f)
             for i in RowArray:
                 csvWriter.writerow(i)
+        print("save to :" + self.CSVName)
 
     def makeResultDir(self):
         '''make a new directory storing fitting result if it does not exists'''
@@ -220,13 +221,13 @@ class fitting:
         print("TestMode")
 
     def sepMode(self):
+        print("SEPMode Start")
         self.sepDict = {}
-        print("SEPMode")
         sepCSVHeader = ["FileID", "File Name", "Number of Spots"]
         SEPparameterHeader = ["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta"]
         for i in range(15):
             sepCSVHeader += SEPparameterHeader
-        self.appendToCSV([sepCSVHeader], self.CSVName)
+        self.saveToCSV([sepCSVHeader], self.CSVName)
 
         def parallelSEP(fileID, filePath):
             imageArray = self.readLEEDImage(filePath)
@@ -247,9 +248,9 @@ class fitting:
             filePath = i[1][1]
             self.appendSepObjectIntoDict(fileID, filePath, i[0])
 
-        self.appendToCSV(writeBufferArray, self.CSVName)
+        self.saveToCSV(writeBufferArray, self.CSVName)
 
-        print("save to :" + self.CSVName)
+        print("SEPMode Complete")
         return self.sepDict
 
     def SPAMode(self):
