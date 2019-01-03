@@ -1,4 +1,4 @@
-print("SepSpa Started, Loading Libraries")
+# print("SepSpa Started, Loading Libraries")
 import time
 import glob
 import datetime
@@ -230,6 +230,7 @@ class fitting:
             return (sepObject, sepWriteCSVList)
 
         print("SEPMode Start")
+        time.sleep(0.1)
         self.sepDict = {}
         sepCSVHeader = ["FileID", "File Name", "Number of Spots"]
         SEPparameterHeader = ["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta"]
@@ -239,7 +240,7 @@ class fitting:
 
         self.saveToCSV([sepCSVHeader], self.CSVName)
 
-        with Parallel(n_jobs=-1, verbose=50) as parallel:
+        with Parallel(n_jobs=-1, verbose=1) as parallel:
             multicoreSEP = parallel(
                 delayed(parallelSEP)(fileID, filePath) for fileID, filePath in enumerate(self.fileList))
 
