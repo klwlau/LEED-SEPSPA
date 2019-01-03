@@ -199,6 +199,8 @@ class fitting:
 
         for filePath in self.fileList:
             imageArray = self.readLEEDImage(filePath)
+            imageArray = self.applyMask(imageArray)
+            print(imageArray.dtype)
             z,b = self.getSpotRoughRange(imageArray)
             print(z)
             print(b)
