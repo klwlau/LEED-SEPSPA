@@ -202,7 +202,7 @@ class fitting:
 
         frameDict["filePath"] = filePath
         frameDict["numberOfSpot"] = len(sepObject)
-        self.SEPDict[str(fileID)] = frameDict
+        self.sepDict[str(fileID)] = frameDict
 
 
 
@@ -212,8 +212,9 @@ class fitting:
     def testMode(self):
         print("TestMode")
 
-    def SEPMode(self):
-        self.SEPDict ={}
+
+    def sepMode(self):
+        self.sepDict ={}
         print("SEPMode")
         writeBufferArray =[]
         FileHeader=["FileID", "File Name", "Number of Spots"]
@@ -227,7 +228,7 @@ class fitting:
 
 
         print("save to :" + self.CSVName)
-        return self.SEPDict
+        return self.sepDict
 
     def SPAMode(self):
         print("SPAMode")
