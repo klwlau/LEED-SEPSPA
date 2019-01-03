@@ -37,6 +37,7 @@ class fitting:
             self.fileList = sorted(self.fileList)
         self.CSVwriteBuffer = self.configList["CSVwriteBuffer"]
         self.preStart()
+        self.maxSpot = 0
 
 
 
@@ -203,6 +204,7 @@ class fitting:
         frameDict["filePath"] = filePath
         frameDict["numberOfSpot"] = len(sepObject)
         self.sepDict[str(fileID)] = frameDict
+        self.maxSpot = max(frameDict["numberOfSpot"], self.maxSpot)
 
 
 
@@ -219,7 +221,6 @@ class fitting:
         writeBufferArray =[]
         FileHeader=["FileID", "File Name", "Number of Spots"]
         SEPparameterArrray=["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta"]
-        print(self.fileList)
         for fileID, filePath in enumerate(self.fileList):
             imageArray = self.readLEEDImage(filePath)
             imageArray = self.applyMask(imageArray)
