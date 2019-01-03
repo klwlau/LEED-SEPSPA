@@ -1,4 +1,4 @@
-print("SEPSPA Started, Loading Libraries")
+print("SepSpa Started, Loading Libraries")
 import time
 import glob
 import datetime
@@ -156,15 +156,18 @@ class fitting:
     #     if self.show
 
     @jit
-    def getSpotRoughLocation(self, imgArray: np.array):
+    def applySEPToImg(self, imgArray: np.array):
         """use Sep to find rough spot location"""
 
         imgArray = self.applyMask(imgArray)
 
         bkg = sep.Background(imgArray)
         sepObjectsList = sep.extract(imgArray, self.searchThreshold, err=bkg.globalrms)
+        returnArray = np.array([sepObjectsList['peak'], sepObjectsList['x'], sepObjectsList['y'],
+                                sepObjectsList['xmax'], sepObjectsList['ymax'],
+                                sepObjectsList['a'], sepObjectsList['b'], sepObjectsList['theta']]).T
 
-        return sepObjectsList
+        return sepObjectsList, returnArray
 
         # if showSpots is True or saveMode is True:
         #     self.plotSpots(imgArray, sepObjectsList,
@@ -216,13 +219,23 @@ class fitting:
         self.sepDict = {}
         print("SEPMode")
         writeBufferArray = []
-        FileHeader = ["FileID", "File Name", "Number of Spots"]
-        SEPparameterArrray = ["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta"]
+        sepCSVHeader = ["FileID", "File Name", "Number of Spots"]
+        SEPparameterHeader = ["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta"]
+        for i in range(15):
+            sepCSVHeader += SEPparameterHeader
+        writeBufferArray.append(sepCSVHeader)
+
         for fileID, filePath in enumerate(self.fileList):
             imageArray = self.readLEEDImage(filePath)
             imageArray = self.applyMask(imageArray)
-            sepObject = self.getSpotRoughLocation(imageArray)
+            sepObject, sepWriteCSVArray = self.applySEPToImg(imageArray)
+            writeBufferArray.append(sepWriteCSVArray)
+            print(sepWriteCSVArray)
             self.appendSepObjectIntoDict(fileID, filePath, sepObject)
+            if fileID % self.CSVwriteBuffer == 0:
+                self.appendToCSV(writeBufferArray,self.CSVName)
+                writeBufferArray=[]
+                print(fileID)
 
         print("save to :" + self.CSVName)
         return self.sepDict

@@ -1,9 +1,9 @@
 {
-  "dataFolderName": "",
-  "dataFolderName_old": "D:/Resarch Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
+  "dataFolderName_old": "",
+  "dataFolderName": "D:/Resarch Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
   "otherPath": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
   "CSVwriteBuffer": 20,
-  "csvNameRemark":"20180223_scan01_adcrop",
+  "csvNameRemark":"sepspaclass test",
 
   "maskConfig": {
     "mask_x_center": 456,
