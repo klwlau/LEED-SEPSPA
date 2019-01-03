@@ -22,10 +22,13 @@ class fitting:
         #loading confingList
         self.dataFolderName = self.configList["dataFolderName"]
         self.cropRange = self.configList["findSpotParameters"]["cropRange"]
+        self.searchThreshold = self.configList["findSpotParameters"]["searchThreshold"]
         self.guessUpBound = self.configList["fittingParameters"]["guessUpBound"]
+        self.intConfigGuess = self.configList["fittingParameters"]["intGuess"]
         self.guessLowBound = self.configList["fittingParameters"]["guessLowBound"]
         self.dataFolderName = self.configList["dataFolderName"]
-        self.intConfigGuess = self.configList["fittingParameters"]["intGuess"]
+        self.plotSensitivity_low = self.configList["testModeParameters"]["plotSensitivity_low"]
+        self.plotSensitivity_up = self.configList["testModeParameters"]["plotSensitivity_up"]
 
         if not self.dataFolderName:
             self.fileList = glob.glob("./*.tif")
@@ -43,7 +46,7 @@ class fitting:
         self.globalCounter = 0
         self.totalFileNumber = len(self.fileList)
         self.setPicDim()
-        self.mask = self.makeMask()
+        self.makeMask()
 
 
     def makeResultDir(self):
@@ -98,21 +101,21 @@ class fitting:
                 if (x - mask_x_center) ** 2 + (y - mask_y_center) ** 2 > r1 ** 2 and (x - mask_x_center) ** 2 + (
                         y - mask_y_center) ** 2 < r2 ** 2:
                     mask[y][x] = 1
-        return np.array(mask).astype(np.uint8)
+        self.mask= np.array(mask).astype(np.uint8)
 
     def applyMask(self,imageArray):
         """apply the mask to an np array"""
         appliedMask = np.multiply(imageArray, self.mask)
         return appliedMask
 
-    def plotSpots(self,imgArray, objects_list, plotSensitivity_low=0.0, plotSensitivity_up=0.5,
+    def plotSpots(self,imgArray, objects_list,
                   saveMode=False, saveFileName="test", showSpots=False):
         """plot sep result"""
         fig, ax = plt.subplots()
         min_int, max_int = np.amin(imgArray), np.amax(imgArray)
         plt.imshow(imgArray, interpolation='nearest', cmap='jet',
-                   vmin=min_int + (max_int - min_int) * plotSensitivity_low,
-                   vmax=min_int + (max_int - min_int) * plotSensitivity_up,
+                   vmin=min_int + (max_int - min_int) * self.plotSensitivity_low,
+                   vmax=min_int + (max_int - min_int) * self.plotSensitivity_up,
                    origin='lower')
 
         # plot an ellipse for each object
@@ -135,37 +138,39 @@ class fitting:
         else:
             plt.clf()
 
+    def checkShowSpots(self):
+        if self.show
+
     @jit
-    def getSpotRoughRange(self,imgArray: np.array, searchThreshold: float, mask: np.array, scaleDownFactor: float = 10,
-                          plotSensitivity_low: float = 0.0, plotSensitivity_up: float = 0.5,
+    def getSpotRoughRange(self,imgArray: np.array,
                           showSpots: bool = False, fittingMode: bool = False, saveMode=False, printReturnArray=False,
                           saveFileName="test") -> np.array:
 
-        imgArray = self.applyMask(imgArray, mask)
+        imgArray = self.applyMask(imgArray)
 
         bkg = sep.Background(imgArray)
-        sep_objects_list = sep.extract(imgArray, searchThreshold, err=bkg.globalrms)
+        sepObjectsList = sep.extract(imgArray, self.searchThreshold, err=bkg.globalrms)
 
         if showSpots is True or saveMode is True:
-            self.plotSpots(imgArray, sep_objects_list, plotSensitivity_low, plotSensitivity_up,
+            self.plotSpots(imgArray, sepObjectsList,
                       showSpots=showSpots, saveMode=saveMode, saveFileName=saveFileName)
 
         if fittingMode is True:
-            returnArray = np.array([sep_objects_list['xcpeak'], sep_objects_list['ycpeak']]).T
+            returnArray = np.array([sepObjectsList['xcpeak'], sepObjectsList['ycpeak']]).T
 
             if printReturnArray:
                 print(len(returnArray))
                 print(returnArray)
-            return returnArray, sep_objects_list
+            return returnArray, sepObjectsList
 
         else:
-            returnArray = np.array([sep_objects_list['peak'], sep_objects_list['x'], sep_objects_list['y'],
-                                    sep_objects_list['xmax'], sep_objects_list['ymax'],
-                                    sep_objects_list['a'], sep_objects_list['b'], sep_objects_list['theta']]).T
+            returnArray = np.array([sepObjectsList['peak'], sepObjectsList['x'], sepObjectsList['y'],
+                                    sepObjectsList['xmax'], sepObjectsList['ymax'],
+                                    sepObjectsList['a'], sepObjectsList['b'], sepObjectsList['theta']]).T
             if printReturnArray:
                 print(len(returnArray))
                 print(returnArray)
-            return returnArray,sep_objects_list
+            return returnArray,sepObjectsList
 
 
 
