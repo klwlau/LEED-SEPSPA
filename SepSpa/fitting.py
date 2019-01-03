@@ -23,8 +23,8 @@ class fitting:
         self.timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S')
         # loading confingList
         self.dataFolderName = self.configList["dataFolderName"]
-        self.cropRange = self.configList["findSpotParameters"]["cropRange"]
-        self.searchThreshold = self.configList["findSpotParameters"]["searchThreshold"]
+        self.cropRange = self.configList["SEPParameters"]["cropRange"]
+        self.searchThreshold = self.configList["SEPParameters"]["searchThreshold"]
         self.guessUpBound = self.configList["fittingParameters"]["guessUpBound"]
         self.intConfigGuess = self.configList["fittingParameters"]["intGuess"]
         self.guessLowBound = self.configList["fittingParameters"]["guessLowBound"]

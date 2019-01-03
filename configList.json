@@ -12,10 +12,11 @@
     "outerRadius": 350
   },
 
-  "findSpotParameters":{
+  "SEPParameters":{
     "searchThreshold":80,
     "cropRange": 10,
-    "scaleDownFactor":1
+    "scaleDownFactor":1.,
+    "saveSEPResult": false
   },
 
   "testMode": true,
