@@ -11,6 +11,7 @@ from pytictoc import TicToc
 import csv, itertools, json, os, shutil, ntpath
 from numba import jit
 import numpy as np
+from joblib import Parallel, delayed
 
 
 class fitting:
@@ -221,26 +222,32 @@ class fitting:
     def sepMode(self):
         self.sepDict = {}
         print("SEPMode")
-        writeBufferArray = []
         sepCSVHeader = ["FileID", "File Name", "Number of Spots"]
         SEPparameterHeader = ["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta"]
         for i in range(15):
             sepCSVHeader += SEPparameterHeader
         self.appendToCSV([sepCSVHeader], self.CSVName)
 
-        for fileID, filePath in enumerate(self.fileList):
+        def parallelSEP(fileID, filePath):
             imageArray = self.readLEEDImage(filePath)
             imageArray = self.applyMask(imageArray)
             sepObject, sepWriteCSVList = self.applySEPToImg(imageArray)
             sepWriteCSVList.insert(0, filePath)
             sepWriteCSVList.insert(0, fileID)
-            writeBufferArray.append(sepWriteCSVList)
+            return (sepObject, sepWriteCSVList)
 
-            self.appendSepObjectIntoDict(fileID, filePath, sepObject)
-            if fileID % self.CSVwriteBuffer == 0:
-                self.appendToCSV(writeBufferArray, self.CSVName)
-                writeBufferArray = []
-                print(fileID)
+        with Parallel(n_jobs=-1, verbose=50) as parallel:
+            multicoreSEP = parallel(
+                delayed(parallelSEP)(fileID, filePath) for fileID, filePath in enumerate(self.fileList))
+
+        writeBufferArray = []
+
+        for fileID, i in enumerate(multicoreSEP):
+            writeBufferArray.append(i[1])
+            filePath = i[1][1]
+            self.appendSepObjectIntoDict(fileID, filePath, i[0])
+
+        self.appendToCSV(writeBufferArray, self.CSVName)
 
         print("save to :" + self.CSVName)
         return self.sepDict
