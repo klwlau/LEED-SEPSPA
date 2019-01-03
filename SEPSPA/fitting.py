@@ -156,9 +156,8 @@ class fitting:
     #     if self.show
 
     @jit
-    def getSpotRoughRange(self, imgArray: np.array,
-                          showSpots: bool = False, fittingMode: bool = False, saveMode=False, printReturnArray=False,
-                          saveFileName="test"):
+    def getSpotRoughLocation(self, imgArray: np.array):
+        """use Sep to find rough spot location"""
 
         imgArray = self.applyMask(imgArray)
 
@@ -222,7 +221,7 @@ class fitting:
         for fileID, filePath in enumerate(self.fileList):
             imageArray = self.readLEEDImage(filePath)
             imageArray = self.applyMask(imageArray)
-            sepObject = self.getSpotRoughRange(imageArray)
+            sepObject = self.getSpotRoughLocation(imageArray)
             self.appendSepObjectIntoDict(fileID, filePath, sepObject)
 
         print("save to :" + self.CSVName)
