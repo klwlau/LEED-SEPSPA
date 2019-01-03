@@ -221,14 +221,6 @@ class fitting:
         print("TestMode")
 
     def sepMode(self):
-        print("SEPMode Start")
-        self.sepDict = {}
-        sepCSVHeader = ["FileID", "File Name", "Number of Spots"]
-        SEPparameterHeader = ["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta"]
-        for i in range(15):
-            sepCSVHeader += SEPparameterHeader
-        self.saveToCSV([sepCSVHeader], self.CSVName)
-
         def parallelSEP(fileID, filePath):
             imageArray = self.readLEEDImage(filePath)
             imageArray = self.applyMask(imageArray)
@@ -236,6 +228,16 @@ class fitting:
             sepWriteCSVList.insert(0, filePath)
             sepWriteCSVList.insert(0, fileID)
             return (sepObject, sepWriteCSVList)
+
+        print("SEPMode Start")
+        self.sepDict = {}
+        sepCSVHeader = ["FileID", "File Name", "Number of Spots"]
+        SEPparameterHeader = ["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta"]
+
+        for i in range(15):
+            sepCSVHeader += SEPparameterHeader
+
+        self.saveToCSV([sepCSVHeader], self.CSVName)
 
         with Parallel(n_jobs=-1, verbose=50) as parallel:
             multicoreSEP = parallel(
