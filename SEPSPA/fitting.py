@@ -47,6 +47,8 @@ class fitting:
         self.totalFileNumber = len(self.fileList)
         self.setPicDim()
         self.makeMask()
+        self.copyJsontoLog()
+        self.makeResultDir()
 
 
     def makeResultDir(self):
@@ -69,6 +71,12 @@ class fitting:
         sourceFile = os.path.join(sourceDirectory, "configList.json")
         shutil.copy(sourceFile, dstFile)
         print("Copied Json file to Log")
+
+    def readLEEDImage(self,filePath):
+        """read a image file and convert it to np array"""
+        data = np.array(Image.open(filePath))
+        data = np.flipud(data)
+        return data
 
     def printSaveStatus(self):
         if self.globalCounter != 0:
@@ -138,13 +146,13 @@ class fitting:
         else:
             plt.clf()
 
-    def checkShowSpots(self):
-        if self.show
+    # def checkShowSpots(self):
+    #     if self.show
 
     @jit
     def getSpotRoughRange(self,imgArray: np.array,
                           showSpots: bool = False, fittingMode: bool = False, saveMode=False, printReturnArray=False,
-                          saveFileName="test") -> np.array:
+                          saveFileName="test"):
 
         imgArray = self.applyMask(imgArray)
 
@@ -182,6 +190,7 @@ class fitting:
         print("TestMode")
 
     def SEPMode(self):
+        self.preStart()
         self.SEPDict ={}
         print("SEPMode")
         writeBufferArray =[]
@@ -189,6 +198,10 @@ class fitting:
         SEPparameterArrray=["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta"]
 
         for filePath in self.fileList:
+            imageArray = self.readLEEDImage(filePath)
+            z,b = self.getSpotRoughRange(imageArray)
+            print(z)
+            print(b)
 
 
 
