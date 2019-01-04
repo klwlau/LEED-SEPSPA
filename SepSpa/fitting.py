@@ -56,6 +56,7 @@ class fitting:
         self.makeResultDir()
         if self.saveSEPResult:
             self.makeDirInDataFolder("SEPResult")
+        self.sepFinishedStatus = False
 
     def saveToCSV(self, RowArray, fileName):
         with open(fileName, 'a', newline='') as f:
@@ -283,9 +284,14 @@ class fitting:
         self.saveToCSV(writeBufferArray, self.SEPCSVName)
         self.saveDictToPLK(self.sepDict, self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SEPDict")
 
+        self.sepFinishedStatus = True
         print("SEPMode Complete")
         return self.sepDict
 
-    def SPAMode(self):
+    def spaMode(self):
         print("SPAMode")
+        if self.sepFinishedStatus == False:
+            print("Runing SEPMode to get Rough range")
+            self.sepMode()
+        
         print("save to :" + self.SPACSVName)
