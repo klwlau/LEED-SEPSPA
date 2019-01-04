@@ -32,7 +32,7 @@ class fitting:
         self.plotSensitivity_low = self.configList["testModeParameters"]["plotSensitivity_low"]
         self.plotSensitivity_up = self.configList["testModeParameters"]["plotSensitivity_up"]
         self.saveSEPResult = self.configList["SEPParameters"]["saveSEPResult"]
-        self.sepReultPlotFolderName = self.configList["SEPParameters"]["sepReultPlotFolderName"]
+        # self.sepReultPlotFolderName = self.configList["SEPParameters"]["sepReultPlotFolderName"]
 
         if not self.dataFolderName:
             self.fileList = glob.glob("./*.tif")
@@ -54,7 +54,7 @@ class fitting:
         self.copyJsontoLog()
         self.makeResultDir()
         if self.saveSEPResult:
-            self.makeDirInDataFolder(self.sepReultPlotFolderName)
+            self.makeDirInDataFolder("SEPResult")
 
     def saveToCSV(self, RowArray, fileName):
         with open(fileName, 'a', newline='') as f:
@@ -157,8 +157,8 @@ class fitting:
 
         plt.colorbar()
         if saveMode:
-            savePath = self.configList["saveFigModeParameters"]["saveFigFolderName"]
-            plt.savefig(savePath + saveFileName + ".png")
+            saveDir = self.dataFolderName + "SEPResult/"
+            plt.savefig(saveDir + saveFileName + ".png")
 
         if showSpots:
             plt.show()
@@ -238,6 +238,10 @@ class fitting:
             sepObject, sepWriteCSVList = self.applySEPToImg(imageArray)
             sepWriteCSVList.insert(0, filePath)
             sepWriteCSVList.insert(0, fileID)
+
+            if self.saveSEPResult:
+                self.plotSEPReult(imageArray, sepObject, saveMode=True,saveFileName=os.path.basename(filePath)[:-4]+"_SEP")
+
             return (sepObject, sepWriteCSVList)
 
         print("SEPMode Start")

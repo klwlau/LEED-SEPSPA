@@ -1,5 +1,5 @@
 {
-  "dataFolderName_test": "",
+  "dataFolderName_a": "./",
   "dataFolderName": "D:/Resarch Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
   "dataFolderName_mac": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
   "CSVwriteBuffer": 20,
@@ -16,8 +16,7 @@
     "searchThreshold":80,
     "cropRange": 10,
     "scaleDownFactor":1.0,
-    "saveSEPResult": false,
-    "sepReultPlotFolderName": "test"
+    "saveSEPResult": false
   },
 
   "testMode": true,
