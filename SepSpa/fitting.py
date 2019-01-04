@@ -163,7 +163,7 @@ class fitting:
         if showSpots:
             plt.show()
         else:
-            plt.clf()
+            plt.close()
 
     # def checkShowSpots(self):
     #     if self.show
@@ -258,6 +258,13 @@ class fitting:
         with Parallel(n_jobs=-1, verbose=1) as parallel:
             multicoreSEP = parallel(
                 delayed(parallelSEP)(fileID, filePath) for fileID, filePath in enumerate(self.fileList))
+
+        # multicoreSEP =[]
+        # for fileID, filePath in enumerate(self.fileList):
+        #     multicoreSEP.append(parallelSEP(fileID,filePath))
+
+
+
 
         writeBufferArray = []
 

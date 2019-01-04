@@ -16,7 +16,7 @@
     "searchThreshold":80,
     "cropRange": 10,
     "scaleDownFactor":1.0,
-    "saveSEPResult": false
+    "saveSEPResult": true
   },
 
   "testMode": true,
