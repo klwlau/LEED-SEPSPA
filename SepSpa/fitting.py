@@ -77,13 +77,13 @@ class fitting:
             print("make ", dirName, " Dir")
         return os.path.join(self.dataFolderName, dirName)
 
-    def saveDictToPLK(self,dict,fileName):
+    def saveDictToPLK(self, dict, fileName):
         import pickle
-        dirPath = self.makeDirInDataFolder("pythonObj")+"/"
+        dirPath = self.makeDirInDataFolder("pythonObj") + "/"
         with open(dirPath + fileName + '.pkl', 'wb') as f:
             pickle.dump(dict, f, pickle.HIGHEST_PROTOCOL)
 
-    def readPLK(self,filePath):
+    def readPLK(self, filePath):
         import pickle
         with open(filePath, 'rb') as f:
             return pickle.load(f)
@@ -244,6 +244,7 @@ class fitting:
         print("TestMode")
 
     def sepMode(self):
+
         def parallelSEP(fileID, filePath):
             imageArray = self.readLEEDImage(filePath)
             imageArray = self.applyMask(imageArray)
@@ -252,7 +253,8 @@ class fitting:
             sepWriteCSVList.insert(0, fileID)
 
             if self.saveSEPResult:
-                self.plotSEPReult(imageArray, sepObject, saveMode=True,saveFileName=os.path.basename(filePath)[:-4]+"_SEP")
+                self.plotSEPReult(imageArray, sepObject, saveMode=True,
+                                  saveFileName=os.path.basename(filePath)[:-4] + "_SEP")
 
             return (sepObject, sepWriteCSVList)
 
@@ -271,7 +273,6 @@ class fitting:
             multicoreSEP = parallel(
                 delayed(parallelSEP)(fileID, filePath) for fileID, filePath in enumerate(self.fileList))
 
-
         writeBufferArray = []
 
         for fileID, i in enumerate(multicoreSEP):
@@ -279,9 +280,8 @@ class fitting:
             filePath = i[1][1]
             self.appendSepObjectIntoSEPDict(fileID, filePath, i[0])
 
-
         self.saveToCSV(writeBufferArray, self.SEPCSVName)
-        self.saveDictToPLK(self.sepDict,self.timeStamp + "_" + self.configList["csvNameRemark"]+"_SEPDict")
+        self.saveDictToPLK(self.sepDict, self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SEPDict")
 
         print("SEPMode Complete")
         return self.sepDict
