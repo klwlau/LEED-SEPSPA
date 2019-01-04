@@ -219,7 +219,7 @@ class fitting:
         #     return returnArray,sepObjectsList
         #
 
-    def appendSepObjectIntoDict(self, fileID, filePath, sepObject):
+    def appendSepObjectIntoSEPDict(self, fileID, filePath, sepObject):
         frameDict = {}
 
         for spotID, spot in enumerate(sepObject):
@@ -271,19 +271,13 @@ class fitting:
             multicoreSEP = parallel(
                 delayed(parallelSEP)(fileID, filePath) for fileID, filePath in enumerate(self.fileList))
 
-        # multicoreSEP =[]
-        # for fileID, filePath in enumerate(self.fileList):
-        #     multicoreSEP.append(parallelSEP(fileID,filePath))
-
-
-
 
         writeBufferArray = []
 
         for fileID, i in enumerate(multicoreSEP):
             writeBufferArray.append(i[1])
             filePath = i[1][1]
-            self.appendSepObjectIntoDict(fileID, filePath, i[0])
+            self.appendSepObjectIntoSEPDict(fileID, filePath, i[0])
 
 
         self.saveToCSV(writeBufferArray, self.SEPCSVName)
