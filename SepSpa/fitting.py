@@ -45,7 +45,8 @@ class fitting:
 
     def preStart(self):
         self.makeResultDir()
-        self.CSVName = "./Result/" + self.timeStamp + "_" + self.configList["csvNameRemark"] + ".csv"
+        self.SEPCSVName = "./Result/" + self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SEP.csv"
+        self.SPACSVName = "./Result/" + self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SPA.csv"
         self.copyJsontoLog()
         self.globalCounter = 0
         self.totalFileNumber = len(self.fileList)
@@ -61,7 +62,7 @@ class fitting:
             csvWriter = csv.writer(f)
             for i in RowArray:
                 csvWriter.writerow(i)
-        print("save to :" + self.CSVName)
+        print("save to :" + fileName)
 
     def makeResultDir(self):
         '''make a new directory storing fitting result if it does not exists'''
@@ -75,6 +76,17 @@ class fitting:
             os.makedirs(os.path.join(self.dataFolderName, dirName))
             print("make ", dirName, " Dir")
         return os.path.join(self.dataFolderName, dirName)
+
+    def saveDictToPLK(self,dict,fileName):
+        import pickle
+        dirPath = self.makeDirInDataFolder("pythonObj")+"/"
+        with open(dirPath + fileName + '.pkl', 'wb') as f:
+            pickle.dump(dict, f, pickle.HIGHEST_PROTOCOL)
+
+    def readPLK(self,filePath):
+        import pickle
+        with open(filePath, 'rb') as f:
+            return pickle.load(f)
 
     def copyJsontoLog(self):
         """copy the current json setting to Log dir with timestamp as name,
@@ -105,7 +117,7 @@ class fitting:
 
             print("---Elapsed Time: %.2f / %.2f Minutes ---" % (elapsedTime, totalTime)
                   + "---Time Left: %.2f  Minutes ---" % timeLeft
-                  + "--save to" + self.CSVName)
+                  + "--save to" + self.SEPCSVName)
 
     def setPicDim(self):
         """init picWidth, picHeight"""
@@ -158,7 +170,7 @@ class fitting:
         plt.colorbar()
         if saveMode:
             saveDir = self.dataFolderName + "SEPResult/"
-            plt.savefig(saveDir + saveFileName + ".png")
+            plt.savefig(saveDir + saveFileName + ".jpg")
 
         if showSpots:
             plt.show()
@@ -253,7 +265,7 @@ class fitting:
         for i in range(15):
             sepCSVHeader += SEPparameterHeader
 
-        self.saveToCSV([sepCSVHeader], self.CSVName)
+        self.saveToCSV([sepCSVHeader], self.SEPCSVName)
 
         with Parallel(n_jobs=-1, verbose=1) as parallel:
             multicoreSEP = parallel(
@@ -273,11 +285,13 @@ class fitting:
             filePath = i[1][1]
             self.appendSepObjectIntoDict(fileID, filePath, i[0])
 
-        self.saveToCSV(writeBufferArray, self.CSVName)
+
+        self.saveToCSV(writeBufferArray, self.SEPCSVName)
+        self.saveDictToPLK(self.sepDict,self.timeStamp + "_" + self.configList["csvNameRemark"]+"_SEPDict")
 
         print("SEPMode Complete")
         return self.sepDict
 
     def SPAMode(self):
         print("SPAMode")
-        print("save to :" + self.CSVName)
+        print("save to :" + self.SPACSVName)

@@ -1,6 +1,6 @@
 {
-  "dataFolderName": "./",
-  "dataFolderName_pc": "D:/Resarch Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
+  "dataFolderName_a": "./",
+  "dataFolderName": "D:/Resarch Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
   "dataFolderName_mac": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
   "CSVwriteBuffer": 20,
   "csvNameRemark":"sepspaclass test",
@@ -13,10 +13,10 @@
   },
 
   "SEPParameters":{
-    "searchThreshold":40,
+    "searchThreshold":80,
     "cropRange": 10,
     "scaleDownFactor":1.0,
-    "saveSEPResult": true
+    "saveSEPResult": false
   },
 
   "testMode": true,
@@ -27,7 +27,7 @@
     "testModeFileID": 116,
     "plotSensitivity": 3,
     "plotSensitivity_low": 0.015,
-    "plotSensitivity_up": 1,
+    "plotSensitivity_up": 0.8,
     "scaleDownFactor": 1,
     "printFittedParameters": true,
     "plotFittedFunc": true
