@@ -59,6 +59,7 @@ class fitting:
         self.sepComplete = False
 
     def saveToCSV(self, RowArray, fileName):
+        """save a list of row to CSV file"""
         with open(fileName, 'a', newline='') as f:
             csvWriter = csv.writer(f)
             for i in RowArray:
@@ -79,12 +80,14 @@ class fitting:
         return os.path.join(self.dataFolderName, dirName)
 
     def saveDictToPLK(self, dict, fileName):
+        """pickle an dict to a locaiton"""
         import pickle
         dirPath = self.makeDirInDataFolder("pythonObj") + "/"
         with open(dirPath + fileName + '.pkl', 'wb') as f:
             pickle.dump(dict, f, pickle.HIGHEST_PROTOCOL)
 
     def readPLK(self, filePath):
+        """load a pickle object"""
         import pickle
         with open(filePath, 'rb') as f:
             return pickle.load(f)
@@ -228,8 +231,10 @@ class fitting:
             tempSpotDict["Am"] = spot['peak']
             tempSpotDict["x"] = spot['x']
             tempSpotDict["y"] = spot['y']
-            tempSpotDict["xpeak"] = spot['xmax']
-            tempSpotDict["ypeak"] = spot['ymax']
+            tempSpotDict["xmax"] = spot['xmax']
+            tempSpotDict["ymax"] = spot['ymax']
+            tempSpotDict["xcpeak"] = spot['xcpeak']
+            tempSpotDict["ycpeak"] = spot['ycpeak']
             tempSpotDict["a"] = spot['a']
             tempSpotDict["b"] = spot['b']
             tempSpotDict["theta"] = spot['theta']
