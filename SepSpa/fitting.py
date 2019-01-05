@@ -241,6 +241,7 @@ class fitting:
         self.maxSpotInFrame = max(frameDict["numberOfSpot"], self.maxSpotInFrame)
         self.sepDict["maxSpotInFrame"] = self.maxSpotInFrame
 
+
     def testMode(self):
         print("TestMode")
 
@@ -293,5 +294,18 @@ class fitting:
         if self.sepComplete == False:
             print("Runing SEPMode to get Rough range")
             self.sepMode()
-        
+
+
+        for frameID, frameDict in self.sepDict.items():
+            if type(frameDict) is dict:
+                numberOfSpot = frameDict["numberOfSpot"]
+                for spotID in range(numberOfSpot):
+                    print(frameDict[str(spotID)])
+
+
+
+
+
+
+
         print("save to :" + self.SPACSVName)
