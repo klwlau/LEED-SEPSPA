@@ -158,8 +158,8 @@ class fitting:
         min_int, max_int = np.amin(imgArray), np.amax(imgArray)
         plt.imshow(imgArray, interpolation='nearest', cmap='jet',
                    vmin=min_int + (max_int - min_int) * self.plotSensitivity_low,
-                   vmax=min_int + (max_int - min_int) * self.plotSensitivity_up,
-                   origin='lower')
+                   vmax=min_int + (max_int - min_int) * self.plotSensitivity_up
+                   , origin='lower')
 
         # plot an ellipse for each object
         for i in range(len(objects_list)):
@@ -173,6 +173,7 @@ class fitting:
 
         plt.colorbar()
         if saveMode:
+            plt.show()
             saveDir = self.dataFolderName + "SEPResult/"
             plt.savefig(saveDir + saveFileName + ".jpg")
 
@@ -315,17 +316,12 @@ class fitting:
                                   int(spotDict["xmax"]) - self.cropRange: int(
                                       spotDict["xmax"]) + self.cropRange]
 
-                    plt.imshow(cropedArray)
-                    plt.show()
+                    # plt.imshow(cropedArray)
+                    # plt.show()
 
 
                     print(spotDict)
                     
-
-
-
-
-
 
 
 
