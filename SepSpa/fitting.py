@@ -255,7 +255,11 @@ class fitting:
 
         def parallelSEP(fileID, filePath):
             imageArray = self.readLEEDImage(filePath)
-            imageArray = self.applyMask(imageArray)
+            imgArray = self.compressImage(imgArray, scaleDownFactor)
+            imgArray = self.applyMask(imgArray)
+
+
+            # imageArray = self.applyMask(imageArray)
             sepObject, sepWriteCSVList = self.applySEPToImg(imageArray)
             sepWriteCSVList.insert(0, filePath)
             sepWriteCSVList.insert(0, fileID)
