@@ -29,8 +29,8 @@ class fitting:
         self.intConfigGuess = self.configList["SPAParameters"]["intGuess"]
         self.guessLowBound = self.configList["SPAParameters"]["guessLowBound"]
         self.dataFolderName = self.configList["dataFolderName"]
-        self.plotSensitivity_low = self.configList["testModeParameters"]["plotSensitivity_low"]
-        self.plotSensitivity_up = self.configList["testModeParameters"]["plotSensitivity_up"]
+        self.sepPlotColourMin = self.configList["testModeParameters"]["sepPlotColourMin"]
+        self.sepPlotColourMax = self.configList["testModeParameters"]["sepPlotColourMax"]
         self.saveSEPResult = self.configList["SEPParameters"]["saveSEPResult"]
         self.scaleDownFactor = self.configList["SEPParameters"]["scaleDownFactor"]
 
@@ -179,10 +179,14 @@ class fitting:
         """plot sep result"""
         fig, ax = plt.subplots()
         min_int, max_int = np.amin(imgArray), np.amax(imgArray)
+        # plt.imshow(imgArray, interpolation='nearest', cmap='jet',
+        #            vmin=min_int + (max_int - min_int) * self.plotSensitivity_low,
+        #            vmax=min_int + (max_int - min_int) * self.plotSensitivity_up
+        #            , origin='lower')
+
         plt.imshow(imgArray, interpolation='nearest', cmap='jet',
-                   vmin=min_int + (max_int - min_int) * self.plotSensitivity_low,
-                   vmax=min_int + (max_int - min_int) * self.plotSensitivity_up
-                   , origin='lower')
+                   vmin=self.sepPlotColourMin,vmax=self.sepPlotColourMax,
+                   origin='lower')
 
         """plot an ellipse for each object"""
         for i in range(len(objects_list)):
@@ -198,7 +202,7 @@ class fitting:
         if saveMode:
             # plt.show()
             saveDir = self.dataFolderName + "SEPResult/"
-            plt.savefig(saveDir + saveFileName + ".jpg")
+            plt.savefig(saveDir + saveFileName + ".jpg",dpi=500)
 
         if showSpots:
             plt.show()
@@ -331,9 +335,5 @@ class fitting:
                     # plt.show()
 
                     # print(spotDict)
-
-                for i in self.genBound(2):
-                    for j in i:
-                        print(j)
 
         print("save to :" + self.SPACSVName)
