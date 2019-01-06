@@ -42,6 +42,7 @@ class fitting:
         self.CSVwriteBuffer = self.configList["CSVwriteBuffer"]
         self.preStart()
         self.maxSpotInFrame = 0
+        self.fittingBoundDict = {}
 
     def preStart(self):
         self.makeResultDir()
@@ -156,18 +157,22 @@ class fitting:
         appliedMask = np.multiply(imageArray, self.mask)
         return appliedMask
 
-    def genBound(self,numberOfGauss):
+    def genBound(self, numOfGauss):
+        numOfGaussKey = str(numOfGauss)
+        if numOfGaussKey in self.fittingBoundDict:
 
-        guessUpBound = self.configList["SPAParameters"]["backgroundGuessUpperBound"]
-        guessLowBound = self.configList["SPAParameters"]["backgroundGuessLowerBound"]
+            return self.fittingBoundDict[numOfGaussKey]
+        else:
+            guessUpBound = self.configList["SPAParameters"]["backgroundGuessUpperBound"]
+            guessLowBound = self.configList["SPAParameters"]["backgroundGuessLowerBound"]
 
-        for num in range(numberOfGauss):
-            guessUpBound +=  self.configList["SPAParameters"]["gaussianUpperBoundTemplate"]
-            guessLowBound += self.configList["SPAParameters"]["gaussianLowerBoundTemplate"]
+            for num in range(numOfGauss):
+                guessUpBound += self.configList["SPAParameters"]["gaussianUpperBoundTemplate"]
+                guessLowBound += self.configList["SPAParameters"]["gaussianLowerBoundTemplate"]
 
-        return [guessLowBound, guessUpBound]
+            self.fittingBoundDict[numOfGaussKey] = [guessLowBound, guessUpBound]
 
-
+            return self.fittingBoundDict[numOfGaussKey]
 
     def plotSEPReult(self, imgArray, objects_list,
                      saveMode=False, saveFileName="test", showSpots=False):
@@ -200,7 +205,6 @@ class fitting:
         else:
             plt.close()
 
-
     @jit
     def applySEPToImg(self, imgArray: np.array):
         """use Sep to find rough spot location"""
@@ -217,7 +221,6 @@ class fitting:
         returnList.insert(0, len(sepObjectsList))
 
         return sepObjectsList, returnList
-
 
     def appendSepObjectIntoSEPDict(self, fileID, filePath, sepObject):
         frameDict = {}
@@ -323,7 +326,6 @@ class fitting:
 
                     x, y, z = np.array(xyzArray).T
                     xy = x, y
-
 
                     # plt.imshow(cropedArray)
                     # plt.show()
