@@ -322,10 +322,10 @@ class fitting:
                 for spotID in range(numberOfSpot):
                     spotDict = frameDict[str(spotID)]
                     cropedArray = imageArray[
-                                  int(spotDict["ymax"]) - self.cropRange: int(
-                                      spotDict["ymax"]) + self.cropRange,
-                                  int(spotDict["xmax"]) - self.cropRange: int(
-                                      spotDict["xmax"]) + self.cropRange]
+                                  int(spotDict["ycpeak"]) - self.cropRange: int(
+                                      spotDict["ycpeak"]) + self.cropRange,
+                                  int(spotDict["xcpeak"]) - self.cropRange: int(
+                                      spotDict["xcpeak"]) + self.cropRange]
 
                     plt.imshow(cropedArray)
                     plt.show()
