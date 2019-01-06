@@ -156,6 +156,19 @@ class fitting:
         appliedMask = np.multiply(imageArray, self.mask)
         return appliedMask
 
+    def genBound(self,numberOfGauss):
+
+        guessUpBound = self.configList["SPAParameters"]["backgroundGuessUpperBound"]
+        guessLowBound = self.configList["SPAParameters"]["backgroundGuessLowerBound"]
+
+        for num in range(numberOfGauss):
+            guessUpBound +=  self.configList["SPAParameters"]["gaussianUpperBoundTemplate"]
+            guessLowBound += self.configList["SPAParameters"]["gaussianLowerBoundTemplate"]
+
+        return [guessLowBound, guessUpBound]
+
+
+
     def plotSEPReult(self, imgArray, objects_list,
                      saveMode=False, saveFileName="test", showSpots=False):
         """plot sep result"""
@@ -166,7 +179,7 @@ class fitting:
                    vmax=min_int + (max_int - min_int) * self.plotSensitivity_up
                    , origin='lower')
 
-        # plot an ellipse for each object
+        """plot an ellipse for each object"""
         for i in range(len(objects_list)):
             e = Ellipse(xy=(objects_list['x'][i], objects_list['y'][i]),
                         width=3 * objects_list['a'][i],
@@ -187,8 +200,6 @@ class fitting:
         else:
             plt.close()
 
-    # def checkShowSpots(self):
-    #     if self.show
 
     @jit
     def applySEPToImg(self, imgArray: np.array):
@@ -207,27 +218,6 @@ class fitting:
 
         return sepObjectsList, returnList
 
-        # if showSpots is True or saveMode is True:
-        #     self.plotSpots(imgArray, sepObjectsList,
-        #               showSpots=showSpots, saveMode=saveMode, saveFileName=saveFileName)
-        #
-        # if SPAParameters is True:
-        #     returnArray = np.array([sepObjectsList['xcpeak'], sepObjectsList['ycpeak']]).T
-        #
-        #     if printReturnArray:
-        #         print(len(returnArray))
-        #         print(returnArray)
-        #     return returnArray, sepObjectsList
-        #
-        # else:
-        #     returnArray = np.array([sepObjectsList['peak'], sepObjectsList['x'], sepObjectsList['y'],
-        #                             sepObjectsList['xmax'], sepObjectsList['ymax'],
-        #                             sepObjectsList['a'], sepObjectsList['b'], sepObjectsList['theta']]).T
-        #     if printReturnArray:
-        #         print(len(returnArray))
-        #         print(returnArray)
-        #     return returnArray,sepObjectsList
-        #
 
     def appendSepObjectIntoSEPDict(self, fileID, filePath, sepObject):
         frameDict = {}
@@ -339,5 +329,9 @@ class fitting:
                     # plt.show()
 
                     # print(spotDict)
+
+                for i in self.genBound(2):
+                    for j in i:
+                        print(j)
 
         print("save to :" + self.SPACSVName)
