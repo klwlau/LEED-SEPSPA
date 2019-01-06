@@ -1,5 +1,6 @@
 {
-  "dataFolderName": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
+  "dataFolderName_a": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
+  "dataFolderName": "./",
   "CSVwriteBuffer": 20,
   "csvNameRemark":"20180223_scan01_50X50",
 
@@ -16,12 +17,12 @@
     "scaleDownFactor":1
   },
 
-  "testMode": false,
+  "testMode": true,
   "testModeParameters":{
     "showSpots": true,
     "printSpotRoughRangeArray":true,
     "fittingMode":true,
-    "testModeFileID": 116,
+    "testModeFileID": 0,
     "plotSensitivity": 3,
     "plotSensitivity_low": 0.01,
     "plotSensitivity_up": 0.7,
