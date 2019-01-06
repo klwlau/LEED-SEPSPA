@@ -23,7 +23,7 @@ class fitting:
         self.timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S')
         # loading confingList
         self.dataFolderName = self.configList["dataFolderName"]
-        self.cropRange = self.configList["SEPParameters"]["cropRange"]//2
+        self.cropRange = self.configList["SEPParameters"]["cropRange"] // 2
         self.searchThreshold = self.configList["SEPParameters"]["searchThreshold"]
         self.guessUpBound = self.configList["fittingParameters"]["guessUpBound"]
         self.intConfigGuess = self.configList["fittingParameters"]["intGuess"]
@@ -32,7 +32,7 @@ class fitting:
         self.plotSensitivity_low = self.configList["testModeParameters"]["plotSensitivity_low"]
         self.plotSensitivity_up = self.configList["testModeParameters"]["plotSensitivity_up"]
         self.saveSEPResult = self.configList["SEPParameters"]["saveSEPResult"]
-        # self.sepReultPlotFolderName = self.configList["SEPParameters"]["sepReultPlotFolderName"]
+        self.scaleDownFactor = self.configList["SEPParameters"]["scaleDownFactor"]
 
         if not self.dataFolderName:
             self.fileList = glob.glob("./*.tif")
@@ -146,10 +146,15 @@ class fitting:
                     mask[y][x] = 1
         self.mask = np.array(mask).astype(np.uint8)
 
+    def compressImage(self, imageArray):
+        imageArray = imageArray / self.scaleDownFactor
+        imageArray = imageArray
+        return imageArray
+
     def applyMask(self, imageArray):
         """apply the mask to an np array"""
         appliedMask = np.multiply(imageArray, self.mask)
-        return appliedMask.astype(np.uint8)
+        return appliedMask
 
     def plotSEPReult(self, imgArray, objects_list,
                      saveMode=False, saveFileName="test", showSpots=False):
@@ -247,7 +252,6 @@ class fitting:
         self.maxSpotInFrame = max(frameDict["numberOfSpot"], self.maxSpotInFrame)
         self.sepDict["maxSpotInFrame"] = self.maxSpotInFrame
 
-
     def testMode(self):
         print("TestMode")
 
@@ -255,9 +259,8 @@ class fitting:
 
         def parallelSEP(fileID, filePath):
             imageArray = self.readLEEDImage(filePath)
-            imgArray = self.compressImage(imgArray, scaleDownFactor)
-            imgArray = self.applyMask(imgArray)
-
+            imageArray = self.compressImage(imageArray)
+            imageArray = self.applyMask(imageArray)
 
             # imageArray = self.applyMask(imageArray)
             sepObject, sepWriteCSVList = self.applySEPToImg(imageArray)
@@ -281,9 +284,14 @@ class fitting:
 
         self.saveToCSV([sepCSVHeader], self.SEPCSVName)
 
-        with Parallel(n_jobs=-1, verbose=1) as parallel:
-            multicoreSEP = parallel(
-                delayed(parallelSEP)(fileID, filePath) for fileID, filePath in enumerate(self.fileList))
+        if self.configList["singleCoreDebugMode"] != True:
+            with Parallel(n_jobs=-1, verbose=1) as parallel:
+                multicoreSEP = parallel(
+                    delayed(parallelSEP)(fileID, filePath) for fileID, filePath in enumerate(self.fileList))
+        else:
+            multicoreSEP = []
+            for fileID, filePath, in enumerate(self.fileList):
+                multicoreSEP.append(parallelSEP(fileID, filePath))
 
         writeBufferArray = []
 
@@ -305,7 +313,6 @@ class fitting:
             print("Runing SEPMode to get Rough range")
             self.sepMode()
 
-
         for frameID, frameDict in self.sepDict.items():
             if type(frameDict) is dict:
                 numberOfSpot = frameDict["numberOfSpot"]
@@ -320,13 +327,9 @@ class fitting:
                                   int(spotDict["xmax"]) - self.cropRange: int(
                                       spotDict["xmax"]) + self.cropRange]
 
-                    # plt.imshow(cropedArray)
-                    # plt.show()
-
+                    plt.imshow(cropedArray)
+                    plt.show()
 
                     print(spotDict)
-                    
-
-
 
         print("save to :" + self.SPACSVName)

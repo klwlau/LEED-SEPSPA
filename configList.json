@@ -5,6 +5,7 @@
   "CSVwriteBuffer": 20,
   "csvNameRemark":"sepspaclass test",
 
+
   "maskConfig": {
     "mask_x_center": 456,
     "mask_y_center": 479,
@@ -43,7 +44,7 @@
     "ChiSqThreshold": 30000,
     "saveFitFuncPlot":false,
     "saveFitFuncPlotFileRemark": "adjCrop"
-  }
-
+  },
+  "singleCoreDebugMode": false
 
 }
