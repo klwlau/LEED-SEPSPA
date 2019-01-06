@@ -13,8 +13,8 @@
   },
 
   "SEPParameters":{
-    "searchThreshold":80,
-    "cropRange": 10,
+    "searchThreshold":70,
+    "cropRange": 20,
     "scaleDownFactor":1.0,
     "saveSEPResult": false
   },

@@ -23,7 +23,7 @@ class fitting:
         self.timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S')
         # loading confingList
         self.dataFolderName = self.configList["dataFolderName"]
-        self.cropRange = self.configList["SEPParameters"]["cropRange"]
+        self.cropRange = self.configList["SEPParameters"]["cropRange"]//2
         self.searchThreshold = self.configList["SEPParameters"]["searchThreshold"]
         self.guessUpBound = self.configList["fittingParameters"]["guessUpBound"]
         self.intConfigGuess = self.configList["fittingParameters"]["intGuess"]
@@ -304,8 +304,24 @@ class fitting:
         for frameID, frameDict in self.sepDict.items():
             if type(frameDict) is dict:
                 numberOfSpot = frameDict["numberOfSpot"]
+                frameFilePath = frameDict["filePath"]
+                imageArray = self.readLEEDImage(frameFilePath)
+
                 for spotID in range(numberOfSpot):
-                    print(frameDict[str(spotID)])
+                    spotDict = frameDict[str(spotID)]
+                    cropedArray = imageArray[
+                                  int(spotDict["ymax"]) - self.cropRange: int(
+                                      spotDict["ymax"]) + self.cropRange,
+                                  int(spotDict["xmax"]) - self.cropRange: int(
+                                      spotDict["xmax"]) + self.cropRange]
+
+                    plt.imshow(cropedArray)
+                    plt.show()
+
+
+                    print(spotDict)
+                    
+
 
 
 
