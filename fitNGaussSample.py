@@ -11,11 +11,11 @@ ySpace = np.linspace(-10, 10, 100)
 xi, yi = np.meshgrid(xSpace, ySpace)
 xyi = np.vstack([xi.ravel(), yi.ravel()])
 
-backgroundGuessUpBound = [15, 15, 5000]
-backgroundGuessLowBound = [-15, -15, 0]
+backgroundGuessUpperBound = [15, 15, 5000]
+backgroundGuessLowerBound = [-15, -15, 0]
 
-guessUpBoundTemp = [100000, 10, 10, 30, 30, 180]
-guessLowBoundTemp = [0, -10, -10, 0.001, 0.001, -180]
+gaussianUpperBoundTemplate = [100000, 10, 10, 30, 30, 180]
+gaussianLowerBoundTemplate = [0, -10, -10, 0.001, 0.001, -180]
 
 
 def plottingOriFunc():
@@ -30,12 +30,12 @@ def genBound(numOfGauss):
     #              guessUpBoundTemp=guessUpBoundTemp, guessLowBoundTemp=guessLowBoundTemp):
 
 
-    guessUpBound = backgroundGuessUpBound.copy()
-    guessLowBound = backgroundGuessLowBound.copy()
+    guessUpBound = backgroundGuessUpperBound.copy()
+    guessLowBound = backgroundGuessLowerBound.copy()
 
     for num in range(numOfGauss):
-        guessUpBound += guessUpBoundTemp
-        guessLowBound += guessLowBoundTemp
+        guessUpBound += gaussianUpperBoundTemplate
+        guessLowBound += gaussianLowerBoundTemplate
 
     return [guessLowBound, guessUpBound]
 

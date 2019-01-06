@@ -1,4 +1,4 @@
-# print("SepSpa Started, Loading Libraries")
+print("Loading Libraries")
 import time
 import glob
 import datetime
@@ -25,9 +25,9 @@ class fitting:
         self.dataFolderName = self.configList["dataFolderName"]
         self.cropRange = self.configList["SEPParameters"]["cropRange"] // 2
         self.searchThreshold = self.configList["SEPParameters"]["searchThreshold"]
-        self.guessUpBound = self.configList["fittingParameters"]["guessUpBound"]
-        self.intConfigGuess = self.configList["fittingParameters"]["intGuess"]
-        self.guessLowBound = self.configList["fittingParameters"]["guessLowBound"]
+        self.guessUpBound = self.configList["SPAParameters"]["guessUpBound"]
+        self.intConfigGuess = self.configList["SPAParameters"]["intGuess"]
+        self.guessLowBound = self.configList["SPAParameters"]["guessLowBound"]
         self.dataFolderName = self.configList["dataFolderName"]
         self.plotSensitivity_low = self.configList["testModeParameters"]["plotSensitivity_low"]
         self.plotSensitivity_up = self.configList["testModeParameters"]["plotSensitivity_up"]
@@ -178,7 +178,7 @@ class fitting:
 
         plt.colorbar()
         if saveMode:
-            plt.show()
+            # plt.show()
             saveDir = self.dataFolderName + "SEPResult/"
             plt.savefig(saveDir + saveFileName + ".jpg")
 
@@ -211,7 +211,7 @@ class fitting:
         #     self.plotSpots(imgArray, sepObjectsList,
         #               showSpots=showSpots, saveMode=saveMode, saveFileName=saveFileName)
         #
-        # if fittingMode is True:
+        # if SPAParameters is True:
         #     returnArray = np.array([sepObjectsList['xcpeak'], sepObjectsList['ycpeak']]).T
         #
         #     if printReturnArray:
@@ -320,16 +320,24 @@ class fitting:
                 imageArray = self.readLEEDImage(frameFilePath)
 
                 for spotID in range(numberOfSpot):
+                    xyzArray = []
                     spotDict = frameDict[str(spotID)]
                     cropedArray = imageArray[
                                   int(spotDict["ycpeak"]) - self.cropRange: int(
                                       spotDict["ycpeak"]) + self.cropRange,
                                   int(spotDict["xcpeak"]) - self.cropRange: int(
                                       spotDict["xcpeak"]) + self.cropRange]
+                    for xx in range(len(cropedArray)):
+                        for yy in range(len(cropedArray[xx])):
+                            xyzArray.append([xx, yy, cropedArray[xx][yy]])
 
-                    plt.imshow(cropedArray)
-                    plt.show()
+                    x, y, z = np.array(xyzArray).T
+                    xy = x, y
 
-                    print(spotDict)
+
+                    # plt.imshow(cropedArray)
+                    # plt.show()
+
+                    # print(spotDict)
 
         print("save to :" + self.SPACSVName)
