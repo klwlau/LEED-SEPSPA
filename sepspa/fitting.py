@@ -14,11 +14,10 @@ from joblib import Parallel, delayed
 import sepspa.fitFunc as fitFunc
 
 
-
 class fitting:
 
     def __init__(self, configFilePath="configList.json"):
-        np.set_printoptions(precision=3,suppress=True)
+        np.set_printoptions(precision=3, suppress=True)
 
         self.start_time = time.time()
         self.configFilePath = configFilePath
@@ -321,14 +320,10 @@ class fitting:
         return self.sepDict
 
     def spaMode(self):
-        print("SPAMode")
-        if self.sepComplete == False:
-            print("Runing SEPMode to get Rough range")
-            self.sepMode()
-
-        for frameID, frameDict in self.sepDict.items():
+        def parallelSPA(frameID, frameDict):
             print(frameID)
             if type(frameDict) is dict:
+                fitParamsDict = {}
                 numberOfSpot = frameDict["numberOfSpot"]
                 frameFilePath = frameDict["filePath"]
                 imageArray = self.readLEEDImage(frameFilePath)
@@ -350,19 +345,28 @@ class fitting:
                     xi, yi, z = np.array(xyzArray).T
                     xyi = xi, yi
 
-                    intGuess = self.genIntCondittion(sepSpotDict,numOfGauss=numOfGauss)
+                    intGuess = self.genIntCondittion(sepSpotDict, numOfGauss=numOfGauss)
                     fittingBound = self.genFittingBound(numOfGauss=numOfGauss)
 
-                    fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess, bounds=fittingBound)
+                    fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
+                                                       bounds=fittingBound)
+                    fitParamsDict[str(spotID)] = fit_params
 
-                    # plt.imshow(cropedArray)
-                    # plt.show()
+                return fitParamsDict
 
-                    # print("--------------")
-                    # print(fit_params[:3])
-                    # print(fit_params[3:9])
-                    # # print(fit_params[9:15])
-                    # # print(fit_params[15:21])
-                    # print("--------------")
+        print("SPAMode")
+        if self.sepComplete == False:
+            print("Runing SEPMode to get Rough range")
+            self.sepMode()
+
+        if self.configList["singleCoreDebugMode"] != True:
+            with Parallel(n_jobs=-1, verbose=1) as parallel:
+                multicoreSPA = parallel(
+                    delayed(parallelSPA)(frameID, frameDict) for frameID, frameDict in self.sepDict.items())
+        else:
+            multicoreSPA = []
+            for frameID, frameDict in self.sepDict.items():
+                multicoreSPA.append(parallelSPA(frameID, frameDict))
+
 
         print("save to :" + self.SPACSVName)
