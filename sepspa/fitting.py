@@ -327,6 +327,7 @@ class fitting:
             self.sepMode()
 
         for frameID, frameDict in self.sepDict.items():
+            print(frameID)
             if type(frameDict) is dict:
                 numberOfSpot = frameDict["numberOfSpot"]
                 frameFilePath = frameDict["filePath"]
@@ -357,11 +358,11 @@ class fitting:
                     # plt.imshow(cropedArray)
                     # plt.show()
 
-                    print("--------------")
-                    print(fit_params[:3])
-                    print(fit_params[3:9])
-                    # print(fit_params[9:15])
-                    # print(fit_params[15:21])
-                    print("--------------")
+                    # print("--------------")
+                    # print(fit_params[:3])
+                    # print(fit_params[3:9])
+                    # # print(fit_params[9:15])
+                    # # print(fit_params[15:21])
+                    # print("--------------")
 
         print("save to :" + self.SPACSVName)
