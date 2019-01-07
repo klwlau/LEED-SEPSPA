@@ -11,12 +11,15 @@ import csv, itertools, json, os, shutil, ntpath
 from numba import jit
 import numpy as np
 from joblib import Parallel, delayed
-import fitFunc
+import sepspa.fitFunc as fitFunc
+
 
 
 class fitting:
 
     def __init__(self, configFilePath="configList.json"):
+        np.set_printoptions(precision=3,suppress=True)
+
         self.start_time = time.time()
         self.configFilePath = configFilePath
         self.configList = json.load(open(self.configFilePath))
@@ -25,9 +28,6 @@ class fitting:
         self.dataFolderName = self.configList["dataFolderName"]
         self.halfCropRange = self.configList["SEPParameters"]["cropRange"] // 2
         self.searchThreshold = self.configList["SEPParameters"]["searchThreshold"]
-        self.guessUpBound = self.configList["SPAParameters"]["guessUpBound"]
-        # self.intConfigGuess = self.configList["SPAParameters"]["intGuess"]
-        self.guessLowBound = self.configList["SPAParameters"]["guessLowBound"]
         self.dataFolderName = self.configList["dataFolderName"]
         self.sepPlotColourMin = self.configList["testModeParameters"]["sepPlotColourMin"]
         self.sepPlotColourMax = self.configList["testModeParameters"]["sepPlotColourMax"]
@@ -333,6 +333,8 @@ class fitting:
                 imageArray = self.readLEEDImage(frameFilePath)
 
                 for spotID in range(numberOfSpot):
+                    numOfGauss = 1
+
                     xyzArray = []
                     sepSpotDict = frameDict[str(spotID)]
                     cropedArray = imageArray[
@@ -347,24 +349,19 @@ class fitting:
                     xi, yi, z = np.array(xyzArray).T
                     xyi = xi, yi
 
-                    intGuess = self.genIntCondittion(sepSpotDict)
-                    fittingBound = self.genFittingBound()
+                    intGuess = self.genIntCondittion(sepSpotDict,numOfGauss=numOfGauss)
+                    fittingBound = self.genFittingBound(numOfGauss=numOfGauss)
 
-                    print("-------------")
-                    print(spotID)
-                    print(sepSpotDict)
-                    print(intGuess)
-                    print(fittingBound)
-                    print("-------------")
-
-                    fit_params, uncert_cov = curve_fit(fitFunc.NGauss(1), xyi, z, p0=intGuess, bounds=fittingBound)
-
-                    # print(fit_params)
-
+                    fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess, bounds=fittingBound)
 
                     # plt.imshow(cropedArray)
                     # plt.show()
 
-                    # print(sepSpotDict)
+                    print("--------------")
+                    print(fit_params[:3])
+                    print(fit_params[3:9])
+                    # print(fit_params[9:15])
+                    # print(fit_params[15:21])
+                    print("--------------")
 
         print("save to :" + self.SPACSVName)
