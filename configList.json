@@ -1,7 +1,7 @@
 {
-  "dataFolderName_a": "./",
+  "dataFolderName": "./",
   "dataFolderName_b": "D:/Resarch Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
-  "dataFolderName": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
+  "dataFolderName_a": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
   "CSVwriteBuffer": 20,
   "csvNameRemark":"sepspaclass test",
 
@@ -35,16 +35,17 @@
   },
 
   "SPAParameters": {
-    "intGuess": [5, 5,  90, 0, 0, 0],
     "smartXYGuessBound": true,
     "smartXYGuessBoundRange":10,
 
     "backgroundGuessUpperBound": [15, 15, 5000],
     "backgroundGuessLowerBound" : [-15, -15, 0],
+
     "gaussianUpperBoundTemplate" : [100000, 10, 10, 30, 30, 180],
     "gaussianLowerBoundTemplate" : [0, -10, -10, 0.001, 0.001, -180],
 
-
+    "backgroundIntGuess" : [0,0,0] ,
+    "minorGaussianIntGuess" : [300, 0, 0, 3, 3, 0] ,
 
     "guessUpBound": [100000, 200, 200,    30,     30,  180,  15,  15, 5000],
     "guessLowBound": [0,    -200,-200, 0.001, 0.001 , -180, -15, -15,    0],

@@ -26,7 +26,7 @@ class fitting:
         self.cropRange = self.configList["SEPParameters"]["cropRange"] // 2
         self.searchThreshold = self.configList["SEPParameters"]["searchThreshold"]
         self.guessUpBound = self.configList["SPAParameters"]["guessUpBound"]
-        self.intConfigGuess = self.configList["SPAParameters"]["intGuess"]
+        # self.intConfigGuess = self.configList["SPAParameters"]["intGuess"]
         self.guessLowBound = self.configList["SPAParameters"]["guessLowBound"]
         self.dataFolderName = self.configList["dataFolderName"]
         self.sepPlotColourMin = self.configList["testModeParameters"]["sepPlotColourMin"]
@@ -43,6 +43,7 @@ class fitting:
         self.preStart()
         self.maxSpotInFrame = 0
         self.fittingBoundDict = {}
+        self.fittingIntDict = {}
 
     def preStart(self):
         self.makeResultDir()
@@ -157,10 +158,9 @@ class fitting:
         appliedMask = np.multiply(imageArray, self.mask)
         return appliedMask
 
-    def genBound(self, numOfGauss):
+    def genFittingBound(self, numOfGauss=1):
         numOfGaussKey = str(numOfGauss)
         if numOfGaussKey in self.fittingBoundDict:
-
             return self.fittingBoundDict[numOfGaussKey]
         else:
             guessUpBound = self.configList["SPAParameters"]["backgroundGuessUpperBound"]
@@ -174,6 +174,22 @@ class fitting:
 
             return self.fittingBoundDict[numOfGaussKey]
 
+    def genIntCondittion(self, sepSpotDict, numOfGauss=1):
+        intGuess = self.configList["SPAParameters"]["backgroundIntGuess"]
+
+        for i in range(numOfGauss):
+            if i == 0:
+                intGuess.append(sepSpotDict["Am"])
+                intGuess.append(self.cropRange / 2)
+                intGuess.append(self.cropRange / 2)
+                intGuess.append(sepSpotDict["a"])
+                intGuess.append(sepSpotDict["b"])
+                intGuess.append(sepSpotDict["theta"])
+            else:
+                intGuess.append(self.configList["SPAParameters"]["minorGaussianIntGuess"])
+
+        return intGuess
+
     def plotSEPReult(self, imgArray, objects_list,
                      saveMode=False, saveFileName="test", showSpots=False):
         """plot sep result"""
@@ -185,7 +201,7 @@ class fitting:
         #            , origin='lower')
 
         plt.imshow(imgArray, interpolation='nearest', cmap='jet',
-                   vmin=self.sepPlotColourMin,vmax=self.sepPlotColourMax,
+                   vmin=self.sepPlotColourMin, vmax=self.sepPlotColourMax,
                    origin='lower')
 
         """plot an ellipse for each object"""
@@ -202,7 +218,7 @@ class fitting:
         if saveMode:
             # plt.show()
             saveDir = self.dataFolderName + "SEPResult/"
-            plt.savefig(saveDir + saveFileName + ".jpg",dpi=500)
+            plt.savefig(saveDir + saveFileName + ".jpg", dpi=500)
 
         if showSpots:
             plt.show()
@@ -318,12 +334,12 @@ class fitting:
 
                 for spotID in range(numberOfSpot):
                     xyzArray = []
-                    spotDict = frameDict[str(spotID)]
+                    sepSpotDict = frameDict[str(spotID)]
                     cropedArray = imageArray[
-                                  int(spotDict["ycpeak"]) - self.cropRange: int(
-                                      spotDict["ycpeak"]) + self.cropRange,
-                                  int(spotDict["xcpeak"]) - self.cropRange: int(
-                                      spotDict["xcpeak"]) + self.cropRange]
+                                  int(sepSpotDict["ycpeak"]) - self.cropRange: int(
+                                      sepSpotDict["ycpeak"]) + self.cropRange,
+                                  int(sepSpotDict["xcpeak"]) - self.cropRange: int(
+                                      sepSpotDict["xcpeak"]) + self.cropRange]
                     for xx in range(len(cropedArray)):
                         for yy in range(len(cropedArray[xx])):
                             xyzArray.append([xx, yy, cropedArray[xx][yy]])
@@ -331,9 +347,14 @@ class fitting:
                     x, y, z = np.array(xyzArray).T
                     xy = x, y
 
+
+
+                    # intGuess = self.genIntCondittion(sepSpotDict)
+                    # fittingBound  =self.genFittingBound()
+
                     # plt.imshow(cropedArray)
                     # plt.show()
 
-                    # print(spotDict)
+                    # print(sepSpotDict)
 
         print("save to :" + self.SPACSVName)
