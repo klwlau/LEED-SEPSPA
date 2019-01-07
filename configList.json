@@ -4,6 +4,8 @@
   "dataFolderName": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
   "CSVwriteBuffer": 20,
   "csvNameRemark":"sepspaclass test",
+  "sepSingleCoreDebugMode": false,
+  "spaSingleCoreDebugMode": true,
 
 
   "maskConfig": {
@@ -50,7 +52,7 @@
     "ChiSqThreshold": 30000,
     "saveFitFuncPlot":false,
     "saveFitFuncPlotFileRemark": "adjCrop"
-  },
-  "singleCoreDebugMode": false
+  }
+
 
 }

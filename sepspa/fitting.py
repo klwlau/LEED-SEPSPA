@@ -296,7 +296,7 @@ class fitting:
 
         self.saveToCSV([sepCSVHeader], self.SEPCSVName)
 
-        if self.configList["singleCoreDebugMode"] != True:
+        if self.configList["sepSingleCoreDebugMode"] != True:
             with Parallel(n_jobs=-1, verbose=1) as parallel:
                 multicoreSEP = parallel(
                     delayed(parallelSEP)(fileID, filePath) for fileID, filePath in enumerate(self.fileList))
@@ -359,7 +359,7 @@ class fitting:
             print("Runing SEPMode to get Rough range")
             self.sepMode()
 
-        if self.configList["singleCoreDebugMode"] != True:
+        if self.configList["spaSingleCoreDebugMode"] != True:
             with Parallel(n_jobs=-1, verbose=1) as parallel:
                 multicoreSPA = parallel(
                     delayed(parallelSPA)(frameID, frameDict) for frameID, frameDict in self.sepDict.items())
