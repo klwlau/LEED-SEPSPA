@@ -1,4 +1,3 @@
-print("Loading Libraries")
 import time
 import glob
 import datetime
@@ -175,18 +174,18 @@ class fitting:
             return self.fittingBoundDict[numOfGaussKey]
 
     def genIntCondittion(self, sepSpotDict, numOfGauss=1):
-        intGuess = self.configList["SPAParameters"]["backgroundIntGuess"]
+        intGuess=self.configList["SPAParameters"]["backgroundIntGuess"]
 
         for i in range(numOfGauss):
             if i == 0:
-                intGuess.append(sepSpotDict["Am"])
-                intGuess.append(self.cropRange / 2)
-                intGuess.append(self.cropRange / 2)
-                intGuess.append(sepSpotDict["a"])
-                intGuess.append(sepSpotDict["b"])
-                intGuess.append(sepSpotDict["theta"])
+                intGuess+=[sepSpotDict["Am"]]
+                intGuess+=[self.cropRange / 2]
+                intGuess+=[self.cropRange / 2]
+                intGuess+=[sepSpotDict["a"]]
+                intGuess+=[sepSpotDict["b"]]
+                intGuess+=[sepSpotDict["theta"]]
             else:
-                intGuess.append(self.configList["SPAParameters"]["minorGaussianIntGuess"])
+                intGuess+=self.configList["SPAParameters"]["minorGaussianIntGuess"]
 
         return intGuess
 
