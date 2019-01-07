@@ -11,6 +11,7 @@ import csv, itertools, json, os, shutil, ntpath
 from numba import jit
 import numpy as np
 from joblib import Parallel, delayed
+import fitFunc
 
 
 class fitting:
@@ -343,11 +344,22 @@ class fitting:
                         for yy in range(len(cropedArray[xx])):
                             xyzArray.append([xx, yy, cropedArray[xx][yy]])
 
-                    x, y, z = np.array(xyzArray).T
-                    xy = x, y
+                    xi, yi, z = np.array(xyzArray).T
+                    xyi = xi, yi
 
-                    # intGuess = self.genIntCondittion(sepSpotDict)
-                    # fittingBound  =self.genFittingBound()
+                    intGuess = self.genIntCondittion(sepSpotDict)
+                    fittingBound = self.genFittingBound()
+
+                    print("-------------")
+                    print(spotID)
+                    print(intGuess)
+                    print(fittingBound)
+                    print("-------------")
+
+                    fit_params, uncert_cov = curve_fit(fitFunc.NGauss(1), xyi, z, p0=intGuess, bounds=fittingBound)
+
+                    print(fit_params)
+
 
                     # plt.imshow(cropedArray)
                     # plt.show()
