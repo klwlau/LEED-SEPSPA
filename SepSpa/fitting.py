@@ -174,18 +174,18 @@ class fitting:
             return self.fittingBoundDict[numOfGaussKey]
 
     def genIntCondittion(self, sepSpotDict, numOfGauss=1):
-        intGuess=self.configList["SPAParameters"]["backgroundIntGuess"]
+        intGuess = self.configList["SPAParameters"]["backgroundIntGuess"]
 
         for i in range(numOfGauss):
             if i == 0:
-                intGuess+=[sepSpotDict["Am"]]
-                intGuess+=[self.cropRange / 2]
-                intGuess+=[self.cropRange / 2]
-                intGuess+=[sepSpotDict["a"]]
-                intGuess+=[sepSpotDict["b"]]
-                intGuess+=[sepSpotDict["theta"]]
+                intGuess += [sepSpotDict["Am"]]
+                intGuess += [self.cropRange / 2]
+                intGuess += [self.cropRange / 2]
+                intGuess += [sepSpotDict["a"]]
+                intGuess += [sepSpotDict["b"]]
+                intGuess += [sepSpotDict["theta"]]
             else:
-                intGuess+=self.configList["SPAParameters"]["minorGaussianIntGuess"]
+                intGuess += self.configList["SPAParameters"]["minorGaussianIntGuess"]
 
         return intGuess
 
@@ -345,8 +345,6 @@ class fitting:
 
                     x, y, z = np.array(xyzArray).T
                     xy = x, y
-
-
 
                     # intGuess = self.genIntCondittion(sepSpotDict)
                     # fittingBound  =self.genFittingBound()
