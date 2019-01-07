@@ -23,7 +23,7 @@ class fitting:
         self.timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S')
         # loading confingList
         self.dataFolderName = self.configList["dataFolderName"]
-        self.cropRange = self.configList["SEPParameters"]["cropRange"] // 2
+        self.halfCropRange = self.configList["SEPParameters"]["cropRange"] // 2
         self.searchThreshold = self.configList["SEPParameters"]["searchThreshold"]
         self.guessUpBound = self.configList["SPAParameters"]["guessUpBound"]
         # self.intConfigGuess = self.configList["SPAParameters"]["intGuess"]
@@ -175,13 +175,13 @@ class fitting:
             return self.fittingBoundDict[numOfGaussKey]
 
     def genIntCondittion(self, sepSpotDict, numOfGauss=1):
-        intGuess = self.configList["SPAParameters"]["backgroundIntGuess"]
 
+        intGuess = self.configList["SPAParameters"]["backgroundIntGuess"].copy()
         for i in range(numOfGauss):
             if i == 0:
                 intGuess += [sepSpotDict["Am"]]
-                intGuess += [self.cropRange / 2]
-                intGuess += [self.cropRange / 2]
+                intGuess += [self.halfCropRange]
+                intGuess += [self.halfCropRange]
                 intGuess += [sepSpotDict["a"]]
                 intGuess += [sepSpotDict["b"]]
                 intGuess += [sepSpotDict["theta"]]
@@ -336,10 +336,10 @@ class fitting:
                     xyzArray = []
                     sepSpotDict = frameDict[str(spotID)]
                     cropedArray = imageArray[
-                                  int(sepSpotDict["ycpeak"]) - self.cropRange: int(
-                                      sepSpotDict["ycpeak"]) + self.cropRange,
-                                  int(sepSpotDict["xcpeak"]) - self.cropRange: int(
-                                      sepSpotDict["xcpeak"]) + self.cropRange]
+                                  int(sepSpotDict["ycpeak"]) - self.halfCropRange: int(
+                                      sepSpotDict["ycpeak"]) + self.halfCropRange,
+                                  int(sepSpotDict["xcpeak"]) - self.halfCropRange: int(
+                                      sepSpotDict["xcpeak"]) + self.halfCropRange]
                     for xx in range(len(cropedArray)):
                         for yy in range(len(cropedArray[xx])):
                             xyzArray.append([xx, yy, cropedArray[xx][yy]])
@@ -352,13 +352,14 @@ class fitting:
 
                     print("-------------")
                     print(spotID)
+                    print(sepSpotDict)
                     print(intGuess)
                     print(fittingBound)
                     print("-------------")
 
                     fit_params, uncert_cov = curve_fit(fitFunc.NGauss(1), xyi, z, p0=intGuess, bounds=fittingBound)
 
-                    print(fit_params)
+                    # print(fit_params)
 
 
                     # plt.imshow(cropedArray)
