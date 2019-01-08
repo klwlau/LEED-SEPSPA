@@ -43,6 +43,7 @@ class fitting:
         self.maxSpotInFrame = 0
         self.fittingBoundDict = {}
         self.fittingIntDict = {}
+        self.multipleSpotInFrameThreshold = np.sqrt(2)*self.halfCropRange+5
 
     def preStart(self):
         self.makeResultDir()
@@ -319,25 +320,30 @@ class fitting:
         print("SEPMode Complete")
         return self.sepDict
 
-    def createDistaceMapDict(self):
+    def createNGaussDict(self):
+        """reutrn a dict storing how many Gaussian needed for each spot crop"""
         distaceMapDict = {}
         for frameID, frameDict in self.sepDict.items():
             frameDistMap = {}
             if type(frameDict) is dict:
                 numberOfSpot = frameDict["numberOfSpot"]
                 for spotIID in range(numberOfSpot):
-                    for spotJID in range(spotIID, numberOfSpot):
+                    gaussCount = 1
+                    for spotJID in range(numberOfSpot): #for spotJID in range(spotIID, numberOfSpot):
                         if spotIID != spotJID:
                             spotI = np.array([frameDict[str(spotIID)]["xcpeak"], frameDict[str(spotIID)]["ycpeak"]])
                             spotJ = np.array([frameDict[str(spotJID)]["xcpeak"], frameDict[str(spotJID)]["ycpeak"]])
-                            frameDistMap[(spotIID, spotJID)] = np.linalg.norm(spotI - spotJ)
+                            twoSpotDist = np.linalg.norm(spotI - spotJ)
+                            if twoSpotDist <= self.multipleSpotInFrameThreshold:
+                                gaussCount += 1
+                    frameDistMap[str(spotIID)] = gaussCount
                 distaceMapDict[str(frameID)] = frameDistMap
 
         return distaceMapDict
 
     def spaMode(self):
 
-        def parallelSPA(frameID, frameDict):
+        def applySPA(frameID, frameDict):
             print(frameID)
             if type(frameDict) is dict:
                 fitParamsDict = {}
@@ -382,7 +388,7 @@ class fitting:
 
         spaResultList = []
         for frameID, frameDict in self.sepDict.items():
-            spaResultList.append(parallelSPA(frameID, frameDict))
+            spaResultList.append(applySPA(frameID, frameDict))
 
         print("save to :" + self.SPACSVName)
 

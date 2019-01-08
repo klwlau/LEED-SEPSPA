@@ -1,6 +1,6 @@
 {
-  "dataFolderName_a": "./",
-  "dataFolderName": "D:/Resarch Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
+  "dataFolderName": "./",
+  "dataFolderName_a": "D:/Resarch Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
   "dataFolderName_b": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
   "CSVwriteBuffer": 20,
   "csvNameRemark":"sepspaclass test",
