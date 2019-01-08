@@ -341,6 +341,13 @@ class fitting:
 
         return self.distaceMapDict
 
+    def saveSpotCropFig(self, imageArray, fileName="test"):
+        self.makeDirInDataFolder("spotCrop")
+        saveDir = self.dataFolderName + "spotCrop/"
+        plt.imshow(imageArray)
+        plt.savefig(saveDir + fileName + ".png", dpi=500)
+        plt.close()
+
     def spaMode(self):
 
         def applySPA(frameID, frameDict):
@@ -367,6 +374,8 @@ class fitting:
 
                     xi, yi, z = np.array(xyzArray).T
                     xyi = xi, yi
+
+                    self.saveSpotCropFig(cropedArray,fileName=os.path.basename(frameFilePath)[:-4]+"_"+str(spotID))
 
                     intGuess = self.genIntCondittion(sepSpotDict, numOfGauss=numOfGauss)
                     fittingBound = self.genFittingBound(numOfGauss=numOfGauss)
