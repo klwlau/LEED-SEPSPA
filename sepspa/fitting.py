@@ -40,7 +40,7 @@ class fitting:
             self.fileList = sorted(self.fileList)
         self.CSVwriteBuffer = self.configList["CSVwriteBuffer"]
         self.preStart()
-        self.maxSpotInFrame = 0
+        # self.maxSpotInFrame = 0
         self.fittingBoundDict = {}
         self.fittingIntDict = {}
         self.multipleSpotInFrameThreshold = np.sqrt(2) * self.halfCropRange + 5
@@ -266,8 +266,8 @@ class fitting:
         frameDict["filePath"] = filePath
         frameDict["numberOfSpot"] = len(sepObject)
         self.sepDict[str(fileID)] = frameDict
-        self.maxSpotInFrame = max(frameDict["numberOfSpot"], self.maxSpotInFrame)
-        self.sepDict["maxSpotInFrame"] = self.maxSpotInFrame
+        # self.maxSpotInFrame = max(frameDict["numberOfSpot"], self.maxSpotInFrame)
+        # self.sepDict["maxSpotInFrame"] = self.maxSpotInFrame
 
     def testMode(self):
         print("TestMode")
@@ -326,6 +326,7 @@ class fitting:
 
     def createNGaussDict(self):
         """reutrn a dict storing how many Gaussian needed for each spot crop"""
+        print("Creating NGauss Dict")
         self.distaceMapDict = {}
         for frameID, frameDict in self.sepDict.items():
             frameDistMap = {}
@@ -344,6 +345,56 @@ class fitting:
                 self.distaceMapDict[str(frameID)] = frameDistMap
 
         return self.distaceMapDict
+
+    def genFittedFuncArray(self, fit_params, outputZpredOnly=False):
+        """generate an image array from the fitted function"""
+        test = self.halfCropRange * 2
+        # xi, yi = np.mgrid[0:self.halfcropRange * 2, 0:self.halfcropRange * 2]
+        xi, yi = np.mgrid[0:test, 0:test]
+
+        xyi = np.vstack([xi.ravel(), yi.ravel()])
+        numOfGauss = int((len(fit_params) - 3) / len(self.configList["SPAParameters"]["gaussianUpperBoundTemplate"]))
+
+        zpred = fitFunc.NGauss(numOfGauss)(xyi, *fit_params)
+
+        zpred.shape = xi.shape
+
+        if outputZpredOnly:
+            return zpred
+        else:
+            return xi, yi, zpred
+
+    def plotFitFunc(self, fit_params, cropedRawDataArray, plotSensitivity=5, saveFitFuncPlot=False,
+                    saveFitFuncFileName="fitFuncFig"):
+
+        # Chi_square = fit_params[-1]
+        # fit_params = fit_params[:-1]
+
+        xi, yi, zpred = self.genFittedFuncArray(fit_params)
+
+        fig, ax1 = plt.subplots()
+        # ax2 = ax1.twinx()
+        m, s = np.mean(cropedRawDataArray), np.std(cropedRawDataArray)
+        cs = ax1.imshow(cropedRawDataArray, interpolation='nearest', cmap='jet',
+                        vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
+                        origin='lower')
+
+        fig.colorbar(cs)
+        # plt.title("Chi^2= %.2f" % (Chi_square))
+        ax1.contour(yi, xi, zpred,
+                    vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s, alpha=1, origin='lower')  # cmap='jet',
+        if saveFitFuncPlot:
+            if saveFitFuncFileName == "fitFuncFig":
+                plt.savefig(saveFitFuncFileName + ".png")
+            else:
+                saveFigFullPath = self.makeDirInDataFolder("fitFuncFig_"
+                                                           + self.configList["SPAParameters"][
+                                                               "saveFitFuncPlotFileRemark"])
+                plt.savefig(saveFigFullPath + "/" + saveFitFuncFileName + ".png")
+            plt.close(fig)
+            return
+
+        plt.show()
 
     def saveSpotCropFig(self, imageArray, numOfGauss, fileName="test", dirName="spotCrop"):
         self.makeDirInDataFolder(dirName)
@@ -396,10 +447,15 @@ class fitting:
                         numOfGauss = 1
                         fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
                                                            bounds=fittingBound)
+                    print(fit_params)
+                    self.plotFitFunc(fit_params, cropedArray, saveFitFuncPlot=True,
+                                     saveFitFuncFileName=os.path.basename(frameFilePath)[:-4] + "_" + str(spotID))
 
                     """coordinate transformation"""
                     fit_params[4] = fit_params[4] - self.halfCropRange + sepSpotDict["xcpeak"]
                     fit_params[5] = fit_params[5] - self.halfCropRange + sepSpotDict["ycpeak"]
+
+
 
                     fitParamsDict[str(spotID)] = fit_params
 
