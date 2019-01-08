@@ -170,6 +170,10 @@ class fitting:
                 guessUpBound += self.configList["SPAParameters"]["gaussianUpperBoundTemplate"]
                 guessLowBound += self.configList["SPAParameters"]["gaussianLowerBoundTemplate"]
 
+            guessUpBound[4] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
+            guessUpBound[5] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
+            guessLowBound[4] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
+            guessLowBound[5] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
             self.fittingBoundDict[numOfGaussKey] = [guessLowBound, guessUpBound]
 
             return self.fittingBoundDict[numOfGaussKey]
@@ -341,10 +345,11 @@ class fitting:
 
         return self.distaceMapDict
 
-    def saveSpotCropFig(self, imageArray, fileName="test"):
+    def saveSpotCropFig(self, imageArray, numOfGauss,fileName="test"):
         self.makeDirInDataFolder("spotCrop")
         saveDir = self.dataFolderName + "spotCrop/"
         plt.imshow(imageArray)
+        plt.title(numOfGauss)
         plt.savefig(saveDir + fileName + ".png", dpi=500)
         plt.close()
 
@@ -375,7 +380,7 @@ class fitting:
                     xi, yi, z = np.array(xyzArray).T
                     xyi = xi, yi
 
-                    self.saveSpotCropFig(cropedArray,fileName=os.path.basename(frameFilePath)[:-4]+"_"+str(spotID))
+                    # self.saveSpotCropFig(cropedArray,numOfGauss,fileName=os.path.basename(frameFilePath)[:-4]+"_"+str(spotID))
 
                     intGuess = self.genIntCondittion(sepSpotDict, numOfGauss=numOfGauss)
                     fittingBound = self.genFittingBound(numOfGauss=numOfGauss)

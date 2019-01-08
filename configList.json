@@ -42,6 +42,7 @@
     "backgroundGuessUpperBound": [15, 15, 5000],
     "backgroundGuessLowerBound" : [-15, -15, 0],
 
+    "majorGaussianXYRange": 3,
     "gaussianUpperBoundTemplate" : [100000, 20, 20, 30, 30, 180],
     "gaussianLowerBoundTemplate" : [0, 0, 0, 0.001, 0.001, -180],
 
