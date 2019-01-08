@@ -39,10 +39,10 @@
     "smartXYGuessBound": true,
     "smartXYGuessBoundRange":10,
 
-    "backgroundGuessUpperBound": [15, 15, 5000],
+    "backgroundGuessUpperBound": [15, 15, 2000],
     "backgroundGuessLowerBound" : [-15, -15, 0],
 
-    "majorGaussianXYRange": 3,
+    "majorGaussianXYRange": 2,
     "gaussianUpperBoundTemplate" : [100000, 20, 20, 30, 30, 180],
     "gaussianLowerBoundTemplate" : [0, 0, 0, 0.001, 0.001, -180],
 
@@ -50,8 +50,8 @@
     "minorGaussianIntGuess" : [300, 0, 0, 3, 3, 0],
 
     "ChiSqThreshold": 30000,
-    "saveFitFuncPlot":false,
-    "saveFitFuncPlotFileRemark": "testPlotFitFunc"
+    "saveFitFuncPlot":true,
+    "saveFitFuncPlotFileRemark": "testPlotFitFunc_20crop"
   }
 
 

@@ -365,7 +365,7 @@ class fitting:
             return xi, yi, zpred
 
     def plotFitFunc(self, fit_params, cropedRawDataArray, plotSensitivity=5, saveFitFuncPlot=False,
-                    saveFitFuncFileName="fitFuncFig"):
+                    saveFitFuncFileName="fitFuncFig", plottitle=""):
 
         # Chi_square = fit_params[-1]
         # fit_params = fit_params[:-1]
@@ -381,6 +381,7 @@ class fitting:
 
         fig.colorbar(cs)
         # plt.title("Chi^2= %.2f" % (Chi_square))
+        plt.title(plottitle)
         ax1.contour(yi, xi, zpred,
                     vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s, alpha=1, origin='lower')  # cmap='jet',
         if saveFitFuncPlot:
@@ -447,15 +448,17 @@ class fitting:
                         numOfGauss = 1
                         fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
                                                            bounds=fittingBound)
-                    print(fit_params)
-                    self.plotFitFunc(fit_params, cropedArray, saveFitFuncPlot=True,
-                                     saveFitFuncFileName=os.path.basename(frameFilePath)[:-4] + "_" + str(spotID))
+
+                    if self.configList["SPAParameters"]["saveFitFuncPlot"]:
+                        self.plotFitFunc(fit_params, cropedArray, saveFitFuncPlot=True,
+                                         saveFitFuncFileName=os.path.basename(frameFilePath)[:-4] + "_" + str(spotID),
+                                         plottitle=numOfGauss)
+
+                    print(fit_params[3], sepSpotDict["Am"])
 
                     """coordinate transformation"""
                     fit_params[4] = fit_params[4] - self.halfCropRange + sepSpotDict["xcpeak"]
                     fit_params[5] = fit_params[5] - self.halfCropRange + sepSpotDict["ycpeak"]
-
-
 
                     fitParamsDict[str(spotID)] = fit_params
 
