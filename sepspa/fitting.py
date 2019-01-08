@@ -43,7 +43,7 @@ class fitting:
         self.maxSpotInFrame = 0
         self.fittingBoundDict = {}
         self.fittingIntDict = {}
-        self.multipleSpotInFrameThreshold = np.sqrt(2)*self.halfCropRange+5
+        self.multipleSpotInFrameThreshold = np.sqrt(2) * self.halfCropRange + 5
 
     def preStart(self):
         self.makeResultDir()
@@ -163,8 +163,8 @@ class fitting:
         if numOfGaussKey in self.fittingBoundDict:
             return self.fittingBoundDict[numOfGaussKey]
         else:
-            guessUpBound = self.configList["SPAParameters"]["backgroundGuessUpperBound"]
-            guessLowBound = self.configList["SPAParameters"]["backgroundGuessLowerBound"]
+            guessUpBound = self.configList["SPAParameters"]["backgroundGuessUpperBound"].copy()
+            guessLowBound = self.configList["SPAParameters"]["backgroundGuessLowerBound"].copy()
 
             for num in range(numOfGauss):
                 guessUpBound += self.configList["SPAParameters"]["gaussianUpperBoundTemplate"]
@@ -322,14 +322,14 @@ class fitting:
 
     def createNGaussDict(self):
         """reutrn a dict storing how many Gaussian needed for each spot crop"""
-        distaceMapDict = {}
+        self.distaceMapDict = {}
         for frameID, frameDict in self.sepDict.items():
             frameDistMap = {}
             if type(frameDict) is dict:
                 numberOfSpot = frameDict["numberOfSpot"]
                 for spotIID in range(numberOfSpot):
                     gaussCount = 1
-                    for spotJID in range(numberOfSpot): #for spotJID in range(spotIID, numberOfSpot):
+                    for spotJID in range(numberOfSpot):  # for spotJID in range(spotIID, numberOfSpot):
                         if spotIID != spotJID:
                             spotI = np.array([frameDict[str(spotIID)]["xcpeak"], frameDict[str(spotIID)]["ycpeak"]])
                             spotJ = np.array([frameDict[str(spotJID)]["xcpeak"], frameDict[str(spotJID)]["ycpeak"]])
@@ -337,9 +337,9 @@ class fitting:
                             if twoSpotDist <= self.multipleSpotInFrameThreshold:
                                 gaussCount += 1
                     frameDistMap[str(spotIID)] = gaussCount
-                distaceMapDict[str(frameID)] = frameDistMap
+                self.distaceMapDict[str(frameID)] = frameDistMap
 
-        return distaceMapDict
+        return self.distaceMapDict
 
     def spaMode(self):
 
@@ -352,7 +352,7 @@ class fitting:
                 imageArray = self.readLEEDImage(frameFilePath)
 
                 for spotID in range(numberOfSpot):
-                    numOfGauss = 1
+                    numOfGauss = self.distaceMapDict[str(frameID)][str(spotID)]
 
                     xyzArray = []
                     sepSpotDict = frameDict[str(spotID)]
@@ -386,6 +386,7 @@ class fitting:
             print("Runing SEPMode to get Rough range")
             self.sepMode()
 
+        self.createNGaussDict()
         spaResultList = []
         for frameID, frameDict in self.sepDict.items():
             spaResultList.append(applySPA(frameID, frameDict))
