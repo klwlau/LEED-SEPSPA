@@ -297,7 +297,7 @@ class fitting:
         self.saveToCSV([sepCSVHeader], self.SEPCSVName)
 
         if self.configList["sepSingleCoreDebugMode"] != True:
-            with Parallel(n_jobs=-1, verbose=1) as parallel:
+            with Parallel(n_jobs=-1, verbose=2) as parallel:
                 multicoreSEP = parallel(
                     delayed(parallelSEP)(fileID, filePath) for fileID, filePath in enumerate(self.fileList))
         else:
@@ -319,7 +319,24 @@ class fitting:
         print("SEPMode Complete")
         return self.sepDict
 
+    def createDistaceMapDict(self):
+        distaceMapDict = {}
+        for frameID, frameDict in self.sepDict.items():
+            frameDistMap = {}
+            if type(frameDict) is dict:
+                numberOfSpot = frameDict["numberOfSpot"]
+                for spotIID in range(numberOfSpot):
+                    for spotJID in range(spotIID, numberOfSpot):
+                        if spotIID != spotJID:
+                            spotI = np.array([frameDict[str(spotIID)]["xcpeak"], frameDict[str(spotIID)]["ycpeak"]])
+                            spotJ = np.array([frameDict[str(spotJID)]["xcpeak"], frameDict[str(spotJID)]["ycpeak"]])
+                            frameDistMap[(spotIID, spotJID)] = np.linalg.norm(spotI - spotJ)
+                distaceMapDict[str(frameID)] = frameDistMap
+
+        return distaceMapDict
+
     def spaMode(self):
+
         def parallelSPA(frameID, frameDict):
             print(frameID)
             if type(frameDict) is dict:
@@ -350,6 +367,10 @@ class fitting:
 
                     fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
                                                        bounds=fittingBound)
+                    """coordinate transformation"""
+                    fit_params[4] = fit_params[4] - self.halfCropRange + sepSpotDict["xcpeak"]
+                    fit_params[5] = fit_params[5] - self.halfCropRange + sepSpotDict["ycpeak"]
+
                     fitParamsDict[str(spotID)] = fit_params
 
                 return fitParamsDict
@@ -359,14 +380,10 @@ class fitting:
             print("Runing SEPMode to get Rough range")
             self.sepMode()
 
-        if self.configList["spaSingleCoreDebugMode"] != True:
-            with Parallel(n_jobs=-1, verbose=1) as parallel:
-                multicoreSPA = parallel(
-                    delayed(parallelSPA)(frameID, frameDict) for frameID, frameDict in self.sepDict.items())
-        else:
-            multicoreSPA = []
-            for frameID, frameDict in self.sepDict.items():
-                multicoreSPA.append(parallelSPA(frameID, frameDict))
-
+        spaResultList = []
+        for frameID, frameDict in self.sepDict.items():
+            spaResultList.append(parallelSPA(frameID, frameDict))
 
         print("save to :" + self.SPACSVName)
+
+        return spaResultList
