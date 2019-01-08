@@ -345,9 +345,9 @@ class fitting:
 
         return self.distaceMapDict
 
-    def saveSpotCropFig(self, imageArray, numOfGauss,fileName="test"):
-        self.makeDirInDataFolder("spotCrop")
-        saveDir = self.dataFolderName + "spotCrop/"
+    def saveSpotCropFig(self, imageArray, numOfGauss, fileName="test", dirName="spotCrop"):
+        self.makeDirInDataFolder("dirName")
+        saveDir = self.dataFolderName + dirName + "/"
         plt.imshow(imageArray)
         plt.title(numOfGauss)
         plt.savefig(saveDir + fileName + ".png", dpi=500)
@@ -365,6 +365,7 @@ class fitting:
 
                 for spotID in range(numberOfSpot):
                     numOfGauss = self.distaceMapDict[str(frameID)][str(spotID)]
+                    # print("  ",numOfGauss)
 
                     xyzArray = []
                     sepSpotDict = frameDict[str(spotID)]
@@ -385,8 +386,17 @@ class fitting:
                     intGuess = self.genIntCondittion(sepSpotDict, numOfGauss=numOfGauss)
                     fittingBound = self.genFittingBound(numOfGauss=numOfGauss)
 
-                    fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
-                                                       bounds=fittingBound)
+                    try:
+                        fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
+                                                           bounds=fittingBound)
+                    except RuntimeError:
+                        self.saveSpotCropFig(cropedArray, numOfGauss,
+                                             fileName=os.path.basename(frameFilePath)[:-4] + "_" + str(spotID),
+                                             dirName="runTimeError")
+                        numOfGauss = 1
+                        fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
+                                                           bounds=fittingBound)
+
                     """coordinate transformation"""
                     fit_params[4] = fit_params[4] - self.halfCropRange + sepSpotDict["xcpeak"]
                     fit_params[5] = fit_params[5] - self.halfCropRange + sepSpotDict["ycpeak"]
