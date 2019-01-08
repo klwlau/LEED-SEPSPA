@@ -346,7 +346,7 @@ class fitting:
         return self.distaceMapDict
 
     def saveSpotCropFig(self, imageArray, numOfGauss, fileName="test", dirName="spotCrop"):
-        self.makeDirInDataFolder("dirName")
+        self.makeDirInDataFolder(dirName)
         saveDir = self.dataFolderName + dirName + "/"
         plt.imshow(imageArray)
         plt.title(numOfGauss)
