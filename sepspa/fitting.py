@@ -194,6 +194,13 @@ class fitting:
 
         return intGuess
 
+    def calChiSquareError(self, fittedArray, rawArray):
+        """calculate Chi Square error"""
+        error = fittedArray - rawArray
+        errorSquare = error ** 2
+        # numberOfElement = fittedArray.size
+        return np.sum(errorSquare / rawArray)
+
     def plotSEPReult(self, imgArray, objects_list,
                      saveMode=False, saveFileName="test", showSpots=False):
         """plot sep result"""
@@ -406,6 +413,7 @@ class fitting:
         plt.close()
 
     def spaMode(self):
+        self.chiSqPlotList = []
 
         def applySPA(frameID, frameDict):
             print(frameID)
@@ -416,8 +424,10 @@ class fitting:
                 imageArray = self.readLEEDImage(frameFilePath)
 
                 for spotID in range(numberOfSpot):
-                    numOfGauss = self.distaceMapDict[str(frameID)][str(spotID)]
-                    # print("  ",numOfGauss)
+                    if self.configList["SPAParameters"]["adaptiveGaussianFitting"]:
+                        numOfGauss = self.distaceMapDict[str(frameID)][str(spotID)]
+                    else:
+                        numOfGauss = 1
 
                     xyzArray = []
                     sepSpotDict = frameDict[str(spotID)]
@@ -446,6 +456,7 @@ class fitting:
                                              fileName=os.path.basename(frameFilePath)[:-4] + "_" + str(spotID),
                                              dirName="runTimeError")
                         numOfGauss = 1
+                        print("Runtime error, set numOfGauss = 1")
                         fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
                                                            bounds=fittingBound)
 
@@ -454,7 +465,11 @@ class fitting:
                                          saveFitFuncFileName=os.path.basename(frameFilePath)[:-4] + "_" + str(spotID),
                                          plottitle=numOfGauss)
 
-                    print(fit_params[3], sepSpotDict["Am"])
+                    chiSquare = self.calChiSquareError(self.genFittedFuncArray(fit_params, outputZpredOnly=True),
+                                                       cropedArray)
+
+                    self.chiSqPlotList.append(chiSquare)
+
 
                     """coordinate transformation"""
                     fit_params[4] = fit_params[4] - self.halfCropRange + sepSpotDict["xcpeak"]
