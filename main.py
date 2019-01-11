@@ -10,10 +10,10 @@ from UsedFunc import *
 
 
 def printSaveStatus():
-    global counter
-    if counter != 0:
+    global globalCounter
+    if globalCounter != 0:
         elapsedTime = ((time.time() - start_time) / 60)
-        totalTime = elapsedTime / (counter / fileAmount)
+        totalTime = elapsedTime / (globalCounter / totalFileNumber)
         timeLeft = totalTime - elapsedTime
 
         print("---Elapsed Time: %.2f / %.2f Minutes ---" % (elapsedTime, totalTime)
@@ -22,11 +22,11 @@ def printSaveStatus():
 
 
 def printCurrentStatus(counter, numberOfSpots, filePath):
-    print(counter, ", ", "%.2f" % (counter / fileAmount * 100), "%, ", numberOfSpots, ",", filePath)
+    print(counter, ", ", "%.2f" % (counter / totalFileNumber * 100), "%, ", numberOfSpots, ",", filePath)
 
 
 def fittingMode():
-    global counter
+    global globalCounter
     # init first row in CSV file
     # writeBufferArray for 2D normal distribution
     writeBufferArray = [["FileID", "File Name", "Number of Spots", "Elapsed Time",
@@ -40,7 +40,7 @@ def fittingMode():
                          "Am", "x_0", "y_0", "sigma_x", "sigma_y", "theta", "A", "B", "C", "Chi^2"]]
 
     #
-    counter = 0
+    globalCounter = 0
     fileAmount = len(fileList)
 
     for filePath in fileList:
@@ -48,27 +48,27 @@ def fittingMode():
         # need to add all parameters back
         templist, numberOfSpots = findSpot(filePath, configList["findSpotParameters"]["searchThreshold"],
                                            mask, scaleDownFactor=configList["findSpotParameters"]["scaleDownFactor"],
-                                           showSpots=False, fileID=counter,
+                                           showSpots=False, fileID=globalCounter,
                                            saveFitFuncPlot=configList["fittingParameters"]["saveFitFuncPlot"])
         templist.insert(3, timer.tocvalue())
         writeBufferArray.append(templist)
 
         # print(counter, ",", numberOfSpots, ",", filePath, ",", counter / fileAmount * 100, "%")
-        printCurrentStatus(counter, numberOfSpots, filePath)
+        printCurrentStatus(globalCounter, numberOfSpots, filePath)
 
-        if counter % CSVwriteBuffer == 0:
-            saveToCSV(writeBufferArray, CSVName)
+        if globalCounter % CSVwriteBuffer == 0:
+            appendToCSV(writeBufferArray, CSVName)
             writeBufferArray = []
             printSaveStatus()
 
-        if counter == (fileAmount - 1):
-            saveToCSV(writeBufferArray, CSVName)
+        if globalCounter == (fileAmount - 1):
+            appendToCSV(writeBufferArray, CSVName)
             printSaveStatus()
-        counter += 1
+        globalCounter += 1
 
 
 def sepMode():
-    global counter
+    global globalCounter
     # init first row in CSV file
     writeBufferArray = [["FileID", "File Name", "Number of Spots",
                          "Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta",
@@ -78,29 +78,29 @@ def sepMode():
                          "Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta",
                          "Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta",
                          "Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta"]]
-    counter = 0
+    globalCounter = 0
     fileAmount = len(fileList)
 
     for filePath in fileList:
         # need to add all parameters back
         templist, numberOfSpots = findSpot(filePath, configList["findSpotParameters"]["searchThreshold"],
                                            mask, scaleDownFactor=configList["findSpotParameters"]["scaleDownFactor"],
-                                           showSpots=False, fileID=counter,
+                                           showSpots=False, fileID=globalCounter,
                                            fittingMode=False)
         writeBufferArray.append(templist)
 
         # print(counter, ",", numberOfSpots, ",", fileName, ",", counter / fileAmount * 100, "%")
-        printCurrentStatus(counter, numberOfSpots, filePath)
+        printCurrentStatus(globalCounter, numberOfSpots, filePath)
 
-        if counter % CSVwriteBuffer == 0:
-            saveToCSV(writeBufferArray, CSVName)
+        if globalCounter % CSVwriteBuffer == 0:
+            appendToCSV(writeBufferArray, CSVName)
             writeBufferArray = []
             printSaveStatus()
 
-        if counter == (fileAmount - 1):
-            saveToCSV(writeBufferArray, CSVName)
+        if globalCounter == (fileAmount - 1):
+            appendToCSV(writeBufferArray, CSVName)
             printSaveStatus()
-        counter += 1
+        globalCounter += 1
 
 
 def testMode():
@@ -135,8 +135,8 @@ fileList = sorted(fileList)
 
 # fileList = fileList[:30]
 
-counter = 0
-fileAmount = len(fileList)
+globalCounter = 0
+totalFileNumber = len(fileList)
 
 setPicDim(fileList[0])  # to set the picWidth,picHeight for findSpot function
 mask = makeMask(configList["maskConfig"]["mask_x_center"], configList["maskConfig"]["mask_y_center"],

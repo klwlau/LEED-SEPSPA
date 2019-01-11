@@ -14,9 +14,6 @@ startID = 0
 dataFolderName = configList["dataFolderName"]
 fileList = glob.glob(dataFolderName + "/*.tif")
 fileList = sorted(fileList)
-# startID = 1200
-# endID = 1210
-# fileList = fileList[startID:endID]
 makeAnimation = False
 searchThreshold = 1000
 aniPLotRange = 10
@@ -80,25 +77,3 @@ if makeAnimation:
 
 print("errorList: ", errorList)
 print("done")
-
-# for fileName in fileList:
-#     plot_data = readLEEDImage(fileName)
-#     plot_data = plot_data[470:480,406:418]
-#     m, s = np.mean(plot_data), np.std(plot_data)
-#     im = plt.imshow(plot_data, interpolation='nearest', cmap='jet',
-#                vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
-#                origin='lower')
-#     ims.append([im])
-#     # plt.title(str(i))
-#     print(i)
-#     i+=1
-#
-# print(len(ims))
-#
-# print("making animation")
-# ani = animation.ArtistAnimation(fig, ims, interval=50, blit=True,
-#                                 repeat_delay=1000)
-# print("saving")
-# ani.save('dynamic_images.mp4')
-# print("ploting")
-# plt.show()

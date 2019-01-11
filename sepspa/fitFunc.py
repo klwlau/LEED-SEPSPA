@@ -2,7 +2,6 @@ import numpy as np
 from numba import jit
 from scipy.stats import norm
 
-
 @jit
 def pdf_skewnormal(x, location=0.0, scale=1.0, shape=0.0):
     scale = scale ** 2

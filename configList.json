@@ -1,20 +1,24 @@
 {
-  "dataFolderName_a": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
-  "dataFolderName": "./",
+  "dataFolderName_a": "./",
+  "dataFolderName_b": "D:/Resarch Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
+  "dataFolderName": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
   "CSVwriteBuffer": 20,
-  "csvNameRemark":"20180223_scan01_50X50",
+  "csvNameRemark":"sepspaclass test",
+  "sepSingleCoreDebugMode": false,
+
 
   "maskConfig": {
     "mask_x_center": 456,
     "mask_y_center": 479,
-    "innerRadius": 230,
+    "innerRadius": 240,
     "outerRadius": 350
   },
 
-  "findSpotParameters":{
-    "searchThreshold":80,
-    "cropRange": 25,
-    "scaleDownFactor":1
+  "SEPParameters":{
+    "searchThreshold":70,
+    "cropRange": 20,
+    "scaleDownFactor":1.0,
+    "saveSEPResult": false
   },
 
   "testMode": true,
@@ -24,22 +28,32 @@
     "fittingMode":true,
     "testModeFileID": 0,
     "plotSensitivity": 3,
-    "plotSensitivity_low": 0.01,
-    "plotSensitivity_up": 0.7,
+    "sepPlotColourMin": 0,
+    "sepPlotColourMax": 1000,
     "scaleDownFactor": 1,
-    "printFittedParameters": false,
-    "plotFittedFunc": false
+    "printFittedParameters": true,
+    "plotFittedFunc": true
   },
 
-  "fittingMode":true,
-  "fittingParameters": {
-    "intGuess": [5, 5,  90, 0, 0, 0],
+  "SPAParameters": {
     "smartXYGuessBound": true,
     "smartXYGuessBoundRange":10,
-    "guessUpBound": [100000, 200, 200, 30, 30, 180, 15, 15, 5000],
-    "guessLowBound": [0, -200, -200, 0.001, 0.001 , -180, -15, -15, 0],
+
+    "backgroundGuessUpperBound": [15, 15, 2000],
+    "backgroundGuessLowerBound" : [-15, -15, 0],
+
+    "adaptiveGaussianFitting":true,
+
+    "majorGaussianXYRange": 3,
+    "gaussianUpperBoundTemplate" : [100000, 20, 20, 30, 30, 180],
+    "gaussianLowerBoundTemplate" : [0, 0, 0, 0.001, 0.001, -180],
+
+    "backgroundIntGuess" : [0,0,0] ,
+    "minorGaussianIntGuess" : [300, 0, 0, 3, 3, 0],
+
+    "ChiSqThreshold": 30000,
     "saveFitFuncPlot":false,
-    "saveFitFuncPlotFileRemark": "20X20"
+    "saveFitFuncPlotFileRemark": "testPlotFitFunc_30crop"
   }
 
 

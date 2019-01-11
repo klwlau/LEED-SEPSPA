@@ -12,7 +12,7 @@ aniFileName = "adjust XCenter by +1_YCenter by +1"
 dataFolderName = dataFolderName+subFolder
 fileList = glob.glob(dataFolderName + "/*.png")
 fileList = sorted(fileList)
-counter = 0
+globalCounter = 0
 
 # fileList = fileList[:10]
 for filePath in fileList:
@@ -23,8 +23,8 @@ for filePath in fileList:
                     origin='lower')
 
     ims.append([im])
-    print(counter)
-    counter+=1
+    print(globalCounter)
+    globalCounter+=1
 
 
 
