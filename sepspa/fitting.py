@@ -37,7 +37,7 @@ class fitting:
             self.fileList = glob.glob("./*.tif")
         else:
             self.fileList = glob.glob(self.dataFolderName + "/*.tif")
-            self.fileList = sorted(self.fileList)
+        self.fileList = sorted(self.fileList)
         self.CSVwriteBuffer = self.configList["CSVwriteBuffer"]
         self.preStart()
         # self.maxSpotInFrame = 0
@@ -327,8 +327,9 @@ class fitting:
         self.saveToCSV(writeBufferArray, self.SEPCSVName)
         self.saveDictToPLK(self.sepDict, self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SEPDict")
 
-        self.sepComplete = True
+        self.createNGaussDict()
         print("SEPMode Complete")
+        self.sepComplete = True
         return self.sepDict
 
     def createNGaussDict(self):
@@ -353,7 +354,6 @@ class fitting:
                                 0] + self.multipleSpotInFrameThreshold and spotI[
                                 1] - self.multipleSpotInFrameThreshold <= spotJ[1] <= spotI[
                                 1] + self.multipleSpotInFrameThreshold:
-
                                 gaussCount += 1
                                 frameDistDict[(spotIID, spotJID)] = spotJ
 
@@ -425,7 +425,8 @@ class fitting:
         self.chiSqPlotList = []
 
         def applySPA(frameID, frameDict):
-            print(frameID)
+            if int(frameID) % 50 == 0:
+                print("Frame ID:",frameID)
             if type(frameDict) is dict:
                 fitParamsDict = {}
                 numberOfSpot = frameDict["numberOfSpot"]
@@ -492,7 +493,7 @@ class fitting:
             print("Runing SEPMode to get Rough range")
             self.sepMode()
 
-        self.createNGaussDict()
+
         spaResultList = []
         for frameID, frameDict in self.sepDict.items():
             spaResultList.append(applySPA(frameID, frameDict))
