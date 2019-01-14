@@ -181,6 +181,26 @@ class fitting:
 
         return intGuess
 
+    # def genFittingBound(self, numOfGauss=1):
+    #     numOfGaussKey = str(numOfGauss)
+    #     if numOfGaussKey in self.fittingBoundDict:
+    #         return self.fittingBoundDict[numOfGaussKey]
+    #     else:
+    #         guessUpBound = self.configList["SPAParameters"]["backgroundGuessUpperBound"].copy()
+    #         guessLowBound = self.configList["SPAParameters"]["backgroundGuessLowerBound"].copy()
+    #
+    #         for num in range(numOfGauss):
+    #             guessUpBound += self.configList["SPAParameters"]["gaussianUpperBoundTemplate"]
+    #             guessLowBound += self.configList["SPAParameters"]["gaussianLowerBoundTemplate"]
+    #
+    #         guessUpBound[4] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
+    #         guessUpBound[5] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
+    #         guessLowBound[4] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
+    #         guessLowBound[5] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
+    #         self.fittingBoundDict[numOfGaussKey] = [guessLowBound, guessUpBound]
+    #
+    #         return self.fittingBoundDict[numOfGaussKey]
+
     def genFittingBound(self, numOfGauss=1):
         numOfGaussKey = str(numOfGauss)
         if numOfGaussKey in self.fittingBoundDict:
