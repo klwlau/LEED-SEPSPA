@@ -334,9 +334,12 @@ class fitting:
     def createNGaussDict(self):
         """reutrn a dict storing how many Gaussian needed for each spot crop"""
         print("Creating NGauss Dict")
-        self.distaceMapDict = {}
+        self.genNGaussDict = {}
+        self.distanceMap = {}
+
         for frameID, frameDict in self.sepDict.items():
-            frameDistMap = {}
+            frameGaussCount = {}
+            frameDistDict = {}
             if type(frameDict) is dict:
                 numberOfSpot = frameDict["numberOfSpot"]
                 for spotIID in range(numberOfSpot):
@@ -345,13 +348,15 @@ class fitting:
                         if spotIID != spotJID:
                             spotI = np.array([frameDict[str(spotIID)]["xcpeak"], frameDict[str(spotIID)]["ycpeak"]])
                             spotJ = np.array([frameDict[str(spotJID)]["xcpeak"], frameDict[str(spotJID)]["ycpeak"]])
-                            twoSpotDist = np.linalg.norm(spotI - spotJ)
-                            if twoSpotDist <= self.multipleSpotInFrameThreshold:
+                            # twoSpotDist = np.linalg.norm(spotI - spotJ)
+                            if spotI-spotJ:
                                 gaussCount += 1
-                    frameDistMap[str(spotIID)] = gaussCount
-                self.distaceMapDict[str(frameID)] = frameDistMap
+                                frameDistDict[(spotIID, spotJID)] = spotJ
 
-        return self.distaceMapDict
+                    frameGaussCount[str(spotIID)] = gaussCount
+                self.genNGaussDict[str(frameID)] = frameGaussCount
+
+        return self.genNGaussDict
 
     def genFittedFuncArray(self, fit_params, outputZpredOnly=False):
         """generate an image array from the fitted function"""
@@ -425,7 +430,7 @@ class fitting:
 
                 for spotID in range(numberOfSpot):
                     if self.configList["SPAParameters"]["adaptiveGaussianFitting"]:
-                        numOfGauss = self.distaceMapDict[str(frameID)][str(spotID)]
+                        numOfGauss = self.genNGaussDict[str(frameID)][str(spotID)]
                     else:
                         numOfGauss = 1
 
@@ -469,7 +474,6 @@ class fitting:
                                                        cropedArray)
 
                     self.chiSqPlotList.append(chiSquare)
-
 
                     """coordinate transformation"""
                     fit_params[4] = fit_params[4] - self.halfCropRange + sepSpotDict["xcpeak"]
