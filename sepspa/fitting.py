@@ -37,7 +37,7 @@ class fitting:
             self.fileList = glob.glob("./*.tif")
         else:
             self.fileList = glob.glob(self.dataFolderName + "/*.tif")
-        self.fileList = self.fileList[:100]
+        self.fileList = self.fileList[:3]
         self.fileList = sorted(self.fileList)
         self.CSVwriteBuffer = self.configList["CSVwriteBuffer"]
         self.preStart()
@@ -159,7 +159,7 @@ class fitting:
         appliedMask = np.multiply(imageArray, self.mask)
         return appliedMask
 
-    def genIntCondittion(self, spotID,frameID,sepSpotDict, numOfGauss=1):
+    def genIntCondittion(self, spotID, frameID, sepSpotDict, numOfGauss=1):
         intGuess = self.configList["SPAParameters"]["backgroundIntGuess"].copy()
 
         for i in range(numOfGauss):
@@ -173,8 +173,8 @@ class fitting:
             else:
                 if self.configList["SPAParameters"]["smartConfig"]:
                     tempMinorGaussianIntGuess = self.configList["SPAParameters"]["minorGaussianIntGuess"].copy()
-                    tempMinorGaussianIntGuess[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i-1][0]
-                    tempMinorGaussianIntGuess[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i-1][1]
+                    tempMinorGaussianIntGuess[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][0]
+                    tempMinorGaussianIntGuess[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][1]
                     intGuess += tempMinorGaussianIntGuess
                 else:
                     intGuess += self.configList["SPAParameters"]["minorGaussianIntGuess"]
@@ -201,25 +201,30 @@ class fitting:
     #
     #         return self.fittingBoundDict[numOfGaussKey]
 
-    def genFittingBound(self, numOfGauss=1):
-        numOfGaussKey = str(numOfGauss)
-        if numOfGaussKey in self.fittingBoundDict:
-            return self.fittingBoundDict[numOfGaussKey]
-        else:
-            guessUpBound = self.configList["SPAParameters"]["backgroundGuessUpperBound"].copy()
-            guessLowBound = self.configList["SPAParameters"]["backgroundGuessLowerBound"].copy()
+    def genFittingBound(self, spotID, frameID, numOfGauss=1):
+        guessUpBound = self.configList["SPAParameters"]["backgroundGuessUpperBound"].copy()
+        guessLowBound = self.configList["SPAParameters"]["backgroundGuessLowerBound"].copy()
 
-            for num in range(numOfGauss):
-                guessUpBound += self.configList["SPAParameters"]["gaussianUpperBoundTemplate"]
-                guessLowBound += self.configList["SPAParameters"]["gaussianLowerBoundTemplate"]
-
-            guessUpBound[4] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
-            guessUpBound[5] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
-            guessLowBound[4] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
-            guessLowBound[5] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
-            self.fittingBoundDict[numOfGaussKey] = [guessLowBound, guessUpBound]
-
-            return self.fittingBoundDict[numOfGaussKey]
+        for i in range(numOfGauss):
+            tempSpotUpBound = self.configList["SPAParameters"]["gaussianUpperBoundTemplate"].copy()
+            tempSpotLowBound = self.configList["SPAParameters"]["gaussianLowerBoundTemplate"].copy()
+            if i == 0:
+                tempSpotUpBound[1] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
+                tempSpotUpBound[2] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
+                tempSpotLowBound[1] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
+                tempSpotLowBound[2] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
+            else:
+                tempSpotUpBound[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][0] + \
+                                     self.configList["SPAParameters"]["majorGaussianXYRange"]
+                tempSpotUpBound[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][1] + \
+                                     self.configList["SPAParameters"]["majorGaussianXYRange"]
+                tempSpotLowBound[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][0] - \
+                                      self.configList["SPAParameters"]["majorGaussianXYRange"]
+                tempSpotLowBound[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][1] - \
+                                      self.configList["SPAParameters"]["majorGaussianXYRange"]
+            guessUpBound += tempSpotUpBound
+            guessLowBound += tempSpotLowBound
+        return [guessLowBound, guessUpBound]
 
     def calChiSquareError(self, fittedArray, rawArray):
         """calculate Chi Square error"""
@@ -373,7 +378,7 @@ class fitting:
                 for spotIID in range(numberOfSpot):
                     gaussCount = 1
                     neighborSpotList = []
-                    for spotJID in range(numberOfSpot): # for spotJID in range(spotIID, numberOfSpot):
+                    for spotJID in range(numberOfSpot):  # for spotJID in range(spotIID, numberOfSpot):
                         if spotIID != spotJID:
                             spotI = np.array([frameDict[str(spotIID)]["xcpeak"], frameDict[str(spotIID)]["ycpeak"]])
                             spotJ = np.array([frameDict[str(spotJID)]["xcpeak"], frameDict[str(spotJID)]["ycpeak"]])
@@ -384,7 +389,7 @@ class fitting:
                                 gaussCount += 1
                                 neighborSpotList.append(spotJ - (
                                         spotI - [self.halfCropRange, self.halfCropRange]))
-                        if len(neighborSpotList)>0:
+                        if len(neighborSpotList) > 0:
                             neighborFrameDict[str(spotIID)] = neighborSpotList
 
                     frameGaussCount[str(spotIID)] = gaussCount
@@ -412,7 +417,7 @@ class fitting:
             return xi, yi, zpred
 
     def plotFitFunc(self, fit_params, cropedRawDataArray, plotSensitivity=5, saveFitFuncPlot=False,
-                    saveFitFuncFileName="fitFuncFig", plottitle="",figTxt = ""):
+                    saveFitFuncFileName="fitFuncFig", plottitle="", figTxt=""):
 
         # Chi_square = fit_params[-1]
         # fit_params = fit_params[:-1]
@@ -457,9 +462,9 @@ class fitting:
     def spaMode(self):
 
         def genPlotTxt(fit_para):
-            returnTxt = ""
+            returnTxt = str(fit_para[:3])+"\n"
             for i in range(len(fit_para[3:]) // 6):
-                returnTxt += str(fit_para[i * 6+3:i * 6 + 6+3])
+                returnTxt += str(fit_para[i * 6 + 3:i * 6 + 6 + 3])
                 returnTxt += "\n"
             return returnTxt
 
@@ -496,9 +501,8 @@ class fitting:
 
                     # self.saveSpotCropFig(cropedArray,numOfGauss,fileName=os.path.basename(frameFilePath)[:-4]+"_"+str(spotID))
 
-                    intGuess = self.genIntCondittion(spotID,frameID,sepSpotDict, numOfGauss=numOfGauss)
-                    fittingBound = self.genFittingBound(numOfGauss=numOfGauss)
-
+                    intGuess = self.genIntCondittion(spotID, frameID, sepSpotDict, numOfGauss=numOfGauss)
+                    fittingBound = self.genFittingBound(spotID, frameID, numOfGauss=numOfGauss)
 
                     try:
                         fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
@@ -519,14 +523,11 @@ class fitting:
                     chiSquare = self.calChiSquareError(self.genFittedFuncArray(fit_params, outputZpredOnly=True),
                                                        cropedArray)
 
-
-
-
                     if self.configList["SPAParameters"]["saveFitFuncPlot"]:
                         self.plotFitFunc(fit_params, cropedArray, saveFitFuncPlot=True,
                                          saveFitFuncFileName=os.path.basename(frameFilePath)[:-4] + "_" + str(spotID),
-                                         plottitle=str(numOfGauss)+"_"+str(chiSquare),figTxt=genPlotTxt(fit_params))
-
+                                         plottitle=str(numOfGauss) + "_" + str(chiSquare),
+                                         figTxt=genPlotTxt(fit_params))
 
                     self.chiSqPlotList.append(chiSquare)
 
