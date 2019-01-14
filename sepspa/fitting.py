@@ -478,9 +478,7 @@ class fitting:
 
                     intGuess = self.genIntCondittion(spotID,frameID,sepSpotDict, numOfGauss=numOfGauss)
                     fittingBound = self.genFittingBound(numOfGauss=numOfGauss)
-                    print("_____________________")
-                    print(os.path.basename(frameFilePath)[:-4] + "_" + str(spotID))
-                    print(fittingBound)
+
 
                     try:
                         fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
@@ -493,7 +491,11 @@ class fitting:
                         print("Runtime error, set numOfGauss = 1")
                         fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
                                                            bounds=fittingBound)
+                    print("_____________________")
+                    print(os.path.basename(frameFilePath)[:-4] + "_" + str(spotID))
+                    print(fittingBound)
                     print(fit_params)
+
                     chiSquare = self.calChiSquareError(self.genFittedFuncArray(fit_params, outputZpredOnly=True),
                                                        cropedArray)
 
