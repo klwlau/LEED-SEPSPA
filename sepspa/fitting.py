@@ -159,6 +159,22 @@ class fitting:
         appliedMask = np.multiply(imageArray, self.mask)
         return appliedMask
 
+    def genIntCondittion(self, sepSpotDict, numOfGauss=1):
+        intGuess = self.configList["SPAParameters"]["backgroundIntGuess"].copy()
+
+        for i in range(numOfGauss):
+            if i == 0:
+                intGuess += [sepSpotDict["Am"]]
+                intGuess += [self.halfCropRange]
+                intGuess += [self.halfCropRange]
+                intGuess += [sepSpotDict["a"]]
+                intGuess += [sepSpotDict["b"]]
+                intGuess += [sepSpotDict["theta"]]
+            else:
+                intGuess += self.configList["SPAParameters"]["minorGaussianIntGuess"]
+
+        return intGuess
+
     def genFittingBound(self, numOfGauss=1):
         numOfGaussKey = str(numOfGauss)
         if numOfGaussKey in self.fittingBoundDict:
@@ -178,22 +194,6 @@ class fitting:
             self.fittingBoundDict[numOfGaussKey] = [guessLowBound, guessUpBound]
 
             return self.fittingBoundDict[numOfGaussKey]
-
-    def genIntCondittion(self, sepSpotDict, numOfGauss=1):
-
-        intGuess = self.configList["SPAParameters"]["backgroundIntGuess"].copy()
-        for i in range(numOfGauss):
-            if i == 0:
-                intGuess += [sepSpotDict["Am"]]
-                intGuess += [self.halfCropRange]
-                intGuess += [self.halfCropRange]
-                intGuess += [sepSpotDict["a"]]
-                intGuess += [sepSpotDict["b"]]
-                intGuess += [sepSpotDict["theta"]]
-            else:
-                intGuess += self.configList["SPAParameters"]["minorGaussianIntGuess"]
-
-        return intGuess
 
     def calChiSquareError(self, fittedArray, rawArray):
         """calculate Chi Square error"""
