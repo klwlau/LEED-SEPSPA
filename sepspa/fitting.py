@@ -43,7 +43,7 @@ class fitting:
         # self.maxSpotInFrame = 0
         self.fittingBoundDict = {}
         self.fittingIntDict = {}
-        self.multipleSpotInFrameThreshold = np.sqrt(2) * self.halfCropRange + 5
+        self.multipleSpotInFrameThreshold = self.configList["SPAParameters"]["multipleSpotInFrameThreshold"]
 
     def preStart(self):
         self.makeResultDir()
