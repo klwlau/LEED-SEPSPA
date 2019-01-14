@@ -16,7 +16,7 @@
 
   "SEPParameters":{
     "searchThreshold":70,
-    "cropRange": 30,
+    "cropRange": 20,
     "scaleDownFactor":1.0,
     "saveSEPResult": false
   },
@@ -45,7 +45,7 @@
     "adaptiveGaussianFitting":true,
 
     "majorGaussianXYRange": 3,
-    "gaussianUpperBoundTemplate" : [100000, 30, 30, 30, 30, 180],
+    "gaussianUpperBoundTemplate" : [100000, 20, 20, 30, 30, 180],
     "gaussianLowerBoundTemplate" : [0, 0, 0, 0.001, 0.001, -180],
 
     "backgroundIntGuess" : [0,0,0] ,
