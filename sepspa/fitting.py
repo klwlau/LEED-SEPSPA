@@ -37,6 +37,7 @@ class fitting:
             self.fileList = glob.glob("./*.tif")
         else:
             self.fileList = glob.glob(self.dataFolderName + "/*.tif")
+        self.fileList = self.fileList[:300]
         self.fileList = sorted(self.fileList)
         self.CSVwriteBuffer = self.configList["CSVwriteBuffer"]
         self.preStart()
@@ -336,7 +337,7 @@ class fitting:
         """reutrn a dict storing how many Gaussian needed for each spot crop"""
         print("Creating NGauss Dict")
         self.genNGaussDict = {}
-        self.distanceMap = {}
+        self.distanceMapDict = {}
 
         for frameID, frameDict in self.sepDict.items():
             frameGaussCount = {}
@@ -350,15 +351,16 @@ class fitting:
                             spotI = np.array([frameDict[str(spotIID)]["xcpeak"], frameDict[str(spotIID)]["ycpeak"]])
                             spotJ = np.array([frameDict[str(spotJID)]["xcpeak"], frameDict[str(spotJID)]["ycpeak"]])
                             # twoSpotDist = np.linalg.norm(spotI - spotJ)
-                            if spotI[0] - self.multipleSpotInFrameThreshold <= spotJ[0] <= spotI[
-                                0] + self.multipleSpotInFrameThreshold and spotI[
-                                1] - self.multipleSpotInFrameThreshold <= spotJ[1] <= spotI[
-                                1] + self.multipleSpotInFrameThreshold:
+                            if spotI[0] - self.multipleSpotInFrameThreshold <= spotJ[0] <= spotI[0] + self.multipleSpotInFrameThreshold and \
+                                    spotI[1] - self.multipleSpotInFrameThreshold <= spotJ[1] <= spotI[1] + self.multipleSpotInFrameThreshold:
                                 gaussCount += 1
-                                frameDistDict[(spotIID, spotJID)] = spotJ
+                                frameDistDict[(spotIID, spotJID)] = -1*((spotI - [self.halfCropRange,
+                                                                             self.halfCropRange]) - spotJ)
+
 
                     frameGaussCount[str(spotIID)] = gaussCount
                 self.genNGaussDict[str(frameID)] = frameGaussCount
+                self.distanceMapDict[str(frameID)] = frameDistDict
 
         return self.genNGaussDict
 
@@ -426,7 +428,7 @@ class fitting:
 
         def applySPA(frameID, frameDict):
             if int(frameID) % 50 == 0:
-                print("Frame ID:",frameID)
+                print("Frame ID:", frameID)
             if type(frameDict) is dict:
                 fitParamsDict = {}
                 numberOfSpot = frameDict["numberOfSpot"]
@@ -492,7 +494,6 @@ class fitting:
         if self.sepComplete == False:
             print("Runing SEPMode to get Rough range")
             self.sepMode()
-
 
         spaResultList = []
         for frameID, frameDict in self.sepDict.items():

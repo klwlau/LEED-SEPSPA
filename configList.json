@@ -43,7 +43,7 @@
     "backgroundGuessLowerBound" : [-15, -15, 0],
 
     "adaptiveGaussianFitting":true,
-    "multipleSpotInFrameThreshold" : 25,
+    "multipleSpotInFrameThreshold" : 15,
 
     "majorGaussianXYRange": 3,
     "gaussianUpperBoundTemplate" : [100000, 20, 20, 30, 30, 180],
