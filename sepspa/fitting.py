@@ -350,13 +350,13 @@ class fitting:
                         if spotIID != spotJID:
                             spotI = np.array([frameDict[str(spotIID)]["xcpeak"], frameDict[str(spotIID)]["ycpeak"]])
                             spotJ = np.array([frameDict[str(spotJID)]["xcpeak"], frameDict[str(spotJID)]["ycpeak"]])
-                            # twoSpotDist = np.linalg.norm(spotI - spotJ)
-                            if spotI[0] - self.multipleSpotInFrameThreshold <= spotJ[0] <= spotI[0] + self.multipleSpotInFrameThreshold and \
-                                    spotI[1] - self.multipleSpotInFrameThreshold <= spotJ[1] <= spotI[1] + self.multipleSpotInFrameThreshold:
+                            if spotI[0] - self.multipleSpotInFrameThreshold <= spotJ[0] <= spotI[
+                                0] + self.multipleSpotInFrameThreshold and \
+                                    spotI[1] - self.multipleSpotInFrameThreshold <= spotJ[1] <= spotI[
+                                1] + self.multipleSpotInFrameThreshold:
                                 gaussCount += 1
-                                frameDistDict[(spotIID, spotJID)] = -1*((spotI - [self.halfCropRange,
-                                                                             self.halfCropRange]) - spotJ)
-
+                                frameDistDict[(spotIID, spotJID)] = spotJ - (
+                                            spotI - [self.halfCropRange, self.halfCropRange])
 
                     frameGaussCount[str(spotIID)] = gaussCount
                 self.genNGaussDict[str(frameID)] = frameGaussCount
