@@ -173,8 +173,8 @@ class fitting:
             else:
                 if self.configList["SPAParameters"]["smartConfig"]:
                     tempMinorGaussianIntGuess = self.configList["SPAParameters"]["minorGaussianIntGuess"].copy()
-                    tempMinorGaussianIntGuess[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][0]
-                    tempMinorGaussianIntGuess[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][1]
+                    tempMinorGaussianIntGuess[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][0]
+                    tempMinorGaussianIntGuess[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][1]
                     intGuess += tempMinorGaussianIntGuess
                 else:
                     intGuess += self.configList["SPAParameters"]["minorGaussianIntGuess"]
@@ -209,18 +209,18 @@ class fitting:
             tempSpotUpBound = self.configList["SPAParameters"]["gaussianUpperBoundTemplate"].copy()
             tempSpotLowBound = self.configList["SPAParameters"]["gaussianLowerBoundTemplate"].copy()
             if i == 0:
-                tempSpotUpBound[1] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
                 tempSpotUpBound[2] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
-                tempSpotLowBound[1] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
+                tempSpotUpBound[1] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
                 tempSpotLowBound[2] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
+                tempSpotLowBound[1] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
             else:
-                tempSpotUpBound[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][0] + \
+                tempSpotUpBound[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][0] + \
                                      self.configList["SPAParameters"]["majorGaussianXYRange"]
-                tempSpotUpBound[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][1] + \
+                tempSpotUpBound[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][1] + \
                                      self.configList["SPAParameters"]["majorGaussianXYRange"]
-                tempSpotLowBound[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][0] - \
+                tempSpotLowBound[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][0] - \
                                       self.configList["SPAParameters"]["majorGaussianXYRange"]
-                tempSpotLowBound[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][1] - \
+                tempSpotLowBound[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][1] - \
                                       self.configList["SPAParameters"]["majorGaussianXYRange"]
             guessUpBound += tempSpotUpBound
             guessLowBound += tempSpotLowBound
@@ -515,10 +515,10 @@ class fitting:
                         print("Runtime error, set numOfGauss = 1")
                         fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
                                                            bounds=fittingBound)
-                    print("_____________________")
-                    print(os.path.basename(frameFilePath)[:-4] + "_" + str(spotID))
-                    print(fittingBound)
-                    print(fit_params)
+                    # print("_____________________")
+                    # print(os.path.basename(frameFilePath)[:-4] + "_" + str(spotID))
+                    # print(fittingBound)
+                    # print(fit_params)
 
                     chiSquare = self.calChiSquareError(self.genFittedFuncArray(fit_params, outputZpredOnly=True),
                                                        cropedArray)
