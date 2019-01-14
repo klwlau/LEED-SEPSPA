@@ -37,7 +37,7 @@ class fitting:
             self.fileList = glob.glob("./*.tif")
         else:
             self.fileList = glob.glob(self.dataFolderName + "/*.tif")
-        self.fileList = self.fileList[:300]
+        self.fileList = self.fileList[:100]
         self.fileList = sorted(self.fileList)
         self.CSVwriteBuffer = self.configList["CSVwriteBuffer"]
         self.preStart()
@@ -392,7 +392,7 @@ class fitting:
             return xi, yi, zpred
 
     def plotFitFunc(self, fit_params, cropedRawDataArray, plotSensitivity=5, saveFitFuncPlot=False,
-                    saveFitFuncFileName="fitFuncFig", plottitle=""):
+                    saveFitFuncFileName="fitFuncFig", plottitle="",figTxt = ""):
 
         # Chi_square = fit_params[-1]
         # fit_params = fit_params[:-1]
@@ -400,7 +400,8 @@ class fitting:
         xi, yi, zpred = self.genFittedFuncArray(fit_params)
 
         fig, ax1 = plt.subplots()
-        # ax2 = ax1.twinx()
+        fig.set_size_inches(7, 8, forward=True)
+
         m, s = np.mean(cropedRawDataArray), np.std(cropedRawDataArray)
         cs = ax1.imshow(cropedRawDataArray, interpolation='nearest', cmap='jet',
                         vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s,
@@ -409,6 +410,7 @@ class fitting:
         fig.colorbar(cs)
         # plt.title("Chi^2= %.2f" % (Chi_square))
         plt.title(plottitle)
+        fig.text(.5, 0.05, figTxt, ha='center')
         ax1.contour(yi, xi, zpred,
                     vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s, alpha=1, origin='lower')  # cmap='jet',
         if saveFitFuncPlot:
@@ -433,6 +435,14 @@ class fitting:
         plt.close()
 
     def spaMode(self):
+
+        def genPlotTxt(fit_para):
+            returnTxt = ""
+            for i in range(len(fit_para[3:]) // 6):
+                returnTxt += str(fit_para[i * 6+3:i * 6 + 6+3])
+                returnTxt += "\n"
+            return returnTxt
+
         self.chiSqPlotList = []
 
         def applySPA(frameID, frameDict):
@@ -468,6 +478,9 @@ class fitting:
 
                     intGuess = self.genIntCondittion(spotID,frameID,sepSpotDict, numOfGauss=numOfGauss)
                     fittingBound = self.genFittingBound(numOfGauss=numOfGauss)
+                    print("_____________________")
+                    print(os.path.basename(frameFilePath)[:-4] + "_" + str(spotID))
+                    print(fittingBound)
 
                     try:
                         fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
@@ -480,14 +493,18 @@ class fitting:
                         print("Runtime error, set numOfGauss = 1")
                         fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
                                                            bounds=fittingBound)
+                    print(fit_params)
+                    chiSquare = self.calChiSquareError(self.genFittedFuncArray(fit_params, outputZpredOnly=True),
+                                                       cropedArray)
+
+
+
 
                     if self.configList["SPAParameters"]["saveFitFuncPlot"]:
                         self.plotFitFunc(fit_params, cropedArray, saveFitFuncPlot=True,
                                          saveFitFuncFileName=os.path.basename(frameFilePath)[:-4] + "_" + str(spotID),
-                                         plottitle=numOfGauss)
+                                         plottitle=str(numOfGauss)+"_"+str(chiSquare),figTxt=genPlotTxt(fit_params))
 
-                    chiSquare = self.calChiSquareError(self.genFittedFuncArray(fit_params, outputZpredOnly=True),
-                                                       cropedArray)
 
                     self.chiSqPlotList.append(chiSquare)
 

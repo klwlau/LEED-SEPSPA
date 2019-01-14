@@ -1,7 +1,7 @@
 {
   "dataFolderName_a": "./",
-  "dataFolderName_b": "D:/Resarch Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
-  "dataFolderName": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
+  "dataFolderName": "D:/Resarch Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
+  "dataFolderName_b": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
   "CSVwriteBuffer": 20,
   "csvNameRemark":"sepspaclass test",
   "sepSingleCoreDebugMode": false,
@@ -46,15 +46,15 @@
     "multipleSpotInFrameThreshold" : 10,
 
     "majorGaussianXYRange": 3,
-    "gaussianUpperBoundTemplate" : [100000, 20, 20, 30, 30, 180],
+    "gaussianUpperBoundTemplate" : [3000, 20, 20, 30, 30, 180],
     "gaussianLowerBoundTemplate" : [0, 0, 0, 0.001, 0.001, -180],
 
     "backgroundIntGuess" : [0,0,0] ,
     "minorGaussianIntGuess" : [300, 0, 0, 3, 3, 0],
 
     "ChiSqThreshold": 30000,
-    "saveFitFuncPlot":false,
-    "saveFitFuncPlotFileRemark": "testPlotFitFunc_30crop"
+    "saveFitFuncPlot":true,
+    "saveFitFuncPlotFileRemark": "multifit_20crop_chi"
   }
 
 
