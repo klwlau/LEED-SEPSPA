@@ -36,14 +36,14 @@
   },
 
   "SPAParameters": {
-    "smartXYGuessBound": true,
+    "smartConfig": true,
     "smartXYGuessBoundRange":10,
 
     "backgroundGuessUpperBound": [15, 15, 2000],
     "backgroundGuessLowerBound" : [-15, -15, 0],
 
     "adaptiveGaussianFitting":true,
-    "multipleSpotInFrameThreshold" : 15,
+    "multipleSpotInFrameThreshold" : 10,
 
     "majorGaussianXYRange": 3,
     "gaussianUpperBoundTemplate" : [100000, 20, 20, 30, 30, 180],

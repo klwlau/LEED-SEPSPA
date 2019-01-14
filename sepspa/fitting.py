@@ -159,7 +159,7 @@ class fitting:
         appliedMask = np.multiply(imageArray, self.mask)
         return appliedMask
 
-    def genIntCondittion(self, sepSpotDict, numOfGauss=1):
+    def genIntCondittion(self, spotID,frameID,sepSpotDict, numOfGauss=1):
         intGuess = self.configList["SPAParameters"]["backgroundIntGuess"].copy()
 
         for i in range(numOfGauss):
@@ -171,7 +171,13 @@ class fitting:
                 intGuess += [sepSpotDict["b"]]
                 intGuess += [sepSpotDict["theta"]]
             else:
-                intGuess += self.configList["SPAParameters"]["minorGaussianIntGuess"]
+                if self.configList["SPAParameters"]["smartConfig"]:
+                    tempMinorGaussianIntGuess = self.configList["SPAParameters"]["minorGaussianIntGuess"].copy()
+                    tempMinorGaussianIntGuess[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i-1][0]
+                    tempMinorGaussianIntGuess[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i-1][1]
+                    intGuess += tempMinorGaussianIntGuess
+                else:
+                    intGuess += self.configList["SPAParameters"]["minorGaussianIntGuess"]
 
         return intGuess
 
@@ -337,16 +343,17 @@ class fitting:
         """reutrn a dict storing how many Gaussian needed for each spot crop"""
         print("Creating NGauss Dict")
         self.genNGaussDict = {}
-        self.distanceMapDict = {}
+        self.neighborSpotDict = {}
 
         for frameID, frameDict in self.sepDict.items():
             frameGaussCount = {}
-            frameDistDict = {}
+            neighborFrameDict = {}
             if type(frameDict) is dict:
                 numberOfSpot = frameDict["numberOfSpot"]
                 for spotIID in range(numberOfSpot):
                     gaussCount = 1
-                    for spotJID in range(numberOfSpot):  # for spotJID in range(spotIID, numberOfSpot):
+                    neighborSpotList = []
+                    for spotJID in range(numberOfSpot): # for spotJID in range(spotIID, numberOfSpot):
                         if spotIID != spotJID:
                             spotI = np.array([frameDict[str(spotIID)]["xcpeak"], frameDict[str(spotIID)]["ycpeak"]])
                             spotJ = np.array([frameDict[str(spotJID)]["xcpeak"], frameDict[str(spotJID)]["ycpeak"]])
@@ -355,12 +362,14 @@ class fitting:
                                     spotI[1] - self.multipleSpotInFrameThreshold <= spotJ[1] <= spotI[
                                 1] + self.multipleSpotInFrameThreshold:
                                 gaussCount += 1
-                                frameDistDict[(spotIID, spotJID)] = spotJ - (
-                                            spotI - [self.halfCropRange, self.halfCropRange])
+                                neighborSpotList.append(spotJ - (
+                                        spotI - [self.halfCropRange, self.halfCropRange]))
+                        if len(neighborSpotList)>0:
+                            neighborFrameDict[str(spotIID)] = neighborSpotList
 
                     frameGaussCount[str(spotIID)] = gaussCount
                 self.genNGaussDict[str(frameID)] = frameGaussCount
-                self.distanceMapDict[str(frameID)] = frameDistDict
+                self.neighborSpotDict[str(frameID)] = neighborFrameDict
 
         return self.genNGaussDict
 
@@ -457,7 +466,7 @@ class fitting:
 
                     # self.saveSpotCropFig(cropedArray,numOfGauss,fileName=os.path.basename(frameFilePath)[:-4]+"_"+str(spotID))
 
-                    intGuess = self.genIntCondittion(sepSpotDict, numOfGauss=numOfGauss)
+                    intGuess = self.genIntCondittion(spotID,frameID,sepSpotDict, numOfGauss=numOfGauss)
                     fittingBound = self.genFittingBound(numOfGauss=numOfGauss)
 
                     try:
