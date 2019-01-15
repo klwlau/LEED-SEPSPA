@@ -37,14 +37,14 @@ class fitting:
             self.fileList = glob.glob("./*.tif")
         else:
             self.fileList = glob.glob(self.dataFolderName + "/*.tif")
-        self.fileList = self.fileList[:3]
+        # self.fileList = self.fileList[:3]
         self.fileList = sorted(self.fileList)
         self.CSVwriteBuffer = self.configList["CSVwriteBuffer"]
         self.preStart()
         # self.maxSpotInFrame = 0
         self.fittingBoundDict = {}
         self.fittingIntDict = {}
-        self.multipleSpotInFrameThreshold = self.configList["SPAParameters"]["multipleSpotInFrameThreshold"]
+        self.multipleSpotInFrameThreshold = self.configList["SPAParameters"]["multipleSpotInFrameRange"]/2
 
     def preStart(self):
         self.makeResultDir()
