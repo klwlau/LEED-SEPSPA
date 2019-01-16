@@ -1,7 +1,7 @@
 {
   "dataFolderName_a": "./",
-  "dataFolderName": "D:/Resarch Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
-  "dataFolderName_b": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
+  "dataFolderName_b": "D:/Resarch Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
+  "dataFolderName": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
   "CSVwriteBuffer": 20,
   "csvNameRemark":"sepspaclass test",
   "sepSingleCoreDebugMode": false,
@@ -54,7 +54,7 @@
 
     "ChiSqThreshold": 30000,
     "saveFitFuncPlot":true,
-    "saveFitFuncPlotFileRemark": "multifit_20crop_chi"
+    "saveFitFuncPlotFileRemark": "multifit_Rsq"
   }
 
 

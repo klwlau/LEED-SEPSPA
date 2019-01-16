@@ -37,14 +37,14 @@ class fitting:
             self.fileList = glob.glob("./*.tif")
         else:
             self.fileList = glob.glob(self.dataFolderName + "/*.tif")
-        # self.fileList = self.fileList[:3]
+        # self.fileList = self.fileList[:30]
         self.fileList = sorted(self.fileList)
         self.CSVwriteBuffer = self.configList["CSVwriteBuffer"]
         self.preStart()
         # self.maxSpotInFrame = 0
         self.fittingBoundDict = {}
         self.fittingIntDict = {}
-        self.multipleSpotInFrameThreshold = self.configList["SPAParameters"]["multipleSpotInFrameRange"]/2
+        self.multipleSpotInFrameThreshold = self.configList["SPAParameters"]["multipleSpotInFrameRange"] / 2
 
     def preStart(self):
         self.makeResultDir()
@@ -226,12 +226,19 @@ class fitting:
             guessLowBound += tempSpotLowBound
         return [guessLowBound, guessUpBound]
 
-    def calChiSquareError(self, fittedArray, rawArray):
-        """calculate Chi Square error"""
-        error = fittedArray - rawArray
-        errorSquare = error ** 2
-        # numberOfElement = fittedArray.size
-        return np.sum(errorSquare / rawArray)
+    # def calChiSquareError(self, fittedArray, rawArray):
+    #     """calculate Chi Square error"""
+    #     error = fittedArray - rawArray
+    #     errorSquare = error ** 2
+    #     # numberOfElement = fittedArray.size
+    #     return np.sum(errorSquare / rawArray)
+
+    def calRSquareError(self, fittedArray, rawArray):
+        """calculate R Square error"""
+        errorSquare = (fittedArray - rawArray) ** 2
+        SS_tot = np.sum((fittedArray - np.mean(fittedArray)) ** 2)
+        SS_res = np.sum(errorSquare)
+        return (SS_res / SS_tot)
 
     def plotSEPReult(self, imgArray, objects_list,
                      saveMode=False, saveFileName="test", showSpots=False):
@@ -462,8 +469,10 @@ class fitting:
     def spaMode(self):
 
         def genPlotTxt(fit_para):
-            returnTxt = str(fit_para[:3])+"\n"
+            returnTxt = "Background: "
+            returnTxt += str(fit_para[:3]) + "\n"
             for i in range(len(fit_para[3:]) // 6):
+                returnTxt += "Gauss_"+str(i)+": "
                 returnTxt += str(fit_para[i * 6 + 3:i * 6 + 6 + 3])
                 returnTxt += "\n"
             return returnTxt
@@ -520,16 +529,16 @@ class fitting:
                     # print(fittingBound)
                     # print(fit_params)
 
-                    chiSquare = self.calChiSquareError(self.genFittedFuncArray(fit_params, outputZpredOnly=True),
-                                                       cropedArray)
+                    rSquare = self.calRSquareError(self.genFittedFuncArray(fit_params, outputZpredOnly=True),
+                                                     cropedArray)
 
                     if self.configList["SPAParameters"]["saveFitFuncPlot"]:
                         self.plotFitFunc(fit_params, cropedArray, saveFitFuncPlot=True,
                                          saveFitFuncFileName=os.path.basename(frameFilePath)[:-4] + "_" + str(spotID),
-                                         plottitle=str(numOfGauss) + "_" + str(chiSquare),
+                                         plottitle=str(numOfGauss) + "_" + str(rSquare),
                                          figTxt=genPlotTxt(fit_params))
 
-                    self.chiSqPlotList.append(chiSquare)
+                    self.chiSqPlotList.append(rSquare)
 
                     """coordinate transformation"""
                     fit_params[4] = fit_params[4] - self.halfCropRange + sepSpotDict["xcpeak"]
