@@ -469,6 +469,7 @@ class fitting:
     def spaMode(self):
 
         def genPlotTxt(fit_para):
+            """gen a string that print under the plot"""
             returnTxt = "Background: "
             returnTxt += str(fit_para[:3]) + "\n"
             for i in range(len(fit_para[3:]) // 6):
@@ -524,10 +525,6 @@ class fitting:
                         print("Runtime error, set numOfGauss = 1")
                         fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
                                                            bounds=fittingBound)
-                    # print("_____________________")
-                    # print(os.path.basename(frameFilePath)[:-4] + "_" + str(spotID))
-                    # print(fittingBound)
-                    # print(fit_params)
 
                     rSquare = self.calRSquareError(self.genFittedFuncArray(fit_params, outputZpredOnly=True),
                                                      cropedArray)
