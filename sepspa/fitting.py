@@ -181,26 +181,6 @@ class fitting:
 
         return intGuess
 
-    # def genFittingBound(self, numOfGauss=1):
-    #     numOfGaussKey = str(numOfGauss)
-    #     if numOfGaussKey in self.fittingBoundDict:
-    #         return self.fittingBoundDict[numOfGaussKey]
-    #     else:
-    #         guessUpBound = self.configList["SPAParameters"]["backgroundGuessUpperBound"].copy()
-    #         guessLowBound = self.configList["SPAParameters"]["backgroundGuessLowerBound"].copy()
-    #
-    #         for num in range(numOfGauss):
-    #             guessUpBound += self.configList["SPAParameters"]["gaussianUpperBoundTemplate"]
-    #             guessLowBound += self.configList["SPAParameters"]["gaussianLowerBoundTemplate"]
-    #
-    #         guessUpBound[4] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
-    #         guessUpBound[5] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
-    #         guessLowBound[4] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
-    #         guessLowBound[5] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
-    #         self.fittingBoundDict[numOfGaussKey] = [guessLowBound, guessUpBound]
-    #
-    #         return self.fittingBoundDict[numOfGaussKey]
-
     def genFittingBound(self, spotID, frameID, numOfGauss=1):
         guessUpBound = self.configList["SPAParameters"]["backgroundGuessUpperBound"].copy()
         guessLowBound = self.configList["SPAParameters"]["backgroundGuessLowerBound"].copy()
@@ -225,13 +205,6 @@ class fitting:
             guessUpBound += tempSpotUpBound
             guessLowBound += tempSpotLowBound
         return [guessLowBound, guessUpBound]
-
-    # def calChiSquareError(self, fittedArray, rawArray):
-    #     """calculate Chi Square error"""
-    #     error = fittedArray - rawArray
-    #     errorSquare = error ** 2
-    #     # numberOfElement = fittedArray.size
-    #     return np.sum(errorSquare / rawArray)
 
     def calRSquareError(self, fittedArray, rawArray):
         """calculate R Square error"""
@@ -323,7 +296,7 @@ class fitting:
         def parallelSEP(fileID, filePath):
             imageArray = self.readLEEDImage(filePath)
             imageArray = self.compressImage(imageArray)
-            imageArray = self.applyMask(imageArray)
+            # imageArray = self.applyMask(imageArray)
 
             # imageArray = self.applyMask(imageArray)
             sepObject, sepWriteCSVList = self.applySEPToImg(imageArray)
@@ -473,7 +446,7 @@ class fitting:
             returnTxt = "Background: "
             returnTxt += str(fit_para[:3]) + "\n"
             for i in range(len(fit_para[3:]) // 6):
-                returnTxt += "Gauss_"+str(i)+": "
+                returnTxt += "Gauss_" + str(i) + ": "
                 returnTxt += str(fit_para[i * 6 + 3:i * 6 + 6 + 3])
                 returnTxt += "\n"
             return returnTxt
@@ -527,7 +500,7 @@ class fitting:
                                                            bounds=fittingBound)
 
                     rSquare = self.calRSquareError(self.genFittedFuncArray(fit_params, outputZpredOnly=True),
-                                                     cropedArray)
+                                                   cropedArray)
 
                     if self.configList["SPAParameters"]["saveFitFuncPlot"]:
                         self.plotFitFunc(fit_params, cropedArray, saveFitFuncPlot=True,
