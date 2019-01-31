@@ -7,8 +7,8 @@ import sep
 
 
 class shiftCenter:
-    def __init__(self, configFilePath="configList.json"):
-        self.searchThreshold = 3000
+    def __init__(self, configFilePath="configList.json",debugMode = False):
+        self.searchThreshold = 500
         self.setIntCenter = False
         self.start_time = time.time()
         self.configFilePath = configFilePath
@@ -96,19 +96,31 @@ class shiftCenter:
         t = TicToc()
         t.tic()
         for filePath in self.fileList:
+            whileLoopCounter = 0
             fileName = ntpath.basename(filePath)
             print(fileName)
             while True:
+                whileLoopCounter += 1
                 numberOfSpot, returnList, imageArray = self.applySEPToImg(filePath)
 
+                if whileLoopCounter > 200:
+                    break
                 if numberOfSpot == 1:
                     break
                 if numberOfSpot > 1:
-                    self.searchThreshold = self.searchThreshold * 1.1
+                    self.searchThreshold = self.searchThreshold * 1.05
+                    if self.debugMode:
+                        print(fileName, self.searchThreshold, "increase")
                 if numberOfSpot < 1:
                     self.searchThreshold = self.searchThreshold * 0.9
+                    if self.debugMode:
+                        print(fileName, self.searchThreshold, "decrease")
 
-            xCenter, yCenter = int(returnList[4]), int(returnList[5])
+            if whileLoopCounter > 250:
+                xCenter, yCenter = lastxCenter, lastyCenter
+            else:
+                xCenter, yCenter = int(returnList[4]), int(returnList[5])
+                lastxCenter, lastyCenter = xCenter, yCenter
 
             if self.setIntCenter != True:
                 intXCenter, intYCenter = xCenter, yCenter
