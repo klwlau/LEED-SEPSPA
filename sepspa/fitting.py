@@ -462,7 +462,7 @@ class fitting:
             SPAFrameTimer.tic()
 
             if int(frameID) % 50 == 0:
-                print("Frame ID:", frameID,end=' ')
+                print("Frame ID:", frameID, end=', ')
                 SPATimer.toc()
             if type(frameDict) is dict:
                 fitParamsFrameDict = {}
@@ -565,7 +565,7 @@ class fitting:
             SPACSVHeader += SPAparameterHeader
 
         self.saveToCSV([SPACSVHeader], self.SEPCSVName)
-        self.saveToCSV(self.SPAResultDict, self.SPACSVName)
+        self.saveToCSV(convertSPADictIntoCSVWriteArray(self.SPAResultDict), self.SPACSVName)
         self.saveDictToPLK(self.SPAResultDict, self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SPADict")
 
         print("SPA Complete")
