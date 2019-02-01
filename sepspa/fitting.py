@@ -459,9 +459,10 @@ class fitting:
 
         def applySPA(frameID, frameDict):
 
-            frameFittingTimer = SPAFrameTimer.tic()
+            SPAFrameTimer.tic()
+
             if int(frameID) % 50 == 0:
-                print("Frame ID:", frameID,end='')
+                print("Frame ID:", frameID,end=' ')
                 SPATimer.toc()
             if type(frameDict) is dict:
                 fitParamsFrameDict = {}
