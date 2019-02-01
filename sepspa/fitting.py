@@ -443,7 +443,7 @@ class fitting:
 
         SPAFrameTimer = TicToc()
         SPATimer = TicToc()
-        SPATimer.tic()
+
 
         def genPlotTxt(fit_para):
             """gen a string that print under the plot"""
@@ -535,15 +535,23 @@ class fitting:
             for frameID in range(len(SPADict)):
                 frameDict = SPADict[str(frameID)]
                 frameWriteArray = []
+                spotArray = []
                 frameWriteArray.append(frameID)
                 frameWriteArray.append(frameDict["filePath"])
                 frameWriteArray.append(frameDict["numberOfSpot"])
                 frameWriteArray.append(frameDict["FittingTime"])
 
                 for spotID in range(frameDict["numberOfSpot"]):
-                    frameWriteArray.append(frameDict[str(spotID)][3:6])
-                    frameWriteArray.append(frameDict[str(spotID)][0:3])
+                    spotArray.append(frameDict[str(spotID)][3:6])
+                    spotArray.append(frameDict[str(spotID)][0:3])
+
+                spotArray = list(itertools.chain.from_iterable(spotArray))
+                frameWriteArray.append(spotArray)
+                frameWriteArray = list(itertools.chain.from_iterable(frameWriteArray))
+
+
                 CSVWriteArray.append(frameWriteArray)
+
 
             return CSVWriteArray
 
@@ -551,6 +559,8 @@ class fitting:
         if self.sepComplete == False:
             print("Runing SEPMode to get Rough range")
             self.sepMode()
+
+        SPATimer.tic()
 
         self.SPAResultDict = {}
         for frameID, frameSEPDict in self.sepDict.items():
@@ -564,7 +574,7 @@ class fitting:
         for i in range(self.csvHeaderLength):
             SPACSVHeader += SPAparameterHeader
 
-        self.saveToCSV([SPACSVHeader], self.SEPCSVName)
+        self.saveToCSV([SPACSVHeader], self.SPACSVName)
         self.saveToCSV(convertSPADictIntoCSVWriteArray(self.SPAResultDict), self.SPACSVName)
         self.saveDictToPLK(self.SPAResultDict, self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SPADict")
 
