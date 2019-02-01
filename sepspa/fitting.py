@@ -535,18 +535,14 @@ class fitting:
         for frameID, frameSEPDict in self.sepDict.items():
             spaResultList[str(frameID)] = applySPA(frameID, frameSEPDict)
 
-
-
         print("save to :" + self.SPACSVName)
 
-
         SPACSVHeader = ["FileID", "File Name", "Number of Spots"]
-        SPAparameterHeader = ["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta","A","B","Constant"]
+        SPAparameterHeader = ["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta", "A", "B", "Constant"]
 
         for i in range(self.csvHeaderLength):
             SPACSVHeader += SPAparameterHeader
 
         self.saveToCSV([SPACSVHeader], self.SEPCSVName)
-
 
         return spaResultList
