@@ -441,7 +441,9 @@ class fitting:
 
     def SPAMode(self):
 
+        SPAFrameTimer = TicToc()
         SPATimer = TicToc()
+        SPATimer.tic()
 
         def genPlotTxt(fit_para):
             """gen a string that print under the plot"""
@@ -457,7 +459,7 @@ class fitting:
 
         def applySPA(frameID, frameDict):
 
-            frameFittingTimer = SPATimer.tic()
+            frameFittingTimer = SPAFrameTimer.tic()
             if int(frameID) % 50 == 0:
                 print("Frame ID:", frameID)
             if type(frameDict) is dict:
@@ -522,7 +524,7 @@ class fitting:
 
                 fitParamsFrameDict["filePath"] = frameDict["filePath"]
                 fitParamsFrameDict["numberOfSpot"] = numberOfSpot
-                fitParamsFrameDict["FittingTime"] = SPATimer.tocvalue()
+                fitParamsFrameDict["FittingTime"] = SPAFrameTimer.tocvalue()
 
                 return fitParamsFrameDict
 
@@ -565,5 +567,6 @@ class fitting:
         self.saveDictToPLK(self.SPAResultDict, self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SPADict")
 
         print("SPA Complete")
+        SPATimer.toc()
 
         return self.SPAResultDict
