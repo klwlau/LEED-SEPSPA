@@ -312,7 +312,7 @@ class fitting:
         print("SEPMode Start")
         time.sleep(0.1)
         self.sepDict = {}
-        sepCSVHeader = ["FileID", "File Name", "Number of Spots"]
+        sepCSVHeader = ["FileID", "File Path", "Number of Spots"]
         SEPparameterHeader = ["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta"]
 
         for i in range(self.csvHeaderLength):
@@ -439,9 +439,9 @@ class fitting:
         plt.savefig(saveDir + fileName + ".png", dpi=500)
         plt.close()
 
-    def spaMode(self):
+    def SPAMode(self):
 
-        spaTimer = TicToc()
+        SPATimer = TicToc()
 
         def genPlotTxt(fit_para):
             """gen a string that print under the plot"""
@@ -457,7 +457,7 @@ class fitting:
 
         def applySPA(frameID, frameDict):
 
-            frameFittingTimer = spaTimer.tic()
+            frameFittingTimer = SPATimer.tic()
             if int(frameID) % 50 == 0:
                 print("Frame ID:", frameID)
             if type(frameDict) is dict:
@@ -519,30 +519,51 @@ class fitting:
                     fit_params[5] = fit_params[5] - self.halfCropRange + sepSpotDict["ycpeak"]
 
                     fitParamsFrameDict[str(spotID)] = fit_params
-                    fitParamsFrameDict["filePath"] = frameDict["filePath"]
 
-                fitParamsFrameDict[str(numberOfSpot)] = numberOfSpot
-                fitParamsFrameDict["FittingTime"] = spaTimer.tocvalue()
+                fitParamsFrameDict["filePath"] = frameDict["filePath"]
+                fitParamsFrameDict["numberOfSpot"] = numberOfSpot
+                fitParamsFrameDict["FittingTime"] = SPATimer.tocvalue()
 
                 return fitParamsFrameDict
+
+
+        def convertSPADictIntoCSVWriteArray(SPADict):
+            CSVWriteArray = []
+            for frameID in range(len(SPADict)):
+                frameDict = SPADict[str(frameID)]
+                frameWriteArray = []
+                frameWriteArray.append(frameID)
+                frameWriteArray.append(frameDict["filePath"])
+                frameWriteArray.append(frameDict["numberOfSpot"])
+                frameWriteArray.append(frameDict["FittingTime"])
+
+                for spotID in range(frameDict["numberOfSpot"]):
+                    frameWriteArray.append(frameDict[str(spotID)][3:6])
+                    frameWriteArray.append(frameDict[str(spotID)][0:3])
+                CSVWriteArray.append(frameWriteArray)
+
+            return CSVWriteArray
+
 
         print("SPAMode")
         if self.sepComplete == False:
             print("Runing SEPMode to get Rough range")
             self.sepMode()
 
-        spaResultList = {}
+        SPAResultDict = {}
         for frameID, frameSEPDict in self.sepDict.items():
-            spaResultList[str(frameID)] = applySPA(frameID, frameSEPDict)
+            SPAResultDict[str(frameID)] = applySPA(frameID, frameSEPDict)
 
         print("save to :" + self.SPACSVName)
 
-        SPACSVHeader = ["FileID", "File Name", "Number of Spots"]
+        SPACSVHeader = ["FileID", "File Path", "Number of Spots","Fitting Time"]
         SPAparameterHeader = ["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta", "A", "B", "Constant"]
 
         for i in range(self.csvHeaderLength):
             SPACSVHeader += SPAparameterHeader
 
         self.saveToCSV([SPACSVHeader], self.SEPCSVName)
+        self.saveToCSV(SPAResultDict,self.SPACSVName)
 
-        return spaResultList
+
+        return SPAResultDict
