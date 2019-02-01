@@ -441,6 +441,8 @@ class fitting:
 
     def spaMode(self):
 
+        spaTimer = TicToc()
+
         def genPlotTxt(fit_para):
             """gen a string that print under the plot"""
             returnTxt = "Background: "
@@ -454,6 +456,8 @@ class fitting:
         self.chiSqPlotList = []
 
         def applySPA(frameID, frameDict):
+
+            frameFittingTimer = spaTimer.tic()
             if int(frameID) % 50 == 0:
                 print("Frame ID:", frameID)
             if type(frameDict) is dict:
@@ -518,6 +522,7 @@ class fitting:
                     fitParamsFrameDict["filePath"] = frameDict["filePath"]
 
                 fitParamsFrameDict[str(numberOfSpot)] = numberOfSpot
+                fitParamsFrameDict["FittingTime"] = spaTimer.tocvalue()
 
                 return fitParamsFrameDict
 

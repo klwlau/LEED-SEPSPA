@@ -13,10 +13,10 @@ configList = json.load(open("configList.json"))
 # ##### parameter list######
 cropRange = configList["SEPParameters"]["cropRange"]
 # Amp,x_0,y_0,sigma_x,sigma_y,theta,A,B,C
-guessUpBound = configList["fittingParameters"]["guessUpBound"]
-guessLowBound = configList["fittingParameters"]["guessLowBound"]
+# guessUpBound = configList["fittingParameters"]["guessUpBound"]
+# guessLowBound = configList["fittingParameters"]["guessLowBound"]
 
-guessBound = [guessLowBound, guessUpBound]
+# guessBound = [guessLowBound, guessUpBound]
 dataFolderName = configList["dataFolderName"]
 # sigma_x,sigma_y,theta,A,B,C
 intConfigGuess = configList["fittingParameters"]["intGuess"]
