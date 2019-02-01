@@ -61,12 +61,12 @@ class fitting:
             self.makeDirInDataFolder("SEPResult")
         self.sepComplete = False
 
-    def saveToCSV(self, RowArray, fileName):
+    def saveToCSV(self, writeArray, fileName):
         """save a list of row to CSV file"""
         with open(fileName, 'a', newline='') as f:
             csvWriter = csv.writer(f)
-            for i in RowArray:
-                csvWriter.writerow(i)
+            for row in writeArray:
+                csvWriter.writerow(row)
         print("save to :" + fileName)
 
     def makeResultDir(self):
@@ -534,6 +534,8 @@ class fitting:
         spaResultList = {}
         for frameID, frameSEPDict in self.sepDict.items():
             spaResultList[str(frameID)] = applySPA(frameID, frameSEPDict)
+
+
 
         print("save to :" + self.SPACSVName)
 
