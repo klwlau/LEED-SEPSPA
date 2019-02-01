@@ -457,7 +457,7 @@ class fitting:
             if int(frameID) % 50 == 0:
                 print("Frame ID:", frameID)
             if type(frameDict) is dict:
-                fitParamsDict = {}
+                fitParamsFrameDict = {}
                 numberOfSpot = frameDict["numberOfSpot"]
                 frameFilePath = frameDict["filePath"]
                 imageArray = self.readLEEDImage(frameFilePath)
@@ -514,18 +514,21 @@ class fitting:
                     fit_params[4] = fit_params[4] - self.halfCropRange + sepSpotDict["xcpeak"]
                     fit_params[5] = fit_params[5] - self.halfCropRange + sepSpotDict["ycpeak"]
 
-                    fitParamsDict[str(spotID)] = fit_params
+                    fitParamsFrameDict[str(spotID)] = fit_params
+                    fitParamsFrameDict["filePath"] = frameDict["filePath"]
 
-                return fitParamsDict
+                fitParamsFrameDict[str(numberOfSpot)] = numberOfSpot
+
+                return fitParamsFrameDict
 
         print("SPAMode")
         if self.sepComplete == False:
             print("Runing SEPMode to get Rough range")
             self.sepMode()
 
-        spaResultList = []
-        for frameID, frameDict in self.sepDict.items():
-            spaResultList.append(applySPA(frameID, frameDict))
+        spaResultList = {}
+        for frameID, frameSEPDict in self.sepDict.items():
+            spaResultList[str(frameID)] = applySPA(frameID, frameSEPDict)
 
         print("save to :" + self.SPACSVName)
 
