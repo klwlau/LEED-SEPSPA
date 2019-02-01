@@ -461,7 +461,8 @@ class fitting:
 
             frameFittingTimer = SPAFrameTimer.tic()
             if int(frameID) % 50 == 0:
-                print("Frame ID:", frameID)
+                print("Frame ID:", frameID,end='')
+                SPATimer.toc()
             if type(frameDict) is dict:
                 fitParamsFrameDict = {}
                 numberOfSpot = frameDict["numberOfSpot"]
