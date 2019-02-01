@@ -526,7 +526,6 @@ class fitting:
 
                 return fitParamsFrameDict
 
-
         def convertSPADictIntoCSVWriteArray(SPADict):
             CSVWriteArray = []
             for frameID in range(len(SPADict)):
@@ -544,7 +543,6 @@ class fitting:
 
             return CSVWriteArray
 
-
         print("SPAMode")
         if self.sepComplete == False:
             print("Runing SEPMode to get Rough range")
@@ -556,14 +554,13 @@ class fitting:
 
         print("save to :" + self.SPACSVName)
 
-        SPACSVHeader = ["FileID", "File Path", "Number of Spots","Fitting Time"]
+        SPACSVHeader = ["FileID", "File Path", "Number of Spots", "Fitting Time"]
         SPAparameterHeader = ["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta", "A", "B", "Constant"]
 
         for i in range(self.csvHeaderLength):
             SPACSVHeader += SPAparameterHeader
 
         self.saveToCSV([SPACSVHeader], self.SEPCSVName)
-        self.saveToCSV(SPAResultDict,self.SPACSVName)
-
+        self.saveToCSV(SPAResultDict, self.SPACSVName)
 
         return SPAResultDict
