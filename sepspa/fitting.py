@@ -41,7 +41,7 @@ class fitting:
         self.fileList = sorted(self.fileList)
         self.CSVwriteBuffer = self.configList["CSVwriteBuffer"]
         self.preStart()
-        # self.maxSpotInFrame = 0
+        self.csvHeaderLength = 15
         self.fittingBoundDict = {}
         self.fittingIntDict = {}
         self.multipleSpotInFrameThreshold = self.configList["SPAParameters"]["multipleSpotInFrameRange"] / 2
@@ -315,7 +315,7 @@ class fitting:
         sepCSVHeader = ["FileID", "File Name", "Number of Spots"]
         SEPparameterHeader = ["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta"]
 
-        for i in range(15):
+        for i in range(self.csvHeaderLength):
             sepCSVHeader += SEPparameterHeader
 
         self.saveToCSV([sepCSVHeader], self.SEPCSVName)
@@ -538,5 +538,15 @@ class fitting:
 
 
         print("save to :" + self.SPACSVName)
+
+
+        SPACSVHeader = ["FileID", "File Name", "Number of Spots"]
+        SPAparameterHeader = ["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta","A","B","Constant"]
+
+        for i in range(self.csvHeaderLength):
+            SPACSVHeader += SPAparameterHeader
+
+        self.saveToCSV([SPACSVHeader], self.SEPCSVName)
+
 
         return spaResultList
