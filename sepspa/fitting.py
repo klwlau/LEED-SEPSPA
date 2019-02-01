@@ -548,9 +548,9 @@ class fitting:
             print("Runing SEPMode to get Rough range")
             self.sepMode()
 
-        SPAResultDict = {}
+        self.SPAResultDict = {}
         for frameID, frameSEPDict in self.sepDict.items():
-            SPAResultDict[str(frameID)] = applySPA(frameID, frameSEPDict)
+            self.SPAResultDict[str(frameID)] = applySPA(frameID, frameSEPDict)
 
         print("save to :" + self.SPACSVName)
 
@@ -561,6 +561,9 @@ class fitting:
             SPACSVHeader += SPAparameterHeader
 
         self.saveToCSV([SPACSVHeader], self.SEPCSVName)
-        self.saveToCSV(SPAResultDict, self.SPACSVName)
+        self.saveToCSV(self.SPAResultDict, self.SPACSVName)
+        self.saveDictToPLK(self.SPAResultDict, self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SPADict")
 
-        return SPAResultDict
+        print("SPA Complete")
+
+        return self.SPAResultDict
