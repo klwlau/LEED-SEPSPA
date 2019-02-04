@@ -444,7 +444,6 @@ class fitting:
         SPAFrameTimer = TicToc()
         SPATimer = TicToc()
 
-
         def genPlotTxt(fit_para):
             """gen a string that print under the plot"""
             returnTxt = "Background: "
@@ -542,16 +541,14 @@ class fitting:
                 frameWriteArray.append(frameDict["FittingTime"])
 
                 for spotID in range(frameDict["numberOfSpot"]):
-                    spotArray.append(frameDict[str(spotID)][3:6])
+                    print(frameDict[str(spotID)])
+                    spotArray.append(frameDict[str(spotID)][3:9])
                     spotArray.append(frameDict[str(spotID)][0:3])
 
                 spotArray = list(itertools.chain.from_iterable(spotArray))
-                frameWriteArray.append(spotArray)
-                frameWriteArray = list(itertools.chain.from_iterable(frameWriteArray))
-
+                frameWriteArray+= spotArray
 
                 CSVWriteArray.append(frameWriteArray)
-
 
             return CSVWriteArray
 
@@ -566,10 +563,12 @@ class fitting:
         for frameID, frameSEPDict in self.sepDict.items():
             self.SPAResultDict[str(frameID)] = applySPA(frameID, frameSEPDict)
 
+
+
         print("save to :" + self.SPACSVName)
 
         SPACSVHeader = ["FileID", "File Path", "Number of Spots", "Fitting Time"]
-        SPAparameterHeader = ["Am", "x", "y", "xpeak", "ypeak", "a", "b", "theta", "A", "B", "Constant"]
+        SPAparameterHeader = ["Am", "x", "y",  "a", "b", "theta", "A", "B", "Constant"]
 
         for i in range(self.csvHeaderLength):
             SPACSVHeader += SPAparameterHeader
