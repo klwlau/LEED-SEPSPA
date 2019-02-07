@@ -461,7 +461,7 @@ class fitting:
             SPAFrameTimer.tic()
 
             if int(frameID) % 50 == 0:
-                print("Frame ID:", frameID, end=', ')
+                print("Fitting Frame ID:", frameID, end=', ')
                 SPATimer.toc()
             if type(frameDict) is dict:
                 fitParamsFrameDict = {}
@@ -541,7 +541,6 @@ class fitting:
                 frameWriteArray.append(frameDict["FittingTime"])
 
                 for spotID in range(frameDict["numberOfSpot"]):
-                    print(frameDict[str(spotID)])
                     spotArray.append(frameDict[str(spotID)][3:9])
                     spotArray.append(frameDict[str(spotID)][0:3])
 
