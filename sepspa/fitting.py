@@ -89,7 +89,7 @@ class fitting:
         with open(dirPath + fileName + '.pkl', 'wb') as f:
             pickle.dump(dict, f, pickle.HIGHEST_PROTOCOL)
 
-    def readPLK(self, filePath):
+    def loadPLK(self, filePath):
         """load a pickle object"""
         import pickle
         with open(filePath, 'rb') as f:
