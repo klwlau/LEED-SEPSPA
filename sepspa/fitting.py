@@ -465,6 +465,7 @@ class fitting:
                 SPATimer.toc()
             if type(frameDict) is dict:
                 fitParamsFrameDict = {}
+                fitUncertDict ={}
                 numberOfSpot = frameDict["numberOfSpot"]
                 frameFilePath = frameDict["filePath"]
                 imageArray = self.readLEEDImage(frameFilePath)
@@ -522,12 +523,13 @@ class fitting:
                     fit_params[5] = fit_params[5] - self.halfCropRange + sepSpotDict["ycpeak"]
 
                     fitParamsFrameDict[str(spotID)] = fit_params
+                    fitUncertDict[str(spotID)] = uncert_cov
 
                 fitParamsFrameDict["filePath"] = frameDict["filePath"]
                 fitParamsFrameDict["numberOfSpot"] = numberOfSpot
                 fitParamsFrameDict["FittingTime"] = SPAFrameTimer.tocvalue()
 
-                return fitParamsFrameDict
+                return fitParamsFrameDict,fitUncertDict
 
         def convertSPADictIntoCSVWriteArray(SPADict):
             CSVWriteArray = []
@@ -559,8 +561,9 @@ class fitting:
         SPATimer.tic()
 
         self.SPAResultDict = {}
+        self.SPAUncertDict = {}
         for frameID, frameSEPDict in self.sepDict.items():
-            self.SPAResultDict[str(frameID)] = applySPA(frameID, frameSEPDict)
+            self.SPAResultDict[str(frameID)],self.SPAUncertDict[str(frameID)] = applySPA(frameID, frameSEPDict)
 
 
 
@@ -575,6 +578,7 @@ class fitting:
         self.saveToCSV([SPACSVHeader], self.SPACSVName)
         self.saveToCSV(convertSPADictIntoCSVWriteArray(self.SPAResultDict), self.SPACSVName)
         self.saveDictToPLK(self.SPAResultDict, self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SPADict")
+        self.saveDictToPLK(self.SPAUncertDict, self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SPAUncertDict")
 
         print("SPA Complete")
         SPATimer.toc()
