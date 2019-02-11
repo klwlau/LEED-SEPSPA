@@ -522,7 +522,23 @@ class fitting:
                     fit_params[4] = fit_params[4] - self.halfCropRange + sepSpotDict["xcpeak"]
                     fit_params[5] = fit_params[5] - self.halfCropRange + sepSpotDict["ycpeak"]
 
-                    fitParamsFrameDict[str(spotID)] = fit_params
+                    spotDetailDict = {}
+                    spotDetailDict["fullFittingParam"] =fit_params
+                    spotDetailDict["A"] = fit_params[0]
+                    spotDetailDict["B"] =  fit_params[1]
+                    spotDetailDict["C"] = fit_params[2]
+                    spotDetailDict["Am"] = fit_params[3]
+                    spotDetailDict["x"] = fit_params[4]
+                    spotDetailDict["y"] = fit_params[5]
+                    spotDetailDict["sigma_x"] = fit_params[6]
+                    spotDetailDict["sigma_y"] = fit_params[7]
+                    spotDetailDict["theta"] = fit_params[8]
+
+
+
+                    # fitParamsFrameDict[str(spotID)] = fit_params
+                    fitParamsFrameDict[str(spotID)] = spotDetailDict
+
                     fitUncertDict[str(spotID)] = uncert_cov
 
                 fitParamsFrameDict["filePath"] = frameDict["filePath"]
@@ -543,8 +559,8 @@ class fitting:
                 frameWriteArray.append(frameDict["FittingTime"])
 
                 for spotID in range(frameDict["numberOfSpot"]):
-                    spotArray.append(frameDict[str(spotID)][3:9])
-                    spotArray.append(frameDict[str(spotID)][0:3])
+                    spotArray.append(frameDict["fullFittingParam"][str(spotID)][3:9])
+                    spotArray.append(frameDict["fullFittingParam"][str(spotID)][0:3])
 
                 spotArray = list(itertools.chain.from_iterable(spotArray))
                 frameWriteArray += spotArray
@@ -568,7 +584,7 @@ class fitting:
         print("save to :" + self.SPACSVName)
 
         SPACSVHeader = ["FileID", "File Path", "Number of Spots", "Fitting Time"]
-        SPAparameterHeader = ["Am", "x", "y", "a", "b", "theta", "A", "B", "Constant"]
+        SPAparameterHeader = ["Am", "x", "y", "sigma_x", "sigma_y", "theta", "A", "B", "Constant"]
 
         for i in range(self.csvHeaderLength):
             SPACSVHeader += SPAparameterHeader
