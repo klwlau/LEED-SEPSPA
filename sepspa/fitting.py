@@ -560,8 +560,8 @@ class fitting:
                 frameWriteArray.append(frameDict["FittingTime"])
 
                 for spotID in range(frameDict["numberOfSpot"]):
-                    spotArray.append(frameDict["fullFittingParam"][str(spotID)][3:9])
-                    spotArray.append(frameDict["fullFittingParam"][str(spotID)][0:3])
+                    spotArray.append(frameDict[str(spotID)]["fullFittingParam"][3:9])
+                    spotArray.append(frameDict[str(spotID)]["fullFittingParam"][0:3])
 
                 spotArray = list(itertools.chain.from_iterable(spotArray))
                 frameWriteArray += spotArray
