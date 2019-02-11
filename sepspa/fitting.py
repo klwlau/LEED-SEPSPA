@@ -465,7 +465,7 @@ class fitting:
                 SPATimer.toc()
             if type(frameDict) is dict:
                 fitParamsFrameDict = {}
-                fitUncertDict ={}
+                fitUncertDict = {}
                 numberOfSpot = frameDict["numberOfSpot"]
                 frameFilePath = frameDict["filePath"]
                 imageArray = self.readLEEDImage(frameFilePath)
@@ -529,7 +529,7 @@ class fitting:
                 fitParamsFrameDict["numberOfSpot"] = numberOfSpot
                 fitParamsFrameDict["FittingTime"] = SPAFrameTimer.tocvalue()
 
-                return fitParamsFrameDict,fitUncertDict
+                return fitParamsFrameDict, fitUncertDict
 
         def convertSPADictIntoCSVWriteArray(SPADict):
             CSVWriteArray = []
@@ -547,7 +547,7 @@ class fitting:
                     spotArray.append(frameDict[str(spotID)][0:3])
 
                 spotArray = list(itertools.chain.from_iterable(spotArray))
-                frameWriteArray+= spotArray
+                frameWriteArray += spotArray
 
                 CSVWriteArray.append(frameWriteArray)
 
@@ -563,14 +563,12 @@ class fitting:
         self.SPAResultDict = {}
         self.SPAUncertDict = {}
         for frameID, frameSEPDict in self.sepDict.items():
-            self.SPAResultDict[str(frameID)],self.SPAUncertDict[str(frameID)] = applySPA(frameID, frameSEPDict)
-
-
+            self.SPAResultDict[str(frameID)], self.SPAUncertDict[str(frameID)] = applySPA(frameID, frameSEPDict)
 
         print("save to :" + self.SPACSVName)
 
         SPACSVHeader = ["FileID", "File Path", "Number of Spots", "Fitting Time"]
-        SPAparameterHeader = ["Am", "x", "y",  "a", "b", "theta", "A", "B", "Constant"]
+        SPAparameterHeader = ["Am", "x", "y", "a", "b", "theta", "A", "B", "Constant"]
 
         for i in range(self.csvHeaderLength):
             SPACSVHeader += SPAparameterHeader
@@ -578,7 +576,8 @@ class fitting:
         self.saveToCSV([SPACSVHeader], self.SPACSVName)
         self.saveToCSV(convertSPADictIntoCSVWriteArray(self.SPAResultDict), self.SPACSVName)
         self.saveDictToPLK(self.SPAResultDict, self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SPADict")
-        self.saveDictToPLK(self.SPAUncertDict, self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SPAUncertDict")
+        self.saveDictToPLK(self.SPAUncertDict,
+                           self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SPAUncertDict")
 
         print("SPA Complete")
         SPATimer.toc()
