@@ -16,7 +16,7 @@ import sepspa.fitFunc as fitFunc
 
 class fitting:
 
-    def __init__(self, configFilePath="configList.json"):
+    def __init__(self, configFilePath="configList.json",listLength="Full"):
         np.set_printoptions(precision=3, suppress=True)
 
         self.start_time = time.time()
@@ -37,8 +37,9 @@ class fitting:
             self.fileList = glob.glob("./*.tif")
         else:
             self.fileList = glob.glob(self.dataFolderName + "/*.tif")
-        # self.fileList = self.fileList[:30]
         self.fileList = sorted(self.fileList)
+        if listLength != "Full":
+            self.fileList = self.fileList[:listLength]
         self.CSVwriteBuffer = self.configList["CSVwriteBuffer"]
         self.preStart()
         self.csvHeaderLength = 15
