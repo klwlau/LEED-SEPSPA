@@ -382,9 +382,8 @@ class fitting:
 
     def genFittedFuncArray(self, fit_params, outputZpredOnly=False):
         """generate an image array from the fitted function"""
-        test = self.halfCropRange * 2
-        # xi, yi = np.mgrid[0:self.halfcropRange * 2, 0:self.halfcropRange * 2]
-        xi, yi = np.mgrid[0:test, 0:test]
+        fullRange = self.halfCropRange * 2
+        xi, yi = np.mgrid[0:fullRange, 0:fullRange]
 
         xyi = np.vstack([xi.ravel(), yi.ravel()])
         numOfGauss = int((len(fit_params) - 3) / len(self.configList["SPAParameters"]["gaussianUpperBoundTemplate"]))
@@ -606,6 +605,7 @@ class fitting:
 
         for frameID, frameDict in spaDict.items():
             numberOfSpot = frameDict["numberOfSpot"]
+            totalIntensity = 0
 
             for spotID in range(int(numberOfSpot)):
                 spotDict = frameDict[str(spotID)]
@@ -617,53 +617,21 @@ class fitting:
                 sigma_y = spotDict["sigma_y"]
                 theta = spotDict["theta"]
 
-                upperLimit = xCenter +self.halfCropRange
-                lowerLimit = xCenter -self.halfCropRange
+                xUpperLimit = xCenter + self.halfCropRange
+                xLowerLimit = xCenter - self.halfCropRange
+
+                yUpperLimit = yCenter + self.halfCropRange
+                yLowerLimit = yCenter - self.halfCropRange
 
 
-                spotDict["integrateIntensity"] = dblquad(fitFunc.gauss2D(x,y,Am,xCenter,yCenter,sigma_x,sigma_y,theta),
-                                                         lowerLimit,upperLimit,lowerLimit,upperLimit)
-                print(spotDict["integrateIntensity"])
+                spotDict["integrateIntensity"] = dblquad(
+                    lambda x, y: fitFunc.gauss2D(x, y, Am, xCenter, yCenter, sigma_x, sigma_y, theta), yLowerLimit,
+                    yUpperLimit, lambda x: xLowerLimit, lambda x: xUpperLimit)[0]
 
-
-
-
-
-
-
-
-
-
+                totalIntensity += spotDict["integrateIntensity"]
 
 
 
         self.SPAResultDict = spaDict
 
         return self.SPAResultDict
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
