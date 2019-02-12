@@ -11,12 +11,13 @@ import csv, itertools, json, os, shutil, ntpath
 from numba import jit
 import numpy as np
 from joblib import Parallel, delayed
+from scipy.integrate import dblquad
 import sepspa.fitFunc as fitFunc
 
 
 class fitting:
 
-    def __init__(self, configFilePath="configList.json",listLength="Full"):
+    def __init__(self, configFilePath="configList.json", listLength="Full"):
         np.set_printoptions(precision=3, suppress=True)
 
         self.start_time = time.time()
@@ -524,18 +525,16 @@ class fitting:
                     fit_params[5] = fit_params[5] - self.halfCropRange + sepSpotDict["ycpeak"]
 
                     spotDetailDict = {}
-                    spotDetailDict["fullFittingParam"] =fit_params
+                    spotDetailDict["fullFittingParam"] = fit_params
                     spotDetailDict["A"] = fit_params[0]
-                    spotDetailDict["B"] =  fit_params[1]
+                    spotDetailDict["B"] = fit_params[1]
                     spotDetailDict["C"] = fit_params[2]
                     spotDetailDict["Am"] = fit_params[3]
-                    spotDetailDict["x"] = fit_params[4]
-                    spotDetailDict["y"] = fit_params[5]
+                    spotDetailDict["xCenter"] = fit_params[4]
+                    spotDetailDict["yCenter"] = fit_params[5]
                     spotDetailDict["sigma_x"] = fit_params[6]
                     spotDetailDict["sigma_y"] = fit_params[7]
                     spotDetailDict["theta"] = fit_params[8]
-
-
 
                     # fitParamsFrameDict[str(spotID)] = fit_params
                     fitParamsFrameDict[str(spotID)] = spotDetailDict
