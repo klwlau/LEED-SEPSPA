@@ -599,3 +599,71 @@ class fitting:
         SPATimer.toc()
 
         return self.SPAResultDict
+
+    def integrateFittedPeakIntensity(self, spaDict=""):
+        if spaDict == "":
+            spaDict = self.SPAResultDict
+
+        for frameID, frameDict in spaDict.items():
+            numberOfSpot = frameDict["numberOfSpot"]
+
+            for spotID in range(int(numberOfSpot)):
+                spotDict = frameDict[str(spotID)]
+
+                Am = spotDict["Am"]
+                xCenter = spotDict["xCenter"]
+                yCenter = spotDict["yCenter"]
+                sigma_x = spotDict["sigma_x"]
+                sigma_y = spotDict["sigma_y"]
+                theta = spotDict["theta"]
+
+                upperLimit = xCenter +self.halfCropRange
+                lowerLimit = xCenter -self.halfCropRange
+
+
+                spotDict["integrateIntensity"] = dblquad(fitFunc.gauss2D(x,y,Am,xCenter,yCenter,sigma_x,sigma_y,theta),
+                                                         lowerLimit,upperLimit,lowerLimit,upperLimit)
+                print(spotDict["integrateIntensity"])
+
+
+
+
+
+
+
+
+
+
+
+
+
+        self.SPAResultDict = spaDict
+
+        return self.SPAResultDict
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
