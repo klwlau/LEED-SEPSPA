@@ -1,12 +1,12 @@
 import numpy as np
 from numba import jit
-from scipy.stats import norm
+# from scipy.stats import norm
 
-@jit
-def pdf_skewnormal(x, location=0.0, scale=1.0, shape=0.0):
-    scale = scale ** 2
-    t = (x - location) / scale
-    return 2.0 / scale * norm.pdf(t) * norm.cdf(shape * t)
+# @jit
+# def pdf_skewnormal(x, location=0.0, scale=1.0, shape=0.0):
+#     scale = scale ** 2
+#     t = (x - location) / scale
+#     return 2.0 / scale * norm.pdf(t) * norm.cdf(shape * t)
 
 
 def backGroundPlaneEstimation(x, y, A, B, C):
