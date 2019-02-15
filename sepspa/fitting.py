@@ -624,11 +624,18 @@ class fitting:
                 yLowerLimit = yCenter - self.halfCropRange
 
 
-                spotDict["integrateIntensity"] = dblquad(
+                spotDict["integratedIntensity"],spotDict["integratedIntensityError"] = dblquad(
                     lambda x, y: fitFunc.gauss2D(x, y, Am, xCenter, yCenter, sigma_x, sigma_y, theta), yLowerLimit,
-                    yUpperLimit, lambda x: xLowerLimit, lambda x: xUpperLimit)[0]
+                    yUpperLimit, lambda x: xLowerLimit, lambda x: xUpperLimit)
 
                 totalIntensity += spotDict["integrateIntensity"]
+                spotDict["totalIntensity"] = totalIntensity
+
+        for frameID, frameDict in spaDict.items():
+            numberOfSpot = frameDict["numberOfSpot"]
+            for spotID in range(int(numberOfSpot)):
+                spotDict = frameDict[str(spotID)]
+                spotDict["integratedIntensityRatio"] = spotDict["integratedIntensity"]/spotDict["totalIntensity"]
 
 
 
