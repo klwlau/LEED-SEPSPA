@@ -51,7 +51,9 @@ class fitting:
     def preStart(self):
         self.makeResultDir()
         self.SEPCSVName = "./Result/" + self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SEP.csv"
-        self.SPACSVName = "./Result/" + self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SPA.csv"
+        self.SPACSVNameRaw = "./Result/" + self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SPARaw.csv"
+        self.SPACSVNameEllipticalCorrected = "./Result/" + self.timeStamp + "_" + self.configList[
+            "csvNameRemark"] + "_SPAEllipticalCorrected.csv"
         self.copyJsontoLog()
         self.globalCounter = 0
         self.totalFileNumber = len(self.fileList)
@@ -575,12 +577,12 @@ class fitting:
 
         SPATimer.tic()
 
-        self.SPAResultDict = {}
+        self.SPAResultRawDict = {}
         self.SPAUncertDict = {}
         for frameID, frameSEPDict in self.sepDict.items():
-            self.SPAResultDict[str(frameID)], self.SPAUncertDict[str(frameID)] = applySPA(frameID, frameSEPDict)
+            self.SPAResultRawDict[str(frameID)], self.SPAUncertDict[str(frameID)] = applySPA(frameID, frameSEPDict)
 
-        print("save to :" + self.SPACSVName)
+        print("save to :" + self.SPACSVNameRaw)
 
         SPACSVHeader = ["FileID", "File Path", "Number of Spots", "Fitting Time"]
         SPAparameterHeader = ["Am", "x", "y", "sigma_x", "sigma_y", "theta", "A", "B", "Constant"]
@@ -588,20 +590,21 @@ class fitting:
         for i in range(self.csvHeaderLength):
             SPACSVHeader += SPAparameterHeader
 
-        self.saveToCSV([SPACSVHeader], self.SPACSVName)
-        self.saveToCSV(convertSPADictIntoCSVWriteArray(self.SPAResultDict), self.SPACSVName)
-        self.saveDictToPLK(self.SPAResultDict, self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SPADict")
+        self.saveToCSV([SPACSVHeader], self.SPACSVNameRaw)
+        self.saveToCSV(convertSPADictIntoCSVWriteArray(self.SPAResultRawDict), self.SPACSVNameRaw)
+        self.saveDictToPLK(self.SPAResultRawDict,
+                           self.timeStamp + "_" + self.configList["csvNameRemark"] + "_RawSPADict")
         self.saveDictToPLK(self.SPAUncertDict,
-                           self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SPAUncertDict")
+                           self.timeStamp + "_" + self.configList["csvNameRemark"] + "_RawSPAUncertDict")
 
         print("SPA Complete")
         SPATimer.toc()
 
-        return self.SPAResultDict
+        return self.SPAResultRawDict
 
     def integrateFittedPeakIntensity(self, spaDict=""):
         if spaDict == "":
-            spaDict = self.SPAResultDict
+            spaDict = self.SPAResultRawDict
 
         for frameID, frameDict in spaDict.items():
             numberOfSpot = frameDict["numberOfSpot"]
@@ -636,9 +639,9 @@ class fitting:
                 spotDict = frameDict[str(spotID)]
                 spotDict["integratedIntensityRatio"] = spotDict["integratedIntensity"] / spotDict["totalIntensity"]
 
-        self.SPAResultDict = spaDict
+        self.SPAResultRawDict = spaDict
 
-        return self.SPAResultDict
+        return self.SPAResultRawDict
 
     def ellipticalCorrection(self):
 
@@ -646,7 +649,7 @@ class fitting:
             gatheredXCenterCoorList = []
             gatheredYCenterCoorList = []
 
-            for frameID, frameDict in self.SPAResultDict.items():
+            for frameID, frameDict in self.SPAResultRawDict.items():
                 numberOfSpot = frameDict["numberOfSpot"]
                 for spotID in range(int(numberOfSpot)):
                     gatheredXCenterCoorList.append(frameDict[str(spotID)]["xCenter"])
@@ -673,5 +676,62 @@ class fitting:
 
             return np.concatenate([a1, T.dot(a1)])
 
+        self.SPAResultEllipticalCorrectedDict = self.SPAResultRawDict.copy()
+        fittedEllipseConstat = fitEllipse()
 
-        return fitEllipse()
+        tiltedTheta = 0.5 * np.arctan(fittedEllipseConstat[2] / (fittedEllipseConstat[1] - fittedEllipseConstat[3]))
+
+        '''transform constant'''
+
+        transformEllipseConsgtant = np.zeros_like(fittedEllipseConstat)
+
+        transformEllipseConsgtant[1] = fittedEllipseConstat[1] * np.cos(tiltedTheta) * np.cos(tiltedTheta) + \
+                                       fittedEllipseConstat[2] * np.sin(
+            tiltedTheta) * np.cos(tiltedTheta) + fittedEllipseConstat[3] * np.sin(tiltedTheta) * np.sin(tiltedTheta)
+        transformEllipseConsgtant[2] = 0
+        transformEllipseConsgtant[3] = fittedEllipseConstat[1] * np.sin(tiltedTheta) * np.sin(tiltedTheta) - \
+                                       fittedEllipseConstat[2] * np.sin(
+            tiltedTheta) * np.cos(tiltedTheta) + fittedEllipseConstat[3] * np.cos(tiltedTheta) * np.cos(tiltedTheta)
+        transformEllipseConsgtant[4] = fittedEllipseConstat[4] * np.cos(tiltedTheta) + fittedEllipseConstat[5] * np.sin(
+            tiltedTheta)
+        transformEllipseConsgtant[5] = -fittedEllipseConstat[4] * np.sin(tiltedTheta) + fittedEllipseConstat[
+            5] * np.cos(tiltedTheta)
+        transformEllipseConsgtant[6] = fittedEllipseConstat[6]
+
+        '''get the lengths of two radius and centre'''
+
+        X0 = -transformEllipseConsgtant[4] / 2 / transformEllipseConsgtant[1]
+        Y0 = -transformEllipseConsgtant[5] / 2 / transformEllipseConsgtant[3]
+        x0 = X0 * np.cos(tiltedTheta) - Y0 * np.sin(tiltedTheta)
+        y0 = X0 * np.sin(tiltedTheta) + Y0 * np.cos(tiltedTheta)
+        A = np.sqrt((transformEllipseConsgtant[1] * X0 ** 2 + transformEllipseConsgtant[3] * Y0 ** 2 -
+                     transformEllipseConsgtant[6]) / transformEllipseConsgtant[3])
+        B = np.sqrt((transformEllipseConsgtant[1] * X0 ** 2 + transformEllipseConsgtant[3] * Y0 ** 2 -
+                     transformEllipseConsgtant[6]) / transformEllipseConsgtant[1])
+        AA = A
+        BB = B
+
+        if B > A:
+            A = BB
+            B = AA
+            tiltedTheta = tiltedTheta + np.pi / 2
+
+        for frameID, frameDict in self.SPAResultEllipticalCorrectedDict.items():
+            numberOfSpot = frameDict["numberOfSpot"]
+            for spotID in range(int(numberOfSpot)):
+                spotDict = frameDict[str(spotID)]
+
+                originalXCenter = spotDict["xCenter"]
+                originalYCenter = spotDict["yCenter"]
+
+                transformedXCenter = originalXCenter - x0
+                transformedYCenter = originalYCenter - y0
+                tempTransformedXCenter = (transformedXCenter * np.cos(-tiltedTheta) - transformedYCenter * np.sin(-tiltedTheta)) ** A / B
+                tempTransformedYCenter = transformedXCenter * np.sin(-tiltedTheta) + transformedYCenter * np.cos(-tiltedTheta)
+                transformedXCenter = tempTransformedXCenter * np.cos(tiltedTheta) - tempTransformedYCenter * np.sin(tiltedTheta)
+                transformedYCenter = tempTransformedXCenter * np.sin(tiltedTheta) + tempTransformedYCenter * np.cos(tiltedTheta)
+
+                spotDict["xCenter"] = transformedXCenter
+                spotDict["yCenter"] = transformedYCenter
+
+
