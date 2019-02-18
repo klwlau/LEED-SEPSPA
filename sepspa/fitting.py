@@ -726,12 +726,14 @@ class fitting:
 
                 transformedXCenter = originalXCenter - x0
                 transformedYCenter = originalYCenter - y0
-                tempTransformedXCenter = (transformedXCenter * np.cos(-tiltedTheta) - transformedYCenter * np.sin(-tiltedTheta)) ** A / B
-                tempTransformedYCenter = transformedXCenter * np.sin(-tiltedTheta) + transformedYCenter * np.cos(-tiltedTheta)
-                transformedXCenter = tempTransformedXCenter * np.cos(tiltedTheta) - tempTransformedYCenter * np.sin(tiltedTheta)
-                transformedYCenter = tempTransformedXCenter * np.sin(tiltedTheta) + tempTransformedYCenter * np.cos(tiltedTheta)
+                tempTransformedXCenter = (transformedXCenter * np.cos(-tiltedTheta) - transformedYCenter * np.sin(
+                    -tiltedTheta)) ** A / B
+                tempTransformedYCenter = transformedXCenter * np.sin(-tiltedTheta) + transformedYCenter * np.cos(
+                    -tiltedTheta)
+                transformedXCenter = tempTransformedXCenter * np.cos(tiltedTheta) - tempTransformedYCenter * np.sin(
+                    tiltedTheta)
+                transformedYCenter = tempTransformedXCenter * np.sin(tiltedTheta) + tempTransformedYCenter * np.cos(
+                    tiltedTheta)
 
                 spotDict["xCenter"] = transformedXCenter
                 spotDict["yCenter"] = transformedYCenter
-
-
