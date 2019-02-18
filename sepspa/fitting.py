@@ -623,8 +623,7 @@ class fitting:
                 yUpperLimit = yCenter + self.halfCropRange
                 yLowerLimit = yCenter - self.halfCropRange
 
-
-                spotDict["integratedIntensity"],spotDict["integratedIntensityError"] = dblquad(
+                spotDict["integratedIntensity"], spotDict["integratedIntensityError"] = dblquad(
                     lambda x, y: fitFunc.gauss2D(x, y, Am, xCenter, yCenter, sigma_x, sigma_y, theta), yLowerLimit,
                     yUpperLimit, lambda x: xLowerLimit, lambda x: xUpperLimit)
 
@@ -635,10 +634,44 @@ class fitting:
             numberOfSpot = frameDict["numberOfSpot"]
             for spotID in range(int(numberOfSpot)):
                 spotDict = frameDict[str(spotID)]
-                spotDict["integratedIntensityRatio"] = spotDict["integratedIntensity"]/spotDict["totalIntensity"]
-
-
+                spotDict["integratedIntensityRatio"] = spotDict["integratedIntensity"] / spotDict["totalIntensity"]
 
         self.SPAResultDict = spaDict
 
         return self.SPAResultDict
+
+    def ellipticalCorrection(self):
+
+        def gatherXYCenterFromSPADict():
+            gatheredXCenterCoorList = []
+            gatheredYCenterCoorList = []
+
+            for frameID, frameDict in self.SPAResultDict.items():
+                numberOfSpot = frameDict["numberOfSpot"]
+                for spotID in range(int(numberOfSpot)):
+                    gatheredXCenterCoorList.append(frameDict[str(spotID)]["xCenter"])
+                    gatheredYCenterCoorList.append(frameDict[str(spotID)]["yCenter"])
+
+            return np.array(gatheredXCenterCoorList), np.array(gatheredYCenterCoorList)
+
+        def fitEllipse():
+            xCenterCoorArray, yCenterCoorArray = gatherXYCenterFromSPADict()
+
+            D1 = np.vstack((xCenterCoorArray ** 2, xCenterCoorArray * yCenterCoorArray, yCenterCoorArray ** 2)).T
+            D2 = np.vstack((xCenterCoorArray, yCenterCoorArray, np.ones_like(xCenterCoorArray))).T
+
+            S1 = D1.T.dot(D1)
+            S2 = D1.T.dot(D2)
+            S3 = D2.T.dot(D2)
+            T = -np.linalg.inv(S3).dot(S2.T)
+            M = S1 + S2.dot(T)
+            M = np.array([M[2, :] / 2, -M[1, :], M[0, :] / 2])
+            eval, evec = np.linalg.eig(M)
+            cond = (4 * evec[:, 0] * evec[:, 2]) - (evec[:, 1] ** 2)
+            I = np.where(cond > 0)[0]
+            a1 = evec[:, I[np.argmin(cond[I])]]
+
+            return np.concatenate([a1, T.dot(a1)])
+
+
+        return fitEllipse()
