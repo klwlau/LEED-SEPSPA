@@ -700,20 +700,17 @@ class fitting:
 
         '''get the lengths of two radius and centre'''
 
-        X0 = -transformEllipseConsgtant[4] / 2 / transformEllipseConsgtant[1]
-        Y0 = -transformEllipseConsgtant[5] / 2 / transformEllipseConsgtant[3]
-        x0 = X0 * np.cos(tiltedTheta) - Y0 * np.sin(tiltedTheta)
-        y0 = X0 * np.sin(tiltedTheta) + Y0 * np.cos(tiltedTheta)
-        A = np.sqrt((transformEllipseConsgtant[1] * X0 ** 2 + transformEllipseConsgtant[3] * Y0 ** 2 -
+        tempX0 = -transformEllipseConsgtant[4] / 2 / transformEllipseConsgtant[1]
+        tempY0 = -transformEllipseConsgtant[5] / 2 / transformEllipseConsgtant[3]
+        transformedX0 = tempX0 * np.cos(tiltedTheta) - tempY0 * np.sin(tiltedTheta)
+        transformedY0 = tempX0 * np.sin(tiltedTheta) + tempY0 * np.cos(tiltedTheta)
+        A = np.sqrt((transformEllipseConsgtant[1] * tempX0 ** 2 + transformEllipseConsgtant[3] * tempY0 ** 2 -
                      transformEllipseConsgtant[6]) / transformEllipseConsgtant[3])
-        B = np.sqrt((transformEllipseConsgtant[1] * X0 ** 2 + transformEllipseConsgtant[3] * Y0 ** 2 -
+        B = np.sqrt((transformEllipseConsgtant[1] * tempX0 ** 2 + transformEllipseConsgtant[3] * tempY0 ** 2 -
                      transformEllipseConsgtant[6]) / transformEllipseConsgtant[1])
-        AA = A
-        BB = B
 
         if B > A:
-            A = BB
-            B = AA
+            A, B = B, A
             tiltedTheta = tiltedTheta + np.pi / 2
 
         for frameID, frameDict in self.SPAResultEllipticalCorrectedDict.items():
@@ -724,8 +721,8 @@ class fitting:
                 originalXCenter = spotDict["xCenter"]
                 originalYCenter = spotDict["yCenter"]
 
-                transformedXCenter = originalXCenter - x0
-                transformedYCenter = originalYCenter - y0
+                transformedXCenter = originalXCenter - transformedX0
+                transformedYCenter = originalYCenter - transformedY0
                 tempTransformedXCenter = (transformedXCenter * np.cos(-tiltedTheta) - transformedYCenter * np.sin(
                     -tiltedTheta)) ** A / B
                 tempTransformedYCenter = transformedXCenter * np.sin(-tiltedTheta) + transformedYCenter * np.cos(
