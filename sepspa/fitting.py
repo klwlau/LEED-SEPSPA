@@ -681,6 +681,11 @@ class fitting:
             a = V[:, n]
             return a
 
+        def cart2pol(x, y):
+            rho = np.sqrt(x ** 2 + y ** 2)
+            phi = np.rad2deg(np.arctan2(y, x))
+            return (rho, phi)
+
         self.SPAResultEllipticalCorrectedDict = self.SPAResultRawDict.copy()
 
         a = fitEllipse()
@@ -725,6 +730,10 @@ class fitting:
                 yy = XX * np.sin(th) + YY * np.cos(th)
                 spotDict["xCenter"] = xx
                 spotDict["yCenter"] = yy
+
+                spotDict["polarCorr"] = cart2pol(xx, yy)
+                spotDict["k"] = spotDict["polarCorr"][0]
+                spotDict["thetaPolarCorr"] = spotDict["polarCorr"][1]
 
 
                 frameDict[str(spotID)] = spotDict
