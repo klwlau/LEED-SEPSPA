@@ -597,6 +597,7 @@ class fitting:
 
         print("save to :" + self.SPACSVNameRaw)
 
+        self.integrateFittedPeakIntensity()
 
         for i in range(self.csvHeaderLength):
             self.SPACSVHeader += self.SPAparameterHeader
@@ -614,6 +615,9 @@ class fitting:
         return self.SPAResultRawDict
 
     def integrateFittedPeakIntensity(self, spaDict=""):
+        inTimer = TicToc()
+        inTimer.tic()
+
         if spaDict == "":
             spaDict = self.SPAResultRawDict
 
@@ -641,14 +645,19 @@ class fitting:
                     lambda x, y: fitFunc.gauss2D(x, y, Am, xCenter, yCenter, sigma_x, sigma_y, theta), yLowerLimit,
                     yUpperLimit, lambda x: xLowerLimit, lambda x: xUpperLimit)
 
-                totalIntensity += spotDict["integrateIntensity"]
-                spotDict["totalIntensity"] = totalIntensity
+                totalIntensity += spotDict["integratedIntensity"]
+            frameDict["totalIntensity"] = totalIntensity
+
+            if int(frameID)% 50 == 0:
+                print("Integrating Frame ID:", frameID, end=', ')
+                inTimer.toc()
+
 
         for frameID, frameDict in spaDict.items():
             numberOfSpot = frameDict["numberOfSpot"]
             for spotID in range(int(numberOfSpot)):
                 spotDict = frameDict[str(spotID)]
-                spotDict["integratedIntensityRatio"] = spotDict["integratedIntensity"] / spotDict["totalIntensity"]
+                spotDict["integratedIntensityRatio"] = spotDict["integratedIntensity"] / frameDict["totalIntensity"]
 
         self.SPAResultRawDict = spaDict
 
