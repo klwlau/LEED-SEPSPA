@@ -457,10 +457,17 @@ class fitting:
             frameWriteArray.append(frameDict["FittingTime"])
 
             for spotID in range(frameDict["numberOfSpot"]):
-                spotArray.append(frameDict[str(spotID)]["fullFittingParam"][3:9])
-                spotArray.append(frameDict[str(spotID)]["fullFittingParam"][0:3])
+                spotArray.append(frameDict[str(spotID)]["Am"])
+                spotArray.append(frameDict[str(spotID)]["xCenter"])
+                spotArray.append(frameDict[str(spotID)]["yCenter"])
+                spotArray.append(frameDict[str(spotID)]["sigma_x"])
+                spotArray.append(frameDict[str(spotID)]["sigma_y"])
+                spotArray.append(frameDict[str(spotID)]["theta"])
+                spotArray.append(frameDict[str(spotID)]["A"])
+                spotArray.append(frameDict[str(spotID)]["B"])
+                spotArray.append(frameDict[str(spotID)]["C"])
 
-            spotArray = list(itertools.chain.from_iterable(spotArray))
+            # spotArray = list(itertools.chain.from_iterable(spotArray))
             frameWriteArray += spotArray
 
             CSVWriteArray.append(frameWriteArray)
