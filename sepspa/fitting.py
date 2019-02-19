@@ -657,80 +657,82 @@ class fitting:
 
             return np.array(gatheredXCenterCoorList), np.array(gatheredYCenterCoorList)
 
-        def fitEllipse():
-            xCenterCoorArray, yCenterCoorArray = gatherXYCenterFromSPADict()
 
-            D1 = np.vstack((xCenterCoorArray ** 2, xCenterCoorArray * yCenterCoorArray, yCenterCoorArray ** 2)).T
-            D2 = np.vstack((xCenterCoorArray, yCenterCoorArray, np.ones_like(xCenterCoorArray))).T
+        def fitEllipse():  # x, y
+            x, y = gatherXYCenterFromSPADict()
+            x = x[:, np.newaxis]
+            y = y[:, np.newaxis]
+            D = np.hstack((x * x, x * y, y * y, x, y, np.ones_like(x)))
+            S = np.dot(D.T, D)
+            C = np.zeros([6, 6])
+            C[0, 2] = C[2, 0] = 2
+            C[1, 1] = -1
+            E, V = np.linalg.eig(np.dot(np.linalg.inv(S), C))
+            n = np.argmax(np.abs(E))
+            a = V[:, n]
+            return a
 
-            S1 = D1.T.dot(D1)
-            S2 = D1.T.dot(D2)
-            S3 = D2.T.dot(D2)
-            T = -np.linalg.inv(S3).dot(S2.T)
-            M = S1 + S2.dot(T)
-            M = np.array([M[2, :] / 2, -M[1, :], M[0, :] / 2])
-            eval, evec = np.linalg.eig(M)
-            cond = (4 * evec[:, 0] * evec[:, 2]) - (evec[:, 1] ** 2)
-            I = np.where(cond > 0)[0]
-            a1 = evec[:, I[np.argmin(cond[I])]]
-
-            return np.concatenate([a1, T.dot(a1)])
+        # def genCirclePoint(h, k, r):
+        #     xCenterCoorArray = []
+        #     yCenterCoorArray = []
+        #
+        #     for i in range(3000):
+        #         theta = np.random.rand() * 2 * np.pi
+        #         xCenterCoorArray.append(h + np.cos(theta) * r)
+        #         yCenterCoorArray.append(k + np.sin(theta) * r)
+        #
+        #     return np.array(xCenterCoorArray), np.array(yCenterCoorArray)
+        # testx = np.array([-8.709, - 4.854, - 6.523, - 8.926, - 8.442, - 5.6, - 5.702, 10.339, 0.44,- 7.218, 7.822, 9.513, - 2.507, - 8.484, - 8.622, - 8.604, - 6.15, 1.538,0.764, 0.94, - 3.927, - 8.106, 5.893, 0.589, 2.81, 2.156, 3.782,- 8.77, 10.997, - 2.268])
+        # testy = np.array([-1.396, -7.107, 7.589, 2.211, 4.294, -6.512, -6.421, -2.575, -8.984,6.698, 8.312, -4.247, 10.365, -2.171, -1.723, 3.785, -5.991, -8.986,-8.997, 11., 9.702, -3.132, 9.721, -8.992, 10.835, -8.933, -8.605,-1.133, 0.774, 10.451 ])
+        # testFit = fitEllipse(testx,testy)
+        # print("testFit:", testFit)
+        # print("------------")
 
         self.SPAResultEllipticalCorrectedDict = self.SPAResultRawDict.copy()
-        fittedEllipseConstat = fitEllipse()
 
-        tiltedTheta = 0.5 * np.arctan(fittedEllipseConstat[2] / (fittedEllipseConstat[1] - fittedEllipseConstat[3]))
+        a = fitEllipse()
+        aa = np.zeros_like(a)
 
-        '''transform constant'''
+        th = 0.5 * np.arctan(a[2 - 1] / (a[1 - 1] - a[3 - 1]))
+        aa[1 - 1] = a[1 - 1] * np.cos(th) * np.cos(th) + a[2 - 1] * np.sin(th) * np.cos(th) + a[3 - 1] * np.sin(
+            th) * np.sin(th)
+        aa[2 - 1] = 0
+        aa[3 - 1] = a[1 - 1] * np.sin(th) * np.sin(th) - a[2 - 1] * np.sin(th) * np.cos(th) + a[3 - 1] * np.cos(
+            th) * np.cos(th)
+        aa[4 - 1] = a[4 - 1] * np.cos(th) + a[5 - 1] * np.sin(th)
+        aa[5 - 1] = -a[4 - 1] * np.sin(th) + a[5 - 1] * np.cos(th)
+        aa[6 - 1] = a[6 - 1]
 
-        transformEllipseConsgtant = np.zeros_like(fittedEllipseConstat)
+        X0 = -aa[4 - 1] / 2 / aa[1 - 1]
+        Y0 = -aa[5 - 1] / 2 / aa[3 - 1]
+        x0 = X0 * np.cos(th) - Y0 * np.sin(th)
+        y0 = X0 * np.sin(th) + Y0 * np.cos(th)
 
-        transformEllipseConsgtant[1] = fittedEllipseConstat[1] * np.cos(tiltedTheta) * np.cos(tiltedTheta) + \
-                                       fittedEllipseConstat[2] * np.sin(
-            tiltedTheta) * np.cos(tiltedTheta) + fittedEllipseConstat[3] * np.sin(tiltedTheta) * np.sin(tiltedTheta)
-        transformEllipseConsgtant[2] = 0
-        transformEllipseConsgtant[3] = fittedEllipseConstat[1] * np.sin(tiltedTheta) * np.sin(tiltedTheta) - \
-                                       fittedEllipseConstat[2] * np.sin(
-            tiltedTheta) * np.cos(tiltedTheta) + fittedEllipseConstat[3] * np.cos(tiltedTheta) * np.cos(tiltedTheta)
-        transformEllipseConsgtant[4] = fittedEllipseConstat[4] * np.cos(tiltedTheta) + fittedEllipseConstat[5] * np.sin(
-            tiltedTheta)
-        transformEllipseConsgtant[5] = -fittedEllipseConstat[4] * np.sin(tiltedTheta) + fittedEllipseConstat[
-            5] * np.cos(tiltedTheta)
-        transformEllipseConsgtant[6] = fittedEllipseConstat[6]
-
-        '''get the lengths of two radius and centre'''
-
-        tempX0 = -transformEllipseConsgtant[4] / 2 / transformEllipseConsgtant[1]
-        tempY0 = -transformEllipseConsgtant[5] / 2 / transformEllipseConsgtant[3]
-        transformedX0 = tempX0 * np.cos(tiltedTheta) - tempY0 * np.sin(tiltedTheta)
-        transformedY0 = tempX0 * np.sin(tiltedTheta) + tempY0 * np.cos(tiltedTheta)
-        A = np.sqrt((transformEllipseConsgtant[1] * tempX0 ** 2 + transformEllipseConsgtant[3] * tempY0 ** 2 -
-                     transformEllipseConsgtant[6]) / transformEllipseConsgtant[3])
-        B = np.sqrt((transformEllipseConsgtant[1] * tempX0 ** 2 + transformEllipseConsgtant[3] * tempY0 ** 2 -
-                     transformEllipseConsgtant[6]) / transformEllipseConsgtant[1])
+        A = np.sqrt((aa[1 - 1] * X0 ** 2 + aa[3 - 1] * Y0 ** 2 - aa[6 - 1]) / aa[3 - 1])
+        B = np.sqrt((aa[1 - 1] * X0 ** 2 + aa[3 - 1] * Y0 ** 2 - aa[6 - 1]) / aa[1 - 1])
 
         if B > A:
             A, B = B, A
-            tiltedTheta = tiltedTheta + np.pi / 2
+            th = th + np.pi / 2
 
         for frameID, frameDict in self.SPAResultEllipticalCorrectedDict.items():
             numberOfSpot = frameDict["numberOfSpot"]
             for spotID in range(int(numberOfSpot)):
                 spotDict = frameDict[str(spotID)]
 
-                originalXCenter = spotDict["xCenter"]
-                originalYCenter = spotDict["yCenter"]
+                x = spotDict["xCenter"]
+                y = spotDict["yCenter"]
 
-                transformedXCenter = originalXCenter - transformedX0
-                transformedYCenter = originalYCenter - transformedY0
-                tempTransformedXCenter = (transformedXCenter * np.cos(-tiltedTheta) - transformedYCenter * np.sin(
-                    -tiltedTheta)) * A / B
-                tempTransformedYCenter = transformedXCenter * np.sin(-tiltedTheta) + transformedYCenter * np.cos(
-                    -tiltedTheta)
-                transformedXCenter = tempTransformedXCenter * np.cos(tiltedTheta) - tempTransformedYCenter * np.sin(
-                    tiltedTheta)
-                transformedYCenter = tempTransformedXCenter * np.sin(tiltedTheta) + tempTransformedYCenter * np.cos(
-                    tiltedTheta)
+                xx = x - x0
+                yy = y - y0
+                XX = xx * np.cos(-th) - yy * np.sin(-th)
+                YY = xx * np.sin(-th) + yy * np.cos(-th)
+                XX = XX * A / B
+                xx = XX * np.cos(th) - YY * np.sin(th)
+                yy = XX * np.sin(th) + YY * np.cos(th)
 
-                spotDict["xCenter"] = transformedXCenter
-                spotDict["yCenter"] = transformedYCenter
+                spotDict["xCenter"] = xx
+                spotDict["yCenter"] = yy
+
+        print(a)
+        print(aa)
