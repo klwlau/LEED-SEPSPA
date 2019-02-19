@@ -776,13 +776,13 @@ class utility:
         if returnFramewise:
             for frame in range(len(dataDict)):
                 frameList = []
-                for spotID in range(int(dataDict[str(frame)]["NumberOfSpots"])):
+                for spotID in range(int(dataDict[str(frame)]["numberOfSpot"])):
                     frameList.append(dataDict[str(frame)][str(spotID)][searchKey])
                 returnList.append(np.array(frameList))
 
         else:
             for frame in range(len(dataDict)):
-                for spotID in range(int(dataDict[str(frame)]["NumberOfSpots"])):
+                for spotID in range(int(dataDict[str(frame)]["numberOfSpot"])):
                     returnList.append(dataDict[str(frame)][str(spotID)][searchKey])
         return np.array(returnList)
 
@@ -894,6 +894,31 @@ class utility:
 
         RInv = np.append(RInvL, RInvR)
         thetaInv = np.append(thetaInvL, thetaInvR)
+
+        fig = plt.figure(figsize=(8.5, 8.5))
+        ax = fig.add_subplot(111)
+
+        plt.hist(np.rad2deg(theta3), weights=R3, color="black", bins=6)
+        plt.hist(np.rad2deg(theta10), weights=R10, color=(1, 0, 0), bins=20)
+        plt.hist(np.rad2deg(theta20), weights=R20, color=(0, 1, 0), bins=40)
+        plt.hist(np.rad2deg(theta30), weights=R30, color=(0, 0, 1), bins=60)
+
+        # plt.plot(tonyInDataX, (tonyInDataY) * 0.6 - 3.3, color="#d62728", linewidth=2)
+
+        plt.xlim(-30, 30)
+        plt.yscale('log', nonposy='clip')
+
+        plt.xlabel('Domain Rotation ($\degree$)')
+        ax.yaxis.set_label_position("right")
+        ax.yaxis.tick_right()
+        plt.ylabel("Cumulative Area Fraction")
+
+        for item in ([ax.title, ax.xaxis.label, ax.yaxis.label] +
+                     ax.get_xticklabels() + ax.get_yticklabels()):
+            item.set_fontsize(20)
+
+        plt.savefig("fractionalAreaWeightedHistogram_60binlogAbsColour.png", dpi=300)
+        plt.clf()
 
 
 
