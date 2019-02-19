@@ -13,6 +13,7 @@ import numpy as np
 from joblib import Parallel, delayed
 from scipy.integrate import dblquad
 import sepspa.fitFunc as fitFunc
+from matplotlib.colors import LinearSegmentedColormap
 
 
 class fitting:
@@ -743,4 +744,157 @@ class fitting:
         self.saveToCSV(self.convertSPADictIntoCSVWriteArray(self.SPAResultEllipticalCorrectedDict), self.SPACSVNameEllipticalCorrected )
         self.saveDictToPLK(self.SPACSVNameEllipticalCorrected,
                            self.timeStamp + "_" + self.configList["csvNameRemark"] + "_EllipticalCorrectedSPADict")
+
+class utility:
+    def __init__(self,SPAdict,scanStartFrame,scanStopFrame,zeroZeroAngularPosition):
+        self.SPAdict = SPAdict
+        self.scanStartFrame = scanStartFrame
+        self.scanStopFrame = scanStopFrame
+
+        self.thetaArray = np.array(self.gatherItemFromList(self.SPAdict, "thetaPolarCorr", returnFramewise=True))
+        self.adjThetaArray = self.adjSpotAngle(self.thetaArray, zeroZeroAngularPosition)
+        self.ampRatioArray = np.array(self.gatherItemFromList(self.SPAdict, "integratedIntensityRatio", returnFramewise=True))## need to rename ampRatioList to integratedIntensityRatioArray
+        self.ampRatioArray, self.adjThetaArray = self.clusterDomain(self.adjThetaArray, self.ampRatioArray)
+        self.makeColorMap()
+
+    def makeColorMap(self):
+        def addAlpha(cdict):
+            cdict['alpha'] = ((0.0, 0.0, 0.0),
+                              (1, 1, 1))
+            return cdict
+        nbins = 10000
+        redAlphaDict = {'red': ((0.0, 1.0, 1.0), (1.0, 1.0, 1.0)), 'green': ((0.0, 1.0, 1.0), (1.0, 0.0, 0.0)),'blue': ((0.0, 1.0, 1.0), (1.0, 0.0, 0.0))}
+        greenAlphaDict = {'red': ((0.0, 1.0, 1.0), (1.0, 0.0, 0.0)), 'green': ((0.0, 1.0, 1.0), (1.0, 1.0, 1.0)),'blue': ((0.0, 1.0, 1.0), (1.0, 0.0, 0.0))}
+        blueAlphaDict = {'red': ((0.0, 1.0, 1.0), (1.0, 0.0, 0.0)), 'green': ((0.0, 1.0, 1.0), (1.0, 0.0, 0.0)),'blue': ((0.0, 1.0, 1.0), (1.0, 1.0, 1.0))}
+        self.redAlpha = LinearSegmentedColormap('redAlpha', redAlphaDict, N=nbins)
+        self.greenAlpha = LinearSegmentedColormap('greenAlpha', greenAlphaDict, N=nbins)
+        self.blueAlpha = LinearSegmentedColormap('blueAlpha', blueAlphaDict, N=nbins)
+
+    def gatherItemFromList(self,dataDict, searchKey, returnFramewise=False):
+        returnList = []
+
+        if returnFramewise:
+            for frame in range(len(dataDict)):
+                frameList = []
+                for spotID in range(int(dataDict[str(frame)]["NumberOfSpots"])):
+                    frameList.append(dataDict[str(frame)][str(spotID)][searchKey])
+                returnList.append(np.array(frameList))
+
+        else:
+            for frame in range(len(dataDict)):
+                for spotID in range(int(dataDict[str(frame)]["NumberOfSpots"])):
+                    returnList.append(dataDict[str(frame)][str(spotID)][searchKey])
+        return np.array(returnList)
+
+
+    def adjSpotAngle(self, firstSpotMean, threshold=200):
+        def adjAngle(inputAngle):
+            if inputAngle < 0:
+                inputAngle += 360
+            if 330 < inputAngle:
+                inputAngle -= 360
+            elif inputAngle < 30:
+                inputAngle -= 0
+            elif 30 < inputAngle < 90:
+                inputAngle -= 60
+            elif 90 < inputAngle < 150:
+                inputAngle -= 120
+            elif 150 < inputAngle < 210:
+                inputAngle -= 180
+            elif 210 < inputAngle < 270:
+                inputAngle -= 240
+            elif 270 < inputAngle < 330:
+                inputAngle -= 300
+            return inputAngle
+
+        if type(self.thetaArray) is float:
+            self.thetaArray -= firstSpotMean
+            self.thetaArray = adjAngle(self.thetaArray)
+            return self.thetaArray
+        else:
+            array = np.copy(self.thetaArray)
+            array -= firstSpotMean
+            for i in range(len(array)):
+                for j in range(len(array[i])):
+                    array[i][j] = adjAngle(array[i][j])
+
+            for i in range(len(array)):
+                array[i] = array[i][array[i] < threshold]
+            return array
+
+    def clusterDomain(self,adjedThetaList, ampRatioList, clusterWindow=2):
+        def cluster(items, key_func):
+            items = sorted(items)
+            clustersList = [[items[0]]]
+            for item in items[1:]:
+                cluster = clustersList[-1]
+                last_item = cluster[-1]
+                if key_func(item, last_item):
+                    cluster.append(item)
+                else:
+                    clustersList.append([item])
+            return clustersList
+
+        returnDomainThetaList = []
+        returnDomainAmpList = []
+        for thetaInFrameList, ampInFrameList in zip(adjedThetaList, ampRatioList):
+            domainAngleList = []
+            domainAmpList = []
+            clusterListInFrame = cluster(sorted(thetaInFrameList.tolist()),
+                                         lambda curr, prev: curr - prev < clusterWindow)
+            for domain in clusterListInFrame:
+                domainAngle = np.mean(domain)
+                domainAmp = 0
+                for angle in domain:
+                    angleIndexInthetaInFrameList = list(thetaInFrameList).index(angle)
+                    domainAmp += ampInFrameList[angleIndexInthetaInFrameList]
+                domainAngleList.append(domainAngle)
+                domainAmpList.append(domainAmp)
+
+            returnDomainThetaList.append(domainAngleList)
+            returnDomainAmpList.append(domainAmpList)
+        return np.array(returnDomainAmpList), np.array(returnDomainThetaList)
+
+    def selectTheatRange(self,rList, thetaList, thetaMin, thetaMax, returnRad=True):
+        rList = np.concatenate(rList)
+        thetaList = np.concatenate(thetaList)
+        returnRList = []
+        returnThetaList = []
+
+        for i in range(len(thetaList)):
+            if thetaMin < thetaList[i] < thetaMax:
+                returnRList.append(rList[i])
+                returnThetaList.append(thetaList[i])
+        if returnRad:
+            return returnRList, np.radians(returnThetaList)
+        else:
+            return returnRList, returnThetaList
+
+
+    def oldPlot(self):
+        R3, theta3 =     self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, -3, 3)
+        R10L, theta10L = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, -10, -3)
+        R10R, theta10R = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, 3, 10)
+        R20L, theta20L = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, -20, -10)
+        R20R, theta20R = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, 10, 20)
+        R30L, theta30L = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, -30, -20)
+        R30R, theta30R = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, 20, 30)
+
+        RInvL, thetaInvL = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, -30, -3)
+        RInvR, thetaInvR = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, 3, 30)
+
+        R3 = np.array(R3)
+
+        R10 = np.append(R10L, R10R)
+        R20 = np.append(R20L, R20R)
+        R30 = np.append(R30L, R30R)
+        theta10 = np.append(theta10L, theta10R)
+        theta20 = np.append(theta20L, theta20R)
+        theta30 = np.append(theta30L, theta30R)
+
+        RInv = np.append(RInvL, RInvR)
+        thetaInv = np.append(thetaInvL, thetaInvR)
+
+
+
 
