@@ -755,13 +755,13 @@ class fitting:
                            self.timeStamp + "_" + self.configList["saveNameRemark"] + "_EllipticalCorrectedSPADict")
 
 class utility:
-    def __init__(self,SPAdict,scanStartFrame,scanStopFrame,zeroZeroAngularPosition):
+    def __init__(self, SPAdict, scanStartFrame, scanStopFrame, zeroAngularPosition):
         self.SPAdict = SPAdict
         self.scanStartFrame = scanStartFrame
         self.scanStopFrame = scanStopFrame
 
         self.thetaArray = np.array(self.gatherItemFromList(self.SPAdict, "thetaPolarCorr", returnFramewise=True))
-        self.adjThetaArray = self.adjSpotAngle(self.thetaArray, zeroZeroAngularPosition)
+        self.adjThetaArray = self.adjSpotAngle(self.thetaArray, zeroAngularPosition)
         self.ampRatioArray = np.array(self.gatherItemFromList(self.SPAdict, "integratedIntensityRatio", returnFramewise=True))## need to rename ampRatioList to integratedIntensityRatioArray
         self.ampRatioArray, self.adjThetaArray = self.clusterDomain(self.adjThetaArray, self.ampRatioArray)
         self.makeColorMap()
