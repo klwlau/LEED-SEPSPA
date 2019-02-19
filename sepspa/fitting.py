@@ -681,22 +681,6 @@ class fitting:
             a = V[:, n]
             return a
 
-        # def genCirclePoint(h, k, r):
-        #     xCenterCoorArray = []
-        #     yCenterCoorArray = []
-        #
-        #     for i in range(3000):
-        #         theta = np.random.rand() * 2 * np.pi
-        #         xCenterCoorArray.append(h + np.cos(theta) * r)
-        #         yCenterCoorArray.append(k + np.sin(theta) * r)
-        #
-        #     return np.array(xCenterCoorArray), np.array(yCenterCoorArray)
-        # testx = np.array([-8.709, - 4.854, - 6.523, - 8.926, - 8.442, - 5.6, - 5.702, 10.339, 0.44,- 7.218, 7.822, 9.513, - 2.507, - 8.484, - 8.622, - 8.604, - 6.15, 1.538,0.764, 0.94, - 3.927, - 8.106, 5.893, 0.589, 2.81, 2.156, 3.782,- 8.77, 10.997, - 2.268])
-        # testy = np.array([-1.396, -7.107, 7.589, 2.211, 4.294, -6.512, -6.421, -2.575, -8.984,6.698, 8.312, -4.247, 10.365, -2.171, -1.723, 3.785, -5.991, -8.986,-8.997, 11., 9.702, -3.132, 9.721, -8.992, 10.835, -8.933, -8.605,-1.133, 0.774, 10.451 ])
-        # testFit = fitEllipse(testx,testy)
-        # print("testFit:", testFit)
-        # print("------------")
-
         self.SPAResultEllipticalCorrectedDict = self.SPAResultRawDict.copy()
 
         a = fitEllipse()
@@ -742,8 +726,6 @@ class fitting:
                 spotDict["xCenter"] = xx
                 spotDict["yCenter"] = yy
 
-                if frameID ==0 and spotID==0:
-                    print(xx,yy)
 
                 frameDict[str(spotID)] = spotDict
             self.SPAResultEllipticalCorrectedDict[str(frameID)] = frameDict
@@ -753,4 +735,3 @@ class fitting:
         self.saveDictToPLK(self.SPACSVNameEllipticalCorrected,
                            self.timeStamp + "_" + self.configList["csvNameRemark"] + "_EllipticalCorrectedSPADict")
 
-        print(self.SPAResultEllipticalCorrectedDict["0"]["0"])
