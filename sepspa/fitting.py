@@ -65,6 +65,9 @@ class fitting:
             self.makeDirInDataFolder("SEPResult")
         self.sepComplete = False
 
+        self.SPACSVHeader = ["FileID", "File Path", "Number of Spots", "Fitting Time"]
+        self.SPAparameterHeader = ["Am", "x", "y", "sigma_x", "sigma_y", "theta", "A", "B", "Constant"]
+
     def saveToCSV(self, writeArray, fileName):
         """save a list of row to CSV file"""
         with open(fileName, 'a', newline='') as f:
@@ -442,6 +445,28 @@ class fitting:
         plt.savefig(saveDir + fileName + ".png", dpi=500)
         plt.close()
 
+    def convertSPADictIntoCSVWriteArray(self,SPADict):
+        CSVWriteArray = []
+        for frameID in range(len(SPADict)):
+            frameDict = SPADict[str(frameID)]
+            frameWriteArray = []
+            spotArray = []
+            frameWriteArray.append(frameID)
+            frameWriteArray.append(frameDict["filePath"])
+            frameWriteArray.append(frameDict["numberOfSpot"])
+            frameWriteArray.append(frameDict["FittingTime"])
+
+            for spotID in range(frameDict["numberOfSpot"]):
+                spotArray.append(frameDict[str(spotID)]["fullFittingParam"][3:9])
+                spotArray.append(frameDict[str(spotID)]["fullFittingParam"][0:3])
+
+            spotArray = list(itertools.chain.from_iterable(spotArray))
+            frameWriteArray += spotArray
+
+            CSVWriteArray.append(frameWriteArray)
+
+        return CSVWriteArray
+
     def SPAMode(self):
 
         SPAFrameTimer = TicToc()
@@ -548,27 +573,7 @@ class fitting:
 
                 return fitParamsFrameDict, fitUncertDict
 
-        def convertSPADictIntoCSVWriteArray(SPADict):
-            CSVWriteArray = []
-            for frameID in range(len(SPADict)):
-                frameDict = SPADict[str(frameID)]
-                frameWriteArray = []
-                spotArray = []
-                frameWriteArray.append(frameID)
-                frameWriteArray.append(frameDict["filePath"])
-                frameWriteArray.append(frameDict["numberOfSpot"])
-                frameWriteArray.append(frameDict["FittingTime"])
 
-                for spotID in range(frameDict["numberOfSpot"]):
-                    spotArray.append(frameDict[str(spotID)]["fullFittingParam"][3:9])
-                    spotArray.append(frameDict[str(spotID)]["fullFittingParam"][0:3])
-
-                spotArray = list(itertools.chain.from_iterable(spotArray))
-                frameWriteArray += spotArray
-
-                CSVWriteArray.append(frameWriteArray)
-
-            return CSVWriteArray
 
         print("SPAMode")
         if self.sepComplete == False:
@@ -584,14 +589,12 @@ class fitting:
 
         print("save to :" + self.SPACSVNameRaw)
 
-        SPACSVHeader = ["FileID", "File Path", "Number of Spots", "Fitting Time"]
-        SPAparameterHeader = ["Am", "x", "y", "sigma_x", "sigma_y", "theta", "A", "B", "Constant"]
 
         for i in range(self.csvHeaderLength):
-            SPACSVHeader += SPAparameterHeader
+            self.SPACSVHeader += self.SPAparameterHeader
 
-        self.saveToCSV([SPACSVHeader], self.SPACSVNameRaw)
-        self.saveToCSV(convertSPADictIntoCSVWriteArray(self.SPAResultRawDict), self.SPACSVNameRaw)
+        self.saveToCSV([self.SPACSVHeader], self.SPACSVNameRaw)
+        self.saveToCSV(self.convertSPADictIntoCSVWriteArray(self.SPAResultRawDict), self.SPACSVNameRaw)
         self.saveDictToPLK(self.SPAResultRawDict,
                            self.timeStamp + "_" + self.configList["csvNameRemark"] + "_RawSPADict")
         self.saveDictToPLK(self.SPAUncertDict,
@@ -656,7 +659,6 @@ class fitting:
                     gatheredYCenterCoorList.append(frameDict[str(spotID)]["yCenter"])
 
             return np.array(gatheredXCenterCoorList), np.array(gatheredYCenterCoorList)
-
 
         def fitEllipse():  # x, y
             x, y = gatherXYCenterFromSPADict()
@@ -730,9 +732,18 @@ class fitting:
                 XX = XX * A / B
                 xx = XX * np.cos(th) - YY * np.sin(th)
                 yy = XX * np.sin(th) + YY * np.cos(th)
-
                 spotDict["xCenter"] = xx
                 spotDict["yCenter"] = yy
 
-        print(a)
-        print(aa)
+                if frameID ==0 and spotID==0:
+                    print(xx,yy)
+
+                frameDict[str(spotID)] = spotDict
+            self.SPAResultEllipticalCorrectedDict[str(frameID)] = frameDict
+
+        self.saveToCSV([self.SPACSVHeader], self.SPACSVNameEllipticalCorrected)
+        self.saveToCSV(self.convertSPADictIntoCSVWriteArray(self.SPAResultEllipticalCorrectedDict), self.SPACSVNameEllipticalCorrected )
+        self.saveDictToPLK(self.SPACSVNameEllipticalCorrected,
+                           self.timeStamp + "_" + self.configList["csvNameRemark"] + "_EllipticalCorrectedSPADict")
+
+        print(self.SPAResultEllipticalCorrectedDict["0"]["0"])
