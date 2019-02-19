@@ -51,10 +51,10 @@ class fitting:
 
     def preStart(self):
         self.makeResultDir()
-        self.SEPCSVName = "./Result/" + self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SEP.csv"
-        self.SPACSVNameRaw = "./Result/" + self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SPARaw.csv"
+        self.SEPCSVName = "./Result/" + self.timeStamp + "_" + self.configList["saveNameRemark"] + "_SEP.csv"
+        self.SPACSVNameRaw = "./Result/" + self.timeStamp + "_" + self.configList["saveNameRemark"] + "_SPARaw.csv"
         self.SPACSVNameEllipticalCorrected = "./Result/" + self.timeStamp + "_" + self.configList[
-            "csvNameRemark"] + "_SPAEllipticalCorrected.csv"
+            "saveNameRemark"] + "_SPAEllipticalCorrected.csv"
         self.copyJsontoLog()
         self.globalCounter = 0
         self.totalFileNumber = len(self.fileList)
@@ -111,7 +111,7 @@ class fitting:
             print("make Log Dir")
 
         sourceDirectory = os.curdir
-        newFileName = self.timeStamp + "_" + self.configList["csvNameRemark"] + ".json"
+        newFileName = self.timeStamp + "_" + self.configList["saveNameRemark"] + ".json"
         finalDirectory = os.path.join(os.curdir, "Log")
         dstFile = os.path.join(finalDirectory, newFileName)
         sourceFile = os.path.join(sourceDirectory, "configList.json")
@@ -345,7 +345,7 @@ class fitting:
             self.appendSepObjectIntoSEPDict(fileID, filePath, i[0])
 
         self.saveToCSV(writeBufferArray, self.SEPCSVName)
-        self.saveDictToPLK(self.sepDict, self.timeStamp + "_" + self.configList["csvNameRemark"] + "_SEPDict")
+        self.saveDictToPLK(self.sepDict, self.timeStamp + "_" + self.configList["saveNameRemark"] + "_SEPDict")
 
         self.createNGaussDict()
         print("SEPMode Complete")
@@ -604,9 +604,9 @@ class fitting:
         self.saveToCSV([self.SPACSVHeader], self.SPACSVNameRaw)
         self.saveToCSV(self.convertSPADictIntoCSVWriteArray(self.SPAResultRawDict), self.SPACSVNameRaw)
         self.saveDictToPLK(self.SPAResultRawDict,
-                           self.timeStamp + "_" + self.configList["csvNameRemark"] + "_RawSPADict")
+                           self.timeStamp + "_" + self.configList["saveNameRemark"] + "_RawSPADict")
         self.saveDictToPLK(self.SPAUncertDict,
-                           self.timeStamp + "_" + self.configList["csvNameRemark"] + "_RawSPAUncertDict")
+                           self.timeStamp + "_" + self.configList["saveNameRemark"] + "_RawSPAUncertDict")
 
         print("SPA Complete")
         SPATimer.toc()
@@ -742,8 +742,8 @@ class fitting:
 
         self.saveToCSV([self.SPACSVHeader], self.SPACSVNameEllipticalCorrected)
         self.saveToCSV(self.convertSPADictIntoCSVWriteArray(self.SPAResultEllipticalCorrectedDict), self.SPACSVNameEllipticalCorrected )
-        self.saveDictToPLK(self.SPACSVNameEllipticalCorrected,
-                           self.timeStamp + "_" + self.configList["csvNameRemark"] + "_EllipticalCorrectedSPADict")
+        self.saveDictToPLK(self.SPAResultEllipticalCorrectedDict,
+                           self.timeStamp + "_" + self.configList["saveNameRemark"] + "_EllipticalCorrectedSPADict")
 
 class utility:
     def __init__(self,SPAdict,scanStartFrame,scanStopFrame,zeroZeroAngularPosition):
