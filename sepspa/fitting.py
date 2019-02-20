@@ -446,7 +446,7 @@ class fitting:
         plt.savefig(saveDir + fileName + ".png", dpi=500)
         plt.close()
 
-    def convertSPADictIntoCSVWriteArray(self,SPADict):
+    def convertSPADictIntoCSVWriteArray(self, SPADict):
         CSVWriteArray = []
         for frameID in range(len(SPADict)):
             frameDict = SPADict[str(frameID)]
@@ -581,8 +581,6 @@ class fitting:
 
                 return fitParamsFrameDict, fitUncertDict
 
-
-
         print("SPAMode")
         if self.sepComplete == False:
             print("Runing SEPMode to get Rough range")
@@ -648,10 +646,9 @@ class fitting:
                 totalIntensity += spotDict["integratedIntensity"]
             frameDict["totalIntensity"] = totalIntensity
 
-            if int(frameID)% 50 == 0:
+            if int(frameID) % 50 == 0:
                 print("Integrating Frame ID:", frameID, end=', ')
                 inTimer.toc()
-
 
         for frameID, frameDict in spaDict.items():
             numberOfSpot = frameDict["numberOfSpot"]
@@ -745,14 +742,17 @@ class fitting:
                 spotDict["k"] = spotDict["polarCorr"][0]
                 spotDict["thetaPolarCorr"] = spotDict["polarCorr"][1]
 
-
                 frameDict[str(spotID)] = spotDict
             self.SPAResultEllipticalCorrectedDict[str(frameID)] = frameDict
 
         self.saveToCSV([self.SPACSVHeader], self.SPACSVNameEllipticalCorrected)
-        self.saveToCSV(self.convertSPADictIntoCSVWriteArray(self.SPAResultEllipticalCorrectedDict), self.SPACSVNameEllipticalCorrected )
+        self.saveToCSV(self.convertSPADictIntoCSVWriteArray(self.SPAResultEllipticalCorrectedDict),
+                       self.SPACSVNameEllipticalCorrected)
         self.saveDictToPLK(self.SPAResultEllipticalCorrectedDict,
                            self.timeStamp + "_" + self.configList["saveNameRemark"] + "_EllipticalCorrectedSPADict")
+
+        return self.SPAResultEllipticalCorrectedDict
+
 
 class utility:
     def __init__(self, SPAdict, scanStartFrame, scanStopFrame, zeroAngularPosition):
@@ -760,10 +760,13 @@ class utility:
         self.scanStartFrame = scanStartFrame
         self.scanStopFrame = scanStopFrame
 
-        self.thetaArray = np.array(self.gatherItemFromList(self.SPAdict, "thetaPolarCorr", returnFramewise=True))
-        self.adjThetaArray = self.adjSpotAngle(self.thetaArray, zeroAngularPosition)
-        self.ampRatioArray = np.array(self.gatherItemFromList(self.SPAdict, "integratedIntensityRatio", returnFramewise=True))## need to rename ampRatioList to integratedIntensityRatioArray
+        self.thetaArray = np.array(self.gatherItemFromDict(self.SPAdict, "thetaPolarCorr", returnFramewise=True))
+        self.adjThetaArray = self.adjSpotAngle(zeroAngularPosition)
+        self.ampRatioArray = np.array(self.gatherItemFromDict(self.SPAdict, "integratedIntensityRatio",
+                                                              returnFramewise=True))  ## need to rename ampRatioList to integratedIntensityRatioArray
         self.ampRatioArray, self.adjThetaArray = self.clusterDomain(self.adjThetaArray, self.ampRatioArray)
+
+
         self.makeColorMap()
 
     def makeColorMap(self):
@@ -771,15 +774,19 @@ class utility:
             cdict['alpha'] = ((0.0, 0.0, 0.0),
                               (1, 1, 1))
             return cdict
+
         nbins = 10000
-        redAlphaDict = {'red': ((0.0, 1.0, 1.0), (1.0, 1.0, 1.0)), 'green': ((0.0, 1.0, 1.0), (1.0, 0.0, 0.0)),'blue': ((0.0, 1.0, 1.0), (1.0, 0.0, 0.0))}
-        greenAlphaDict = {'red': ((0.0, 1.0, 1.0), (1.0, 0.0, 0.0)), 'green': ((0.0, 1.0, 1.0), (1.0, 1.0, 1.0)),'blue': ((0.0, 1.0, 1.0), (1.0, 0.0, 0.0))}
-        blueAlphaDict = {'red': ((0.0, 1.0, 1.0), (1.0, 0.0, 0.0)), 'green': ((0.0, 1.0, 1.0), (1.0, 0.0, 0.0)),'blue': ((0.0, 1.0, 1.0), (1.0, 1.0, 1.0))}
+        redAlphaDict = {'red': ((0.0, 1.0, 1.0), (1.0, 1.0, 1.0)), 'green': ((0.0, 1.0, 1.0), (1.0, 0.0, 0.0)),
+                        'blue': ((0.0, 1.0, 1.0), (1.0, 0.0, 0.0))}
+        greenAlphaDict = {'red': ((0.0, 1.0, 1.0), (1.0, 0.0, 0.0)), 'green': ((0.0, 1.0, 1.0), (1.0, 1.0, 1.0)),
+                          'blue': ((0.0, 1.0, 1.0), (1.0, 0.0, 0.0))}
+        blueAlphaDict = {'red': ((0.0, 1.0, 1.0), (1.0, 0.0, 0.0)), 'green': ((0.0, 1.0, 1.0), (1.0, 0.0, 0.0)),
+                         'blue': ((0.0, 1.0, 1.0), (1.0, 1.0, 1.0))}
         self.redAlpha = LinearSegmentedColormap('redAlpha', redAlphaDict, N=nbins)
         self.greenAlpha = LinearSegmentedColormap('greenAlpha', greenAlphaDict, N=nbins)
         self.blueAlpha = LinearSegmentedColormap('blueAlpha', blueAlphaDict, N=nbins)
 
-    def gatherItemFromList(self,dataDict, searchKey, returnFramewise=False):
+    def gatherItemFromDict(self, dataDict, searchKey, returnFramewise=False):
         returnList = []
 
         if returnFramewise:
@@ -794,7 +801,6 @@ class utility:
                 for spotID in range(int(dataDict[str(frame)]["numberOfSpot"])):
                     returnList.append(dataDict[str(frame)][str(spotID)][searchKey])
         return np.array(returnList)
-
 
     def adjSpotAngle(self, firstSpotMean, threshold=200):
         def adjAngle(inputAngle):
@@ -816,6 +822,8 @@ class utility:
                 inputAngle -= 300
             return inputAngle
 
+
+
         if type(self.thetaArray) is float:
             self.thetaArray -= firstSpotMean
             self.thetaArray = adjAngle(self.thetaArray)
@@ -831,7 +839,7 @@ class utility:
                 array[i] = array[i][array[i] < threshold]
             return array
 
-    def clusterDomain(self,adjedThetaList, ampRatioList, clusterWindow=2):
+    def clusterDomain(self, adjedThetaList, ampRatioList, clusterWindow=2):
         def cluster(items, key_func):
             items = sorted(items)
             clustersList = [[items[0]]]
@@ -864,7 +872,7 @@ class utility:
             returnDomainAmpList.append(domainAmpList)
         return np.array(returnDomainAmpList), np.array(returnDomainThetaList)
 
-    def selectTheatRange(self,rList, thetaList, thetaMin, thetaMax, returnRad=True):
+    def selectTheatRange(self, rList, thetaList, thetaMin, thetaMax, returnRad=True):
         rList = np.concatenate(rList)
         thetaList = np.concatenate(thetaList)
         returnRList = []
@@ -879,9 +887,8 @@ class utility:
         else:
             return returnRList, returnThetaList
 
-
     def oldPlot(self):
-        R3, theta3 =     self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, -3, 3)
+        R3, theta3 = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, -3, 3)
         R10L, theta10L = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, -10, -3)
         R10R, theta10R = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, 3, 10)
         R20L, theta20L = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, -20, -10)
@@ -900,6 +907,11 @@ class utility:
         theta10 = np.append(theta10L, theta10R)
         theta20 = np.append(theta20L, theta20R)
         theta30 = np.append(theta30L, theta30R)
+
+        print("R3", len(R3))
+        print("R10", len(R10))
+        print("R20", len(R20))
+        print("R30", len(R30))
 
         RInv = np.append(RInvL, RInvR)
         thetaInv = np.append(thetaInvL, thetaInvR)
@@ -928,7 +940,3 @@ class utility:
 
         plt.savefig("fractionalAreaWeightedHistogram_60binlogAbsColour.png", dpi=300)
         plt.clf()
-
-
-
-
