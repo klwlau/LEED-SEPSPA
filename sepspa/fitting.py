@@ -760,9 +760,9 @@ class utility:
         self.scanStartFrame = scanStartFrame
         self.scanStopFrame = scanStopFrame
 
-        self.thetaArray = np.array(self.gatherItemFromDict(self.SPAdict, "thetaPolarCorr", returnFramewise=True))
+        self.thetaArray = np.array(self.gatherItemFromDict( "thetaPolarCorr", returnFramewise=True))
         self.adjThetaArray = self.adjSpotAngle(zeroAngularPosition)
-        self.ampRatioArray = np.array(self.gatherItemFromDict(self.SPAdict, "integratedIntensityRatio",
+        self.ampRatioArray = np.array(self.gatherItemFromDict( "integratedIntensityRatio",
                                                               returnFramewise=True))  ## need to rename ampRatioList to integratedIntensityRatioArray
         self.ampRatioArray, self.adjThetaArray = self.clusterDomain(self.adjThetaArray, self.ampRatioArray)
 
@@ -786,7 +786,8 @@ class utility:
         self.greenAlpha = LinearSegmentedColormap('greenAlpha', greenAlphaDict, N=nbins)
         self.blueAlpha = LinearSegmentedColormap('blueAlpha', blueAlphaDict, N=nbins)
 
-    def gatherItemFromDict(self, dataDict, searchKey, returnFramewise=False):
+    def gatherItemFromDict(self, searchKey, returnFramewise=False):
+        dataDict = self.SPAdict
         returnList = []
 
         if returnFramewise:
