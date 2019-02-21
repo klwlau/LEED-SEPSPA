@@ -887,6 +887,16 @@ class utility:
         else:
             return returnRList, returnThetaList
 
+    def readCSVOutPut(self,fileName):
+        import csv
+        csvList = []
+        with open(fileName, "r") as f:
+            reader = csv.reader(f)
+            for row in reader:
+                if row[0] != '':
+                    csvList.append(row)
+        return csvList
+
     def oldPlot(self):
         R3, theta3 = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, -3, 3)
         R10L, theta10L = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, -10, -3)
@@ -907,12 +917,6 @@ class utility:
         theta10 = np.append(theta10L, theta10R)
         theta20 = np.append(theta20L, theta20R)
         theta30 = np.append(theta30L, theta30R)
-
-        print("R3", len(R3))
-        print("R10", len(R10))
-        print("R20", len(R20))
-        print("R30", len(R30))
-
         RInv = np.append(RInvL, RInvR)
         thetaInv = np.append(thetaInvL, thetaInvR)
 
@@ -940,3 +944,5 @@ class utility:
 
         plt.savefig("fractionalAreaWeightedHistogram_60binlogAbsColour.png", dpi=300)
         plt.clf()
+
+
