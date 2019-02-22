@@ -475,7 +475,7 @@ class fitting:
 
         return CSVWriteArray
 
-    def SPAMode(self):
+    def spaMode(self):
 
         SPAFrameTimer = TicToc()
         SPATimer = TicToc()
