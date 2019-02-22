@@ -946,6 +946,6 @@ class utility:
         plt.savefig("fractionalAreaWeightedHistogram_60binlogAbsColour.png", dpi=300)
         plt.close()
 
-        "asjhdfiuhwie"
+
 
 
