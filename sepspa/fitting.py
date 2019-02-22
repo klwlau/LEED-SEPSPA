@@ -944,6 +944,8 @@ class utility:
             item.set_fontsize(20)
 
         plt.savefig("fractionalAreaWeightedHistogram_60binlogAbsColour.png", dpi=300)
-        plt.clf()
+        plt.close()
+
+        "asjhdfiuhwie"
 
 
