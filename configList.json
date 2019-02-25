@@ -19,7 +19,6 @@
     "saveSEPResult": false
   },
 
-  "testMode": true,
   "testModeParameters":{
     "showSpots": true,
     "printSpotRoughRangeArray":true,

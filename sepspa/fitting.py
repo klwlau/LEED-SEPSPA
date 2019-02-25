@@ -19,21 +19,12 @@ from matplotlib.colors import LinearSegmentedColormap
 class fitting:
 
     def __init__(self, configFilePath="configList.json", listLength="Full"):
-        np.set_printoptions(precision=3, suppress=True)
-
         self.start_time = time.time()
         self.configFilePath = configFilePath
-        self.configList = json.load(open(self.configFilePath))
+        self.preStart()
+        np.set_printoptions(precision=3, suppress=True)
         self.timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S')
         # loading confingList
-        self.dataFolderName = self.configList["dataFolderName"]
-        self.halfCropRange = self.configList["SEPParameters"]["cropRange"] // 2
-        self.searchThreshold = self.configList["SEPParameters"]["searchThreshold"]
-        self.dataFolderName = self.configList["dataFolderName"]
-        self.sepPlotColourMin = self.configList["testModeParameters"]["sepPlotColourMin"]
-        self.sepPlotColourMax = self.configList["testModeParameters"]["sepPlotColourMax"]
-        self.saveSEPResult = self.configList["SEPParameters"]["saveSEPResult"]
-        self.scaleDownFactor = self.configList["SEPParameters"]["scaleDownFactor"]
 
         if not self.dataFolderName:
             self.fileList = glob.glob("./*.tif")
@@ -42,15 +33,25 @@ class fitting:
         self.fileList = sorted(self.fileList)
         if listLength != "Full":
             self.fileList = self.fileList[:listLength]
-        self.CSVwriteBuffer = self.configList["CSVwriteBuffer"]
-        self.preStart()
+
         self.csvHeaderLength = 15
         self.fittingBoundDict = {}
         self.fittingIntDict = {}
-        self.multipleSpotInFrameThreshold = self.configList["SPAParameters"]["multipleSpotInFrameRange"] / 2
+
 
     def preStart(self):
         self.makeResultDir()
+        self.configList = json.load(open(self.configFilePath))
+        self.dataFolderName = self.configList["dataFolderName"]
+        self.halfCropRange = self.configList["SEPParameters"]["cropRange"] // 2
+        self.searchThreshold = self.configList["SEPParameters"]["searchThreshold"]
+        self.dataFolderName = self.configList["dataFolderName"]
+        self.sepPlotColourMin = self.configList["testModeParameters"]["sepPlotColourMin"]
+        self.sepPlotColourMax = self.configList["testModeParameters"]["sepPlotColourMax"]
+        self.saveSEPResult = self.configList["SEPParameters"]["saveSEPResult"]
+        self.scaleDownFactor = self.configList["SEPParameters"]["scaleDownFactor"]
+        self.CSVwriteBuffer = self.configList["CSVwriteBuffer"]
+        self.multipleSpotInFrameThreshold = self.configList["SPAParameters"]["multipleSpotInFrameRange"] / 2
         self.SEPCSVName = "./Result/" + self.timeStamp + "_" + self.configList["saveNameRemark"] + "_SEP.csv"
         self.SPACSVNameRaw = "./Result/" + self.timeStamp + "_" + self.configList["saveNameRemark"] + "_SPARaw.csv"
         self.SPACSVNameEllipticalCorrected = "./Result/" + self.timeStamp + "_" + self.configList[
@@ -298,6 +299,12 @@ class fitting:
 
     def testMode(self):
         print("TestMode")
+        self.preStart()
+        """read json again"""
+        """set json config constant"""
+        """run sep"""
+        """run spa"""
+
 
     def sepMode(self):
 
