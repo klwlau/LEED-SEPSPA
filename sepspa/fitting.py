@@ -27,12 +27,10 @@ class fitting:
         self.preStart()
         self.copyJsontoLog()
 
-
         self.totalFileNumber = len(self.fileList)
         self.csvHeaderLength = 15
         self.fittingBoundDict = {}
         self.fittingIntDict = {}
-
 
     def preStart(self):
         self.makeResultDir()
@@ -61,7 +59,6 @@ class fitting:
         self.fileList = sorted(self.fileList)
         if self.listLength != "Full":
             self.fileList = self.fileList[:self.listLength]
-
 
         self.setPicDim()
         self.makeMask()
@@ -265,7 +262,7 @@ class fitting:
     def applySEPToImg(self, imgArray: np.array):
         """use Sep to find rough spot location"""
 
-        imgArray = self.applyMask(imgArray)
+        # imgArray = self.applyMask(imgArray)
 
         bkg = sep.Background(imgArray)
         sepObjectsList = sep.extract(imgArray, self.searchThreshold, err=bkg.globalrms)
@@ -308,18 +305,15 @@ class fitting:
         testModeConfigDict = self.configList["testModeParameters"]
         """run sep"""
         testModeFileID = testModeConfigDict["testModeFileID"]
-        self.sepCore(testModeFileID ,self.fileList[testModeFileID],plotSEPResult=testModeConfigDict["showSpots"])
+        self.sepCore(testModeFileID, self.fileList[testModeFileID], plotSEPResult=testModeConfigDict["showSpots"])
         """run spa"""
 
-
-    def sepCore(self, fileID, filePath, plotSEPResult = False):
-
+    def sepCore(self, fileID, filePath, plotSEPResult=False):
 
         imageArray = self.readLEEDImage(filePath)
         imageArray = self.compressImage(imageArray)
-        # imageArray = self.applyMask(imageArray)
+        imageArray = self.applyMask(imageArray)
 
-        # imageArray = self.applyMask(imageArray)
         sepObject, sepWriteCSVList = self.applySEPToImg(imageArray)
         sepWriteCSVList.insert(0, filePath)
         sepWriteCSVList.insert(0, fileID)
@@ -331,12 +325,9 @@ class fitting:
         if plotSEPResult:
             self.genSEPReultPlot(imageArray, sepObject, showPlot=True)
 
-
-
         return (sepObject, sepWriteCSVList)
 
     def sepMode(self):
-
 
         print("SEPMode Start")
         time.sleep(0.1)
@@ -781,12 +772,11 @@ class utility:
         self.scanStartFrame = scanStartFrame
         self.scanStopFrame = scanStopFrame
 
-        self.thetaArray = np.array(self.gatherItemFromDict( "thetaPolarCorr", returnFramewise=True))
+        self.thetaArray = np.array(self.gatherItemFromDict("thetaPolarCorr", returnFramewise=True))
         self.adjThetaArray = self.adjSpotAngle(zeroAngularPosition)
-        self.ampRatioArray = np.array(self.gatherItemFromDict( "integratedIntensityRatio",
+        self.ampRatioArray = np.array(self.gatherItemFromDict("integratedIntensityRatio",
                                                               returnFramewise=True))  ## need to rename ampRatioList to integratedIntensityRatioArray
         self.ampRatioArray, self.adjThetaArray = self.clusterDomain(self.adjThetaArray, self.ampRatioArray)
-
 
         self.makeColorMap()
 
@@ -843,8 +833,6 @@ class utility:
             elif 270 < inputAngle < 330:
                 inputAngle -= 300
             return inputAngle
-
-
 
         if type(self.thetaArray) is float:
             self.thetaArray -= firstSpotMean
@@ -909,7 +897,7 @@ class utility:
         else:
             return returnRList, returnThetaList
 
-    def readCSVOutPut(self,fileName):
+    def readCSVOutPut(self, fileName):
         import csv
         csvList = []
         with open(fileName, "r") as f:
@@ -966,7 +954,3 @@ class utility:
 
         plt.savefig("fractionalAreaWeightedHistogram_60binlogAbsColour.png", dpi=300)
         plt.close()
-
-
-
-
