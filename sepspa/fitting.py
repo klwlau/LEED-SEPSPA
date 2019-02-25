@@ -19,21 +19,16 @@ from matplotlib.colors import LinearSegmentedColormap
 class fitting:
 
     def __init__(self, configFilePath="configList.json", listLength="Full"):
+        self.listLength = listLength
         self.start_time = time.time()
         self.configFilePath = configFilePath
-        self.preStart()
         np.set_printoptions(precision=3, suppress=True)
         self.timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S')
-        # loading confingList
+        self.preStart()
+        self.copyJsontoLog()
 
-        if not self.dataFolderName:
-            self.fileList = glob.glob("./*.tif")
-        else:
-            self.fileList = glob.glob(self.dataFolderName + "/*.tif")
-        self.fileList = sorted(self.fileList)
-        if listLength != "Full":
-            self.fileList = self.fileList[:listLength]
 
+        self.totalFileNumber = len(self.fileList)
         self.csvHeaderLength = 15
         self.fittingBoundDict = {}
         self.fittingIntDict = {}
@@ -56,9 +51,18 @@ class fitting:
         self.SPACSVNameRaw = "./Result/" + self.timeStamp + "_" + self.configList["saveNameRemark"] + "_SPARaw.csv"
         self.SPACSVNameEllipticalCorrected = "./Result/" + self.timeStamp + "_" + self.configList[
             "saveNameRemark"] + "_SPAEllipticalCorrected.csv"
-        self.copyJsontoLog()
+
         self.globalCounter = 0
-        self.totalFileNumber = len(self.fileList)
+
+        if not self.dataFolderName:
+            self.fileList = glob.glob("./*.tif")
+        else:
+            self.fileList = glob.glob(self.dataFolderName + "/*.tif")
+        self.fileList = sorted(self.fileList)
+        if self.listLength != "Full":
+            self.fileList = self.fileList[:self.listLength]
+
+
         self.setPicDim()
         self.makeMask()
         self.copyJsontoLog()
@@ -222,8 +226,8 @@ class fitting:
         SS_res = np.sum(errorSquare)
         return (SS_res / SS_tot)
 
-    def plotSEPReult(self, imgArray, objects_list,
-                     saveMode=False, saveFileName="test", showSpots=False):
+    def genSEPReultPlot(self, imgArray, objects_list,
+                        saveMode=False, saveFileName="test", showPlot=False):
         """plot sep result"""
         fig, ax = plt.subplots()
         min_int, max_int = np.amin(imgArray), np.amax(imgArray)
@@ -252,7 +256,7 @@ class fitting:
             saveDir = self.dataFolderName + "SEPResult/"
             plt.savefig(saveDir + saveFileName + ".jpg", dpi=500)
 
-        if showSpots:
+        if showPlot:
             plt.show()
         else:
             plt.close()
@@ -299,30 +303,40 @@ class fitting:
 
     def testMode(self):
         print("TestMode")
+        """read json and set parameters again"""
         self.preStart()
-        """read json again"""
-        """set json config constant"""
+        testModeConfigDict = self.configList["testModeParameters"]
         """run sep"""
+        testModeFileID = testModeConfigDict["testModeFileID"]
+        self.sepCore(testModeFileID ,self.fileList[testModeFileID],plotSEPResult=testModeConfigDict["showSpots"])
         """run spa"""
 
 
+    def sepCore(self, fileID, filePath, plotSEPResult = False):
+
+
+        imageArray = self.readLEEDImage(filePath)
+        imageArray = self.compressImage(imageArray)
+        # imageArray = self.applyMask(imageArray)
+
+        # imageArray = self.applyMask(imageArray)
+        sepObject, sepWriteCSVList = self.applySEPToImg(imageArray)
+        sepWriteCSVList.insert(0, filePath)
+        sepWriteCSVList.insert(0, fileID)
+
+        if self.saveSEPResult:
+            self.genSEPReultPlot(imageArray, sepObject, saveMode=True,
+                                 saveFileName=os.path.basename(filePath)[:-4] + "_SEP")
+
+        if plotSEPResult:
+            self.genSEPReultPlot(imageArray, sepObject, showPlot=True)
+
+
+
+        return (sepObject, sepWriteCSVList)
+
     def sepMode(self):
 
-        def parallelSEP(fileID, filePath):
-            imageArray = self.readLEEDImage(filePath)
-            imageArray = self.compressImage(imageArray)
-            # imageArray = self.applyMask(imageArray)
-
-            # imageArray = self.applyMask(imageArray)
-            sepObject, sepWriteCSVList = self.applySEPToImg(imageArray)
-            sepWriteCSVList.insert(0, filePath)
-            sepWriteCSVList.insert(0, fileID)
-
-            if self.saveSEPResult:
-                self.plotSEPReult(imageArray, sepObject, saveMode=True,
-                                  saveFileName=os.path.basename(filePath)[:-4] + "_SEP")
-
-            return (sepObject, sepWriteCSVList)
 
         print("SEPMode Start")
         time.sleep(0.1)
@@ -338,11 +352,11 @@ class fitting:
         if self.configList["sepSingleCoreDebugMode"] != True:
             with Parallel(n_jobs=-1, verbose=2) as parallel:
                 multicoreSEP = parallel(
-                    delayed(parallelSEP)(fileID, filePath) for fileID, filePath in enumerate(self.fileList))
+                    delayed(self.sepCore)(fileID, filePath) for fileID, filePath in enumerate(self.fileList))
         else:
             multicoreSEP = []
             for fileID, filePath, in enumerate(self.fileList):
-                multicoreSEP.append(parallelSEP(fileID, filePath))
+                multicoreSEP.append(self.sepCore(fileID, filePath))
 
         writeBufferArray = []
 
