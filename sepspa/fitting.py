@@ -21,12 +21,12 @@ class fitting:
     def __init__(self, configFilePath="configList.json", listLength="Full"):
         self.listLength = listLength
         self.start_time = time.time()
+        self.setDimStatus = True
         self.configFilePath = configFilePath
         np.set_printoptions(precision=3, suppress=True)
         self.timeStamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y%m%d_%H%M%S')
         self.preStart()
         self.copyJsontoLog()
-
         self.totalFileNumber = len(self.fileList)
         self.csvHeaderLength = 15
         self.fittingBoundDict = {}
@@ -60,9 +60,11 @@ class fitting:
         if self.listLength != "Full":
             self.fileList = self.fileList[:self.listLength]
 
-        self.setPicDim()
+        if self.setDimStatus:
+            self.setPicDim()
+            self.setDimStatus = False
+
         self.makeMask()
-        self.copyJsontoLog()
         self.makeResultDir()
         if self.saveSEPResult:
             self.makeDirInDataFolder("SEPResult")
