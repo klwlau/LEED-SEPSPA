@@ -223,24 +223,38 @@ class fitting:
 
         return intGuess
 
-    def genFittingBound(self, spotID, frameID, numOfGauss=1, fittingOverlapPeak=False):
+    def genFittingBound(self, spotID, frameID, numOfGauss=1, sepSpotDict={}, fittingOverlapPeak=False):
         guessUpBound = self.configList["SPAParameters"]["backgroundGuessUpperBound"].copy()
         guessLowBound = self.configList["SPAParameters"]["backgroundGuessLowerBound"].copy()
 
         for i in range(numOfGauss):
             tempSpotUpBound = self.configList["SPAParameters"]["gaussianUpperBoundTemplate"].copy()
             tempSpotLowBound = self.configList["SPAParameters"]["gaussianLowerBoundTemplate"].copy()
-            if i == 0:
+            if i == 0 and fittingOverlapPeak == False:
                 tempSpotUpBound[2] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
                 tempSpotUpBound[1] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
                 tempSpotLowBound[2] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
                 tempSpotLowBound[1] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
 
+            elif fittingOverlapPeak and i == 0:
+                tempSpotUpBound[2] = self.halfCropRange + sepSpotDict["a"] / 2 + self.configList["SPAParameters"][
+                    "majorGaussianXYRange"]
+                tempSpotUpBound[1] = self.halfCropRange + sepSpotDict["b"] / 2 + self.configList["SPAParameters"][
+                    "majorGaussianXYRange"]
+                tempSpotLowBound[2] = self.halfCropRange + sepSpotDict["a"] / 2 - self.configList["SPAParameters"][
+                    "majorGaussianXYRange"]
+                tempSpotLowBound[1] = self.halfCropRange + sepSpotDict["b"] / 2 - self.configList["SPAParameters"][
+                    "majorGaussianXYRange"]
+
             elif fittingOverlapPeak and i == 1:
-                tempSpotUpBound[2] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
-                tempSpotUpBound[1] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
-                tempSpotLowBound[2] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
-                tempSpotLowBound[1] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
+                tempSpotUpBound[2] = self.halfCropRange - sepSpotDict["a"] / 2 + self.configList["SPAParameters"][
+                    "majorGaussianXYRange"]
+                tempSpotUpBound[1] = self.halfCropRange - sepSpotDict["b"] / 2 + self.configList["SPAParameters"][
+                    "majorGaussianXYRange"]
+                tempSpotLowBound[2] = self.halfCropRange - sepSpotDict["a"] / 2 - self.configList["SPAParameters"][
+                    "majorGaussianXYRange"]
+                tempSpotLowBound[1] = self.halfCropRange - sepSpotDict["b"] / 2 - self.configList["SPAParameters"][
+                    "majorGaussianXYRange"]
 
             else:
                 tempSpotUpBound[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][0] + \
@@ -596,7 +610,8 @@ class fitting:
                                 intGuess = self.genIntCondittion(spotID, frameID, sepSpotDict, numOfGauss=numOfGauss,
                                                                  fittingOverlapPeak=True)
                                 fittingBound = self.genFittingBound(spotID, frameID, numOfGauss=numOfGauss,
-                                                                    fittingOverlapPeak=True)
+                                                                    fittingOverlapPeak=True, sepSpotDict=sepSpotDict)
+
                                 fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
                                                                    bounds=fittingBound)
 
