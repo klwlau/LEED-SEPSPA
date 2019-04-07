@@ -18,7 +18,8 @@ from matplotlib.colors import LinearSegmentedColormap
 
 class fitting:
 
-    def __init__(self, configFilePath="configList.json", listLength="Full"):
+    def __init__(self, configFilePath="configList.json", listLength="Full",normalizeFittedPeakIntensity = True):
+        self.normalizeFittedPeakIntensity = normalizeFittedPeakIntensity
         self.listLength = listLength
         self.start_time = time.time()
         self.setDimStatus = True
@@ -592,7 +593,6 @@ class fitting:
                     xi, yi, z = np.array(xyzArray).T
                     xyi = xi, yi
 
-                    # self.saveSpotCropFig(cropedArray,numOfGauss,fileName=os.path.basename(frameFilePath)[:-4]+"_"+str(spotID))
 
                     intGuess = self.genIntCondittion(spotID, frameID, sepSpotDict, numOfGauss=numOfGauss)
                     fittingBound = self.genFittingBound(spotID, frameID, numOfGauss=numOfGauss)
@@ -676,7 +676,8 @@ class fitting:
 
         print("save to :" + self.SPACSVNameRaw)
 
-        self.integrateFittedPeakIntensity()
+        if self.normalizeFittedPeakIntensity:
+            self.integrateFittedPeakIntensity()
 
         for i in range(self.csvHeaderLength):
             self.SPACSVHeader += self.SPAparameterHeader
