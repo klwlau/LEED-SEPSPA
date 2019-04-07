@@ -49,6 +49,8 @@ class fitting:
         self.SPACSVNameRaw = "./Result/" + self.timeStamp + "_" + self.configList["saveNameRemark"] + "_SPARaw.csv"
         self.SPACSVNameEllipticalCorrected = "./Result/" + self.timeStamp + "_" + self.configList[
             "saveNameRemark"] + "_SPAEllipticalCorrected.csv"
+        self.forceFitOverlapPeaks = self.configList["SPAParameters"]["forceFitOverlapPeak"]
+        self.overlapPeakWidthThreshold = self.configList["SPAParameters"]["overlapPeakWidthThreshold"]
 
         self.globalCounter = 0
 
@@ -101,7 +103,7 @@ class fitting:
         with open(dirPath + fileName + '.pkl', 'wb') as f:
             pickle.dump(dict, f, pickle.HIGHEST_PROTOCOL)
 
-    def loadPLK(self, filePath):
+    def loadPKL(self, filePath):
         """load a pickle object"""
         import pickle
         with open(filePath, 'rb') as f:
@@ -171,29 +173,57 @@ class fitting:
         appliedMask = np.multiply(imageArray, self.mask)
         return appliedMask
 
-    def genIntCondittion(self, spotID, frameID, sepSpotDict, numOfGauss=1):
+    def genIntCondittion(self, spotID, frameID, sepSpotDict, numOfGauss=1, fittingOverlapPeak=False):
         intGuess = self.configList["SPAParameters"]["backgroundIntGuess"].copy()
 
         for i in range(numOfGauss):
-            if i == 0:
-                intGuess += [sepSpotDict["Am"]]
-                intGuess += [self.halfCropRange]
-                intGuess += [self.halfCropRange]
-                intGuess += [sepSpotDict["a"]]
-                intGuess += [sepSpotDict["b"]]
-                intGuess += [sepSpotDict["theta"]]
-            else:
-                if self.configList["SPAParameters"]["smartConfig"]:
-                    tempMinorGaussianIntGuess = self.configList["SPAParameters"]["minorGaussianIntGuess"].copy()
-                    tempMinorGaussianIntGuess[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][0]
-                    tempMinorGaussianIntGuess[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][1]
-                    intGuess += tempMinorGaussianIntGuess
+
+            if fittingOverlapPeak:
+                if i == 0:
+                    intGuess += [sepSpotDict["Am"]]
+                    intGuess += [self.halfCropRange + sepSpotDict["a"] / 2]
+                    intGuess += [self.halfCropRange + sepSpotDict["b"] / 2]
+                    intGuess += [sepSpotDict["a"]]
+                    intGuess += [sepSpotDict["b"]]
+                    intGuess += [sepSpotDict["theta"]]
+                elif i == 1:
+                    intGuess += [sepSpotDict["Am"]]
+                    intGuess += [self.halfCropRange - sepSpotDict["a"] / 2]
+                    intGuess += [self.halfCropRange - sepSpotDict["b"] / 2]
+                    intGuess += [sepSpotDict["a"]]
+                    intGuess += [sepSpotDict["b"]]
+                    intGuess += [sepSpotDict["theta"]]
+
                 else:
-                    intGuess += self.configList["SPAParameters"]["minorGaussianIntGuess"]
+                    if self.configList["SPAParameters"]["smartConfig"]:
+                        tempMinorGaussianIntGuess = self.configList["SPAParameters"]["minorGaussianIntGuess"].copy()
+                        tempMinorGaussianIntGuess[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][0]
+                        tempMinorGaussianIntGuess[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][1]
+                        intGuess += tempMinorGaussianIntGuess
+                    else:
+                        intGuess += self.configList["SPAParameters"]["minorGaussianIntGuess"]
+
+            else:
+
+                if i == 0:
+                    intGuess += [sepSpotDict["Am"]]
+                    intGuess += [self.halfCropRange]
+                    intGuess += [self.halfCropRange]
+                    intGuess += [sepSpotDict["a"]]
+                    intGuess += [sepSpotDict["b"]]
+                    intGuess += [sepSpotDict["theta"]]
+                else:
+                    if self.configList["SPAParameters"]["smartConfig"]:
+                        tempMinorGaussianIntGuess = self.configList["SPAParameters"]["minorGaussianIntGuess"].copy()
+                        tempMinorGaussianIntGuess[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][0]
+                        tempMinorGaussianIntGuess[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][1]
+                        intGuess += tempMinorGaussianIntGuess
+                    else:
+                        intGuess += self.configList["SPAParameters"]["minorGaussianIntGuess"]
 
         return intGuess
 
-    def genFittingBound(self, spotID, frameID, numOfGauss=1):
+    def genFittingBound(self, spotID, frameID, numOfGauss=1, fittingOverlapPeak=False):
         guessUpBound = self.configList["SPAParameters"]["backgroundGuessUpperBound"].copy()
         guessLowBound = self.configList["SPAParameters"]["backgroundGuessLowerBound"].copy()
 
@@ -205,6 +235,13 @@ class fitting:
                 tempSpotUpBound[1] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
                 tempSpotLowBound[2] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
                 tempSpotLowBound[1] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
+
+            elif fittingOverlapPeak and i == 1:
+                tempSpotUpBound[2] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
+                tempSpotUpBound[1] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
+                tempSpotLowBound[2] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
+                tempSpotLowBound[1] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
+
             else:
                 tempSpotUpBound[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][0] + \
                                      self.configList["SPAParameters"]["majorGaussianXYRange"]
@@ -214,6 +251,7 @@ class fitting:
                                       self.configList["SPAParameters"]["majorGaussianXYRange"]
                 tempSpotLowBound[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][1] - \
                                       self.configList["SPAParameters"]["majorGaussianXYRange"]
+
             guessUpBound += tempSpotUpBound
             guessLowBound += tempSpotLowBound
         return [guessLowBound, guessUpBound]
@@ -548,6 +586,20 @@ class fitting:
                     try:
                         fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
                                                            bounds=fittingBound)
+
+                        if self.forceFitOverlapPeaks:
+                            if max(fit_params[6] / fit_params[7],
+                                   fit_params[7] / fit_params[6]) > self.overlapPeakWidthThreshold:
+                                print("Reach overlapPeakWidthThreshold,  numOfGauss += 1")
+                                numOfGauss += 1
+
+                                intGuess = self.genIntCondittion(spotID, frameID, sepSpotDict, numOfGauss=numOfGauss,
+                                                                 fittingOverlapPeak=True)
+                                fittingBound = self.genFittingBound(spotID, frameID, numOfGauss=numOfGauss,
+                                                                    fittingOverlapPeak=True)
+                                fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
+                                                                   bounds=fittingBound)
+
                     except RuntimeError:
                         self.saveSpotCropFig(cropedArray, numOfGauss,
                                              fileName=os.path.basename(frameFilePath)[:-4] + "_" + str(spotID),
@@ -955,4 +1007,24 @@ class utility:
             item.set_fontsize(20)
 
         plt.savefig("fractionalAreaWeightedHistogram_60binlogAbsColour.png", dpi=300)
-        plt.close()
+        plt.clf()
+
+        fig = plt.figure(figsize=(5, 5))
+        ax = fig.add_subplot(111, polar=True)
+        ax.set_theta_zero_location("N")
+
+        ax.scatter(theta3, R3, marker='x', color="black", s=15)
+        ax.scatter(theta10, R10, marker='x', color=(1, 0, 0), s=15)
+        ax.scatter(theta20, R20, marker='x', color=(0, 1, 0), s=15)
+        ax.scatter(theta30, R30, marker='x', color=(0, 0, 1), s=15)
+
+        ax.set_thetamin(-30)
+        ax.set_thetamax(30)
+        ax.set_ylim(0, 1)
+
+        ax.set_title("Domain Rotation")
+        ax.set_xlabel('$\degree$')
+        ax.set_ylabel('Area Fraction')
+
+        plt.savefig("sectorPlot.png", dpi=300)
+        plt.clf()
