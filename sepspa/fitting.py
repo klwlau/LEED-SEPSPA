@@ -237,23 +237,23 @@ class fitting:
                 tempSpotLowBound[1] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
 
             elif fittingOverlapPeak and i == 0:
-                tempSpotUpBound[2] = self.halfCropRange + sepSpotDict["a"] / 2 + self.configList["SPAParameters"][
+                tempSpotUpBound[2] = self.halfCropRange + sepSpotDict["b"] / 2 + self.configList["SPAParameters"][
                     "majorGaussianXYRange"]
-                tempSpotUpBound[1] = self.halfCropRange + sepSpotDict["b"] / 2 + self.configList["SPAParameters"][
+                tempSpotUpBound[1] = self.halfCropRange + sepSpotDict["a"] / 2 + self.configList["SPAParameters"][
                     "majorGaussianXYRange"]
-                tempSpotLowBound[2] = self.halfCropRange + sepSpotDict["a"] / 2 - self.configList["SPAParameters"][
+                tempSpotLowBound[2] = self.halfCropRange + sepSpotDict["b"] / 2 - self.configList["SPAParameters"][
                     "majorGaussianXYRange"]
-                tempSpotLowBound[1] = self.halfCropRange + sepSpotDict["b"] / 2 - self.configList["SPAParameters"][
+                tempSpotLowBound[1] = self.halfCropRange + sepSpotDict["a"] / 2 - self.configList["SPAParameters"][
                     "majorGaussianXYRange"]
 
             elif fittingOverlapPeak and i == 1:
-                tempSpotUpBound[2] = self.halfCropRange - sepSpotDict["a"] / 2 + self.configList["SPAParameters"][
+                tempSpotUpBound[2] = self.halfCropRange - sepSpotDict["b"] / 2 + self.configList["SPAParameters"][
                     "majorGaussianXYRange"]
-                tempSpotUpBound[1] = self.halfCropRange - sepSpotDict["b"] / 2 + self.configList["SPAParameters"][
+                tempSpotUpBound[1] = self.halfCropRange - sepSpotDict["a"] / 2 + self.configList["SPAParameters"][
                     "majorGaussianXYRange"]
-                tempSpotLowBound[2] = self.halfCropRange - sepSpotDict["a"] / 2 - self.configList["SPAParameters"][
+                tempSpotLowBound[2] = self.halfCropRange - sepSpotDict["b"] / 2 - self.configList["SPAParameters"][
                     "majorGaussianXYRange"]
-                tempSpotLowBound[1] = self.halfCropRange - sepSpotDict["b"] / 2 - self.configList["SPAParameters"][
+                tempSpotLowBound[1] = self.halfCropRange - sepSpotDict["a"] / 2 - self.configList["SPAParameters"][
                     "majorGaussianXYRange"]
 
             else:
@@ -604,7 +604,7 @@ class fitting:
                         if self.forceFitOverlapPeaks:
                             if max(fit_params[6] / fit_params[7],
                                    fit_params[7] / fit_params[6]) > self.overlapPeakWidthThreshold:
-                                print("Reach overlapPeakWidthThreshold,  numOfGauss += 1")
+                                print("Reach overlapPeakWidthThreshold, frameID:",frameID,"spotID:",spotID)
                                 numOfGauss += 1
 
                                 intGuess = self.genIntCondittion(spotID, frameID, sepSpotDict, numOfGauss=numOfGauss,
