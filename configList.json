@@ -55,7 +55,7 @@
     "overlapPeakWidthThreshold": 2.5,
 
     "saveFitFuncPlot":true,
-    "saveFitFuncPlotFileRemark": "overlapFitting"
+    "saveFitFuncPlotFileRemark": "overlapFitting_1"
   }
 
 

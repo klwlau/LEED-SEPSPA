@@ -604,7 +604,7 @@ class fitting:
                         if self.forceFitOverlapPeaks:
                             if max(fit_params[6] / fit_params[7],
                                    fit_params[7] / fit_params[6]) > self.overlapPeakWidthThreshold:
-                                print("Reach overlapPeakWidthThreshold, frameID:",frameID,"spotID:",spotID)
+                                print("Reach overlapPeakWidthThreshold, frameID:",int(frameID)+1,"spotID:",spotID)
                                 numOfGauss += 1
 
                                 intGuess = self.genIntCondittion(spotID, frameID, sepSpotDict, numOfGauss=numOfGauss,
