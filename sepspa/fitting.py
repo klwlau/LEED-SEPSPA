@@ -489,7 +489,7 @@ class fitting:
 
         return CSVWriteArray
 
-    def spaMode(self):
+    def spaMode(self,sepDict = None):
 
         SPAFrameTimer = TicToc()
         SPATimer = TicToc()
@@ -596,9 +596,13 @@ class fitting:
                 return fitParamsFrameDict, fitUncertDict
 
         print("SPAMode")
-        if self.sepComplete == False:
-            print("Runing SEPMode to get Rough range")
-            self.sepMode()
+
+        if sepDict == None:
+            if self.sepComplete == False:
+                print("Runing SEPMode to get Rough range")
+                self.sepMode()
+        else:
+            self.sepDict = sepDict
 
         SPATimer.tic()
 
