@@ -603,6 +603,7 @@ class fitting:
                 self.sepMode()
         else:
             self.sepDict = sepDict
+            self.createNGaussDict()
 
         SPATimer.tic()
 
