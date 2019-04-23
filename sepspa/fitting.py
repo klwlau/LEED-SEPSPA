@@ -18,7 +18,7 @@ from matplotlib.colors import LinearSegmentedColormap
 
 class fitting:
 
-    def __init__(self, configFilePath="configList.json", listLength="Full",normalizeFittedPeakIntensity = True):
+    def __init__(self, configFilePath="configList.json", listLength="Full", normalizeFittedPeakIntensity=True):
         self.normalizeFittedPeakIntensity = normalizeFittedPeakIntensity
         self.listLength = listLength
         self.start_time = time.time()
@@ -453,7 +453,7 @@ class fitting:
 
         return self.genNGaussDict
 
-    def genFittedFuncArray(self, fit_params, outputZpredOnly=False):
+    def genFittedFuncArray(self, fit_params, outputZpredOnly=False, plotSeparateGauss=False):
         """generate an image array from the fitted function"""
         fullRange = self.halfCropRange * 2
         xi, yi = np.mgrid[0:fullRange, 0:fullRange]
@@ -461,9 +461,19 @@ class fitting:
         xyi = np.vstack([xi.ravel(), yi.ravel()])
         numOfGauss = int((len(fit_params) - 3) / len(self.configList["SPAParameters"]["gaussianUpperBoundTemplate"]))
 
-        zpred = fitFunc.NGauss(numOfGauss)(xyi, *fit_params)
+        if plotSeparateGauss:
+            zpred = []
+            gaussParams = fit_params[3:]
+            for i in range(numOfGauss):
+                gaussLayerTemp = fitFunc.gauss2D(xi, yi, gaussParams[i * 6], gaussParams[i * 6 + 1],
+                                                 gaussParams[i * 6 + 2],
+                                                 gaussParams[i * 6 + 3], gaussParams[i * 6 + 4], gaussParams[i * 6 + 5])
 
-        zpred.shape = xi.shape
+                gaussLayerTemp.shape = xi.shape
+                zpred.append(gaussLayerTemp)
+        else:
+            zpred = fitFunc.NGauss(numOfGauss)(xyi, *fit_params)
+            zpred.shape = xi.shape
 
         if outputZpredOnly:
             return zpred
@@ -471,12 +481,12 @@ class fitting:
             return xi, yi, zpred
 
     def plotFitFunc(self, fit_params, cropedRawDataArray, plotSensitivity=5, saveFitFuncPlot=False,
-                    saveFitFuncFileName="fitFuncFig", plottitle="", figTxt=""):
+                    saveFitFuncFileName="fitFuncFig", plottitle="", figTxt="", plotSeparateGauss=False):
 
-        # Chi_square = fit_params[-1]
-        # fit_params = fit_params[:-1]
-
-        xi, yi, zpred = self.genFittedFuncArray(fit_params)
+        if plotSeparateGauss:
+            xi, yi, zpred = self.genFittedFuncArray(fit_params, plotSeparateGauss=plotSeparateGauss)
+        else:
+            xi, yi, zpred = self.genFittedFuncArray(fit_params)
 
         fig, ax1 = plt.subplots()
         fig.set_size_inches(7, 8, forward=True)
@@ -490,15 +500,27 @@ class fitting:
         # plt.title("Chi^2= %.2f" % (Chi_square))
         plt.title(plottitle)
         fig.text(.5, 0.05, figTxt, ha='center')
-        ax1.contour(yi, xi, zpred,
-                    vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s, alpha=1, origin='lower')  # cmap='jet',
+
+        if plotSeparateGauss:
+            print("zlayer Lenth:",len(zpred))
+            for zLayer in zpred:
+                ax1.contour(yi, xi, zLayer,
+                            vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s, alpha=1, origin='lower')
+        else:
+            ax1.contour(yi, xi, zpred,
+                        vmin=m - plotSensitivity * s, vmax=m + plotSensitivity * s, alpha=1, origin='lower')
         if saveFitFuncPlot:
             if saveFitFuncFileName == "fitFuncFig":
                 plt.savefig(saveFitFuncFileName + ".png")
             else:
-                saveFigFullPath = self.makeDirInDataFolder("fitFuncFig_"
-                                                           + self.configList["SPAParameters"][
-                                                               "saveFitFuncPlotFileRemark"])
+                if plotSeparateGauss:
+                    saveFigFullPath = self.makeDirInDataFolder("fitFuncFig_"
+                                                               + self.configList["SPAParameters"][
+                                                                   "saveFitFuncPlotFileRemark"]+"_plotSeparateGauss")
+                else:
+                    saveFigFullPath = self.makeDirInDataFolder("fitFuncFig_"
+                                                               + self.configList["SPAParameters"][
+                                                                   "saveFitFuncPlotFileRemark"])
                 plt.savefig(saveFigFullPath + "/" + saveFitFuncFileName + ".png")
             plt.close(fig)
             return
@@ -557,7 +579,7 @@ class fitting:
                 returnTxt += "\n"
             return returnTxt
 
-        self.chiSqPlotList = []
+        self.rSqPlotList = []
 
         def applySPA(frameID, frameDict):
 
@@ -593,9 +615,9 @@ class fitting:
                     xi, yi, z = np.array(xyzArray).T
                     xyi = xi, yi
 
-
                     intGuess = self.genIntCondittion(spotID, frameID, sepSpotDict, numOfGauss=numOfGauss)
                     fittingBound = self.genFittingBound(spotID, frameID, numOfGauss=numOfGauss)
+                    saveForceFitOverlapPeaks = False
 
                     try:
                         fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
@@ -604,7 +626,7 @@ class fitting:
                         if self.forceFitOverlapPeaks:
                             if max(fit_params[6] / fit_params[7],
                                    fit_params[7] / fit_params[6]) > self.overlapPeakWidthThreshold:
-                                print("Reach overlapPeakWidthThreshold, frameID:",int(frameID)+1,"spotID:",spotID)
+                                print("Reach overlapPeakWidthThreshold, frameID:", int(frameID) + 1, "spotID:", spotID)
                                 numOfGauss += 1
 
                                 intGuess = self.genIntCondittion(spotID, frameID, sepSpotDict, numOfGauss=numOfGauss,
@@ -614,6 +636,9 @@ class fitting:
 
                                 fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
                                                                    bounds=fittingBound)
+                                saveForceFitOverlapPeaks = True
+
+
 
                     except RuntimeError:
                         self.saveSpotCropFig(cropedArray, numOfGauss,
@@ -632,8 +657,14 @@ class fitting:
                                          saveFitFuncFileName=os.path.basename(frameFilePath)[:-4] + "_" + str(spotID),
                                          plottitle=str(numOfGauss) + "_" + str(rSquare),
                                          figTxt=genPlotTxt(fit_params))
+                        if saveForceFitOverlapPeaks:
+                            self.plotFitFunc(fit_params, cropedArray, saveFitFuncPlot=True,
+                                             saveFitFuncFileName=os.path.basename(frameFilePath)[:-4] + "_" + str(
+                                                 spotID),
+                                             plottitle=str(numOfGauss) + "_" + str(rSquare),
+                                             figTxt=genPlotTxt(fit_params),plotSeparateGauss=True)
 
-                    self.chiSqPlotList.append(rSquare)
+                    self.rSqPlotList.append(rSquare)
 
                     """coordinate transformation"""
                     fit_params[4] = fit_params[4] - self.halfCropRange + sepSpotDict["xcpeak"]
