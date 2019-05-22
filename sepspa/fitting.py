@@ -545,17 +545,26 @@ class fitting:
         if IntGuessList != []:
             intGuessXCenter = []
             intGuessYCenter = []
-
+            finalXCenter = []
+            finalYCenter = []
             if plotSeparateGauss:
                 for i in range(len(zpred)):
                     intGuessYCenter.append(IntGuessList[4 + 6 * i])
                     intGuessXCenter.append(IntGuessList[5 + 6 * i])
+
+                    finalYCenter.append(fit_params[4 + 6 * i])
+                    finalXCenter.append(fit_params[5 + 6 * i])
             else:
                 intGuessYCenter.append(IntGuessList[4])
                 intGuessXCenter.append(IntGuessList[5])
 
-            ax1.plot(intGuessXCenter, intGuessYCenter, "rx", markersize=15)
+                finalYCenter.append(fit_params[4])
+                finalXCenter.append(fit_params[5])
 
+            ax1.plot(intGuessXCenter, intGuessYCenter, "rx", markersize=15,label="Initial Center Guess")
+            ax1.plot(finalXCenter, finalYCenter, "bx", markersize=15, label="Fitted Center")
+
+        plt.legend()
         if plotSeparateGauss:
             for zLayer in zpred:
                 ax1.contour(yi, xi, zLayer,
