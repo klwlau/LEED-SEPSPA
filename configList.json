@@ -53,9 +53,10 @@
     "RSqThreshold": 30000,
     "forceFitOverlapPeak": true,
     "overlapPeakWidthThreshold": 2.5,
+    "spiltDoubleRatio": 0.7,
 
     "saveFitFuncPlot":true,
-    "saveFitFuncPlotFileRemark": "overlapFitting_removeB"
+    "saveFitFuncPlotFileRemark": "spiltDoubleRatio0.7"
   }
 
 
