@@ -1,6 +1,6 @@
 {
-  "dataFolderName_mac": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
-  "dataFolderName": "D:/Resarch Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
+  "dataFolderName": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
+  "dataFolderName_mac": "D:/Resarch Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
   "CSVwriteBuffer": 20,
   "saveNameRemark":"",
   "sepSingleCoreDebugMode": false,
@@ -55,7 +55,7 @@
     "overlapPeakWidthThreshold": 2.5,
 
     "saveFitFuncPlot":true,
-    "saveFitFuncPlotFileRemark": "overlapFitting_1"
+    "saveFitFuncPlotFileRemark": "overlapFitting_removeB"
   }
 
 
