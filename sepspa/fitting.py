@@ -18,9 +18,13 @@ from matplotlib.colors import LinearSegmentedColormap
 
 class fitting:
 
-    def __init__(self, configFilePath="configList.json", listLength="Full", normalizeFittedPeakIntensity=True):
+    def __init__(self, configFilePath="configList.json", fileListStart = 0,fileListEnd = -1, normalizeFittedPeakIntensity=True, testID=[]):
         self.normalizeFittedPeakIntensity = normalizeFittedPeakIntensity
-        self.listLength = listLength
+        self.fileListStart = fileListStart
+        self.fileListEnd = fileListEnd
+        if testID!=[]:
+            self.testID = testID
+            self.testMode = True
         self.start_time = time.time()
         self.setDimStatus = True
         self.configFilePath = configFilePath
@@ -60,8 +64,10 @@ class fitting:
         else:
             self.fileList = glob.glob(self.dataFolderName + "/*.tif")
         self.fileList = sorted(self.fileList)
-        if self.listLength != "Full":
-            self.fileList = self.fileList[:self.listLength]
+        self.fileList = self.fileList[self.fileListStart:self.fileListEnd]
+
+        if self.testID != []:
+            self.fileList = [self.fileList[self.testID]]
 
         if self.setDimStatus:
             self.setPicDim()
@@ -210,9 +216,11 @@ class fitting:
 
                 else:
                     if self.configList["SPAParameters"]["smartConfig"]:
+
                         tempMinorGaussianIntGuess = self.configList["SPAParameters"]["minorGaussianIntGuess"].copy()
-                        tempMinorGaussianIntGuess[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][0]
-                        tempMinorGaussianIntGuess[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][1]
+                        tempMinorGaussianIntGuess[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 2][0]
+                        tempMinorGaussianIntGuess[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 2][1]
+
                         intGuess += tempMinorGaussianIntGuess
                     else:
                         intGuess += self.configList["SPAParameters"]["minorGaussianIntGuess"]
@@ -266,14 +274,6 @@ class fitting:
                 tempSpotLowBound[1] = self.halfCropRange + fittingOverlapPeak_y_direction - \
                                       self.configList["SPAParameters"]["majorGaussianXYRange"]
 
-                # tempSpotUpBound[2] = self.halfCropRange + sepSpotDict["b"] / 2 + self.configList["SPAParameters"][
-                #     "majorGaussianXYRange"]
-                # tempSpotUpBound[1] = self.halfCropRange + sepSpotDict["a"] / 2 + self.configList["SPAParameters"][
-                #     "majorGaussianXYRange"]
-                # tempSpotLowBound[2] = self.halfCropRange + sepSpotDict["b"] / 2 - self.configList["SPAParameters"][
-                #     "majorGaussianXYRange"]
-                # tempSpotLowBound[1] = self.halfCropRange + sepSpotDict["a"] / 2 - self.configList["SPAParameters"][
-                #     "majorGaussianXYRange"]
 
 
 
@@ -286,15 +286,6 @@ class fitting:
                                       self.configList["SPAParameters"]["majorGaussianXYRange"]
                 tempSpotLowBound[1] = self.halfCropRange - fittingOverlapPeak_y_direction - \
                                       self.configList["SPAParameters"]["majorGaussianXYRange"]
-
-                # tempSpotUpBound[2] = self.halfCropRange - sepSpotDict["b"] / 2 + self.configList["SPAParameters"][
-                #     "majorGaussianXYRange"]
-                # tempSpotUpBound[1] = self.halfCropRange - sepSpotDict["a"] / 2 + self.configList["SPAParameters"][
-                #     "majorGaussianXYRange"]
-                # tempSpotLowBound[2] = self.halfCropRange - sepSpotDict["b"] / 2 - self.configList["SPAParameters"][
-                #     "majorGaussianXYRange"]
-                # tempSpotLowBound[1] = self.halfCropRange - sepSpotDict["a"] / 2 - self.configList["SPAParameters"][
-                #     "majorGaussianXYRange"]
 
 
             else:
@@ -392,16 +383,16 @@ class fitting:
         self.sepDict[str(fileID)] = frameDict
         # self.maxSpotInFrame = max(frameDict["numberOfSpot"], self.maxSpotInFrame)
         # self.sepDict["maxSpotInFrame"] = self.maxSpotInFrame
-
-    def testMode(self):
-        print("TestMode")
-        """read json and set parameters again"""
-        self.preStart()
-        testModeConfigDict = self.configList["testModeParameters"]
-        """run sep"""
-        testModeFileID = testModeConfigDict["testModeFileID"]
-        self.sepCore(testModeFileID, self.fileList[testModeFileID], plotSEPResult=testModeConfigDict["showSpots"])
-        """run spa"""
+    #
+    # def testMode(self):
+    #     print("TestMode")
+    #     """read json and set parameters again"""
+    #     self.preStart()
+    #     testModeConfigDict = self.configList["testModeParameters"]
+    #     """run sep"""
+    #     testModeFileID = testModeConfigDict["testModeFileID"]
+    #     self.sepCore(testModeFileID, self.fileList[testModeFileID], plotSEPResult=testModeConfigDict["showSpots"])
+    #     """run spa"""
 
     def sepCore(self, fileID, filePath, plotSEPResult=False):
 
@@ -659,6 +650,7 @@ class fitting:
                 imageArray = self.readLEEDImage(frameFilePath)
 
                 for spotID in range(numberOfSpot):
+                    if self.testMode: print("FrameID:",self.testID,"SpotID:",spotID)
                     if self.configList["SPAParameters"]["adaptiveGaussianFitting"]:
                         numOfGauss = self.genNGaussDict[str(frameID)][str(spotID)]
                     else:
@@ -683,24 +675,39 @@ class fitting:
                     saveForceFitOverlapPeaks = False
 
                     try:
-                        fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
-                                                           bounds=fittingBound)
+                        try:
+                            fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
+                                                               bounds=fittingBound)
 
-                        if self.forceFitOverlapPeaks:
-                            if max(fit_params[6] / fit_params[7],
-                                   fit_params[7] / fit_params[6]) > self.overlapPeakWidthThreshold:
-                                print("Reach overlapPeakWidthThreshold, frameID:", int(frameID) + 1, "spotID:", spotID)
-                                numOfGauss += 1
+                            if self.forceFitOverlapPeaks:
+                                if max(fit_params[6] / fit_params[7],
+                                       fit_params[7] / fit_params[6]) > self.overlapPeakWidthThreshold:
+                                    print("Reach overlapPeakWidthThreshold, frameID:", int(frameID) + 1, "spotID:", spotID)
+                                    numOfGauss += 1
 
-                                intGuess = self.genIntCondittion(spotID, frameID, sepSpotDict, numOfGauss=numOfGauss,
-                                                                 fittingOverlapPeak=True)
-                                fittingBound = self.genFittingBound(spotID, frameID, numOfGauss=numOfGauss,
-                                                                    fittingOverlapPeak=True, sepSpotDict=sepSpotDict)
+                                    intGuess = self.genIntCondittion(spotID, frameID, sepSpotDict, numOfGauss=numOfGauss,
+                                                                     fittingOverlapPeak=True)
+                                    fittingBound = self.genFittingBound(spotID, frameID, numOfGauss=numOfGauss,
+                                                                        fittingOverlapPeak=True, sepSpotDict=sepSpotDict)
 
-                                fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
-                                                                   bounds=fittingBound)
-                                saveForceFitOverlapPeaks = True
+                                    fit_params, uncert_cov = curve_fit(fitFunc.NGauss(numOfGauss), xyi, z, p0=intGuess,
+                                                                       bounds=fittingBound)
+                                    saveForceFitOverlapPeaks = True
+                        except ValueError:
+                            print("-----------int condition infeasible!-----------")
+                            for num,val in enumerate(intGuess):
+                                state = fittingBound[0][num] < val < fittingBound[1][num]
+                                if state is False:
+                                    print("location:", num,"|  %06.2f , %06.2f , %06.2f"%(fittingBound[0][num],val,fittingBound[1][num]))
+                            print("Upper Bound:",fittingBound[1])
+                            print("Int Cond",intGuess)
+                            print("Lower Bound:",fittingBound[0])
 
+                            print("Upper Bound Length:", len(fittingBound[1]))
+                            print("Int Cond Length:", len(intGuess))
+                            print("Lower Bound Length:", len(fittingBound[0]))
+
+                            print("--------------------------------------------")
 
 
                     except RuntimeError:

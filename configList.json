@@ -43,11 +43,11 @@
     "adaptiveGaussianFitting":true,
     "multipleSpotInFrameRange" : 20,
 
-    "majorGaussianXYRange": 3,
+    "majorGaussianXYRange": 5,
     "gaussianUpperBoundTemplate" : [3000, 20, 20, 30, 30, 180],
     "gaussianLowerBoundTemplate" : [0, 0, 0, 0.001, 0.001, -180],
 
-    "backgroundIntGuess" : [0,0,0] ,
+    "backgroundIntGuess" : [1,1,1] ,
     "minorGaussianIntGuess" : [300, 0, 0, 3, 3, 0],
 
     "RSqThreshold": 30000,
@@ -56,7 +56,7 @@
     "spiltDoubleRatio": 0.7,
 
     "saveFitFuncPlot":true,
-    "saveFitFuncPlotFileRemark": "spiltDoubleRatio0.7"
+    "saveFitFuncPlotFileRemark": "testTestID"
   }
 
 
