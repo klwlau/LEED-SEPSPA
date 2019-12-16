@@ -1,5 +1,5 @@
 {
-  "dataFolderName": "/Users/wilsonlau/Desktop/Research Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted/",
+  "dataFolderName": "D:/Resarch Data/Tony Garphene/20180223_scan01_Raw/20180223_scan01_TonyCenterShifted",
   "CSVwriteBuffer": 20,
   "saveNameRemark":"",
   "sepSingleCoreDebugMode": false,
@@ -13,7 +13,7 @@
   },
 
   "SEPParameters":{
-    "searchThreshold":70,
+    "searchThreshold":700,
     "cropRange": 20,
     "scaleDownFactor":1.0,
     "saveSEPResult": false
@@ -23,7 +23,7 @@
     "showSpots": true,
     "printSpotRoughRangeArray":true,
     "fittingMode":true,
-    "testModeFileID": 0,
+    "testModeFileID": 1,
     "plotSensitivity": 3,
     "sepPlotColourMin": 0,
     "sepPlotColourMax": 1000,

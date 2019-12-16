@@ -12,7 +12,7 @@ from numba import jit
 import numpy as np
 from joblib import Parallel, delayed
 from scipy.integrate import dblquad
-import sepspa.fitFunc as fitFunc
+import SEPSPA.fitFunc as fitFunc
 from matplotlib.colors import LinearSegmentedColormap
 
 
@@ -34,20 +34,20 @@ class fitting:
 
     def preStart(self):
         self.makeResultDir()
-        self.configList = json.load(open(self.configFilePath))
-        self.dataFolderName = self.configList["dataFolderName"]
-        self.halfCropRange = self.configList["SEPParameters"]["cropRange"] // 2
-        self.searchThreshold = self.configList["SEPParameters"]["searchThreshold"]
-        self.dataFolderName = self.configList["dataFolderName"]
-        self.sepPlotColourMin = self.configList["testModeParameters"]["sepPlotColourMin"]
-        self.sepPlotColourMax = self.configList["testModeParameters"]["sepPlotColourMax"]
-        self.saveSEPResult = self.configList["SEPParameters"]["saveSEPResult"]
-        self.scaleDownFactor = self.configList["SEPParameters"]["scaleDownFactor"]
-        self.CSVwriteBuffer = self.configList["CSVwriteBuffer"]
-        self.multipleSpotInFrameThreshold = self.configList["SPAParameters"]["multipleSpotInFrameRange"] / 2
-        self.SEPCSVName = "./Result/" + self.timeStamp + "_" + self.configList["saveNameRemark"] + "_SEP.csv"
-        self.SPACSVNameRaw = "./Result/" + self.timeStamp + "_" + self.configList["saveNameRemark"] + "_SPARaw.csv"
-        self.SPACSVNameEllipticalCorrected = "./Result/" + self.timeStamp + "_" + self.configList[
+        self.configDict = json.load(open(self.configFilePath))
+        self.dataFolderName = self.configDict["dataFolderName"]
+        self.halfCropRange = self.configDict["SEPParameters"]["cropRange"] // 2
+        self.searchThreshold = self.configDict["SEPParameters"]["searchThreshold"]
+        self.dataFolderName = self.configDict["dataFolderName"]
+        self.sepPlotColourMin = self.configDict["testModeParameters"]["sepPlotColourMin"]
+        self.sepPlotColourMax = self.configDict["testModeParameters"]["sepPlotColourMax"]
+        self.saveSEPResult = self.configDict["SEPParameters"]["saveSEPResult"]
+        self.scaleDownFactor = self.configDict["SEPParameters"]["scaleDownFactor"]
+        self.CSVwriteBuffer = self.configDict["CSVwriteBuffer"]
+        self.multipleSpotInFrameThreshold = self.configDict["SPAParameters"]["multipleSpotInFrameRange"] / 2
+        self.SEPCSVName = "./Result/" + self.timeStamp + "_" + self.configDict["saveNameRemark"] + "_SEP.csv"
+        self.SPACSVNameRaw = "./Result/" + self.timeStamp + "_" + self.configDict["saveNameRemark"] + "_SPARaw.csv"
+        self.SPACSVNameEllipticalCorrected = "./Result/" + self.timeStamp + "_" + self.configDict[
             "saveNameRemark"] + "_SPAEllipticalCorrected.csv"
 
         self.globalCounter = 0
@@ -115,7 +115,7 @@ class fitting:
             print("make Log Dir")
 
         sourceDirectory = os.curdir
-        newFileName = self.timeStamp + "_" + self.configList["saveNameRemark"] + ".json"
+        newFileName = self.timeStamp + "_" + self.configDict["saveNameRemark"] + ".json"
         finalDirectory = os.path.join(os.curdir, "Log")
         dstFile = os.path.join(finalDirectory, newFileName)
         sourceFile = os.path.join(sourceDirectory, "configList.json")
@@ -140,6 +140,7 @@ class fitting:
 
     def setPicDim(self):
         """init picWidth, picHeight"""
+        # print(self.fileList)
         data = np.array(Image.open(self.fileList[0]))
         self.picWidth = len(data[1])
         self.picHeight = len(data)
@@ -150,10 +151,10 @@ class fitting:
         """create a donut shape mask with r1 as inner diameter and r2 as outer diameter"""
 
         mask = [[0 for x in range(self.picWidth)] for y in range(self.picHeight)]
-        mask_x_center = self.configList["maskConfig"]["mask_x_center"]
-        mask_y_center = self.configList["maskConfig"]["mask_y_center"]
-        r1 = self.configList["maskConfig"]["innerRadius"]
-        r2 = self.configList["maskConfig"]["outerRadius"]
+        mask_x_center = self.configDict["maskConfig"]["mask_x_center"]
+        mask_y_center = self.configDict["maskConfig"]["mask_y_center"]
+        r1 = self.configDict["maskConfig"]["innerRadius"]
+        r2 = self.configDict["maskConfig"]["outerRadius"]
         for y in range(self.picHeight):
             for x in range(self.picWidth):
                 if (x - mask_x_center) ** 2 + (y - mask_y_center) ** 2 > r1 ** 2 and (x - mask_x_center) ** 2 + (
@@ -172,7 +173,7 @@ class fitting:
         return appliedMask
 
     def genIntCondittion(self, spotID, frameID, sepSpotDict, numOfGauss=1):
-        intGuess = self.configList["SPAParameters"]["backgroundIntGuess"].copy()
+        intGuess = self.configDict["SPAParameters"]["backgroundIntGuess"].copy()
 
         for i in range(numOfGauss):
             if i == 0:
@@ -183,37 +184,37 @@ class fitting:
                 intGuess += [sepSpotDict["b"]]
                 intGuess += [sepSpotDict["theta"]]
             else:
-                if self.configList["SPAParameters"]["smartConfig"]:
-                    tempMinorGaussianIntGuess = self.configList["SPAParameters"]["minorGaussianIntGuess"].copy()
+                if self.configDict["SPAParameters"]["smartConfig"]:
+                    tempMinorGaussianIntGuess = self.configDict["SPAParameters"]["minorGaussianIntGuess"].copy()
                     tempMinorGaussianIntGuess[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][0]
                     tempMinorGaussianIntGuess[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][1]
                     intGuess += tempMinorGaussianIntGuess
                 else:
-                    intGuess += self.configList["SPAParameters"]["minorGaussianIntGuess"]
+                    intGuess += self.configDict["SPAParameters"]["minorGaussianIntGuess"]
 
         return intGuess
 
     def genFittingBound(self, spotID, frameID, numOfGauss=1):
-        guessUpBound = self.configList["SPAParameters"]["backgroundGuessUpperBound"].copy()
-        guessLowBound = self.configList["SPAParameters"]["backgroundGuessLowerBound"].copy()
+        guessUpBound = self.configDict["SPAParameters"]["backgroundGuessUpperBound"].copy()
+        guessLowBound = self.configDict["SPAParameters"]["backgroundGuessLowerBound"].copy()
 
         for i in range(numOfGauss):
-            tempSpotUpBound = self.configList["SPAParameters"]["gaussianUpperBoundTemplate"].copy()
-            tempSpotLowBound = self.configList["SPAParameters"]["gaussianLowerBoundTemplate"].copy()
+            tempSpotUpBound = self.configDict["SPAParameters"]["gaussianUpperBoundTemplate"].copy()
+            tempSpotLowBound = self.configDict["SPAParameters"]["gaussianLowerBoundTemplate"].copy()
             if i == 0:
-                tempSpotUpBound[2] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
-                tempSpotUpBound[1] = self.halfCropRange + self.configList["SPAParameters"]["majorGaussianXYRange"]
-                tempSpotLowBound[2] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
-                tempSpotLowBound[1] = self.halfCropRange - self.configList["SPAParameters"]["majorGaussianXYRange"]
+                tempSpotUpBound[2] = self.halfCropRange + self.configDict["SPAParameters"]["majorGaussianXYRange"]
+                tempSpotUpBound[1] = self.halfCropRange + self.configDict["SPAParameters"]["majorGaussianXYRange"]
+                tempSpotLowBound[2] = self.halfCropRange - self.configDict["SPAParameters"]["majorGaussianXYRange"]
+                tempSpotLowBound[1] = self.halfCropRange - self.configDict["SPAParameters"]["majorGaussianXYRange"]
             else:
                 tempSpotUpBound[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][0] + \
-                                     self.configList["SPAParameters"]["majorGaussianXYRange"]
+                                     self.configDict["SPAParameters"]["majorGaussianXYRange"]
                 tempSpotUpBound[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][1] + \
-                                     self.configList["SPAParameters"]["majorGaussianXYRange"]
+                                     self.configDict["SPAParameters"]["majorGaussianXYRange"]
                 tempSpotLowBound[2] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][0] - \
-                                      self.configList["SPAParameters"]["majorGaussianXYRange"]
+                                      self.configDict["SPAParameters"]["majorGaussianXYRange"]
                 tempSpotLowBound[1] = self.neighborSpotDict[str(frameID)][str(spotID)][i - 1][1] - \
-                                      self.configList["SPAParameters"]["majorGaussianXYRange"]
+                                      self.configDict["SPAParameters"]["majorGaussianXYRange"]
             guessUpBound += tempSpotUpBound
             guessLowBound += tempSpotLowBound
         return [guessLowBound, guessUpBound]
@@ -304,7 +305,7 @@ class fitting:
         print("TestMode")
         """read json and set parameters again"""
         self.preStart()
-        testModeConfigDict = self.configList["testModeParameters"]
+        testModeConfigDict = self.configDict["testModeParameters"]
         """run sep"""
         testModeFileID = testModeConfigDict["testModeFileID"]
         self.sepCore(testModeFileID, self.fileList[testModeFileID], plotSEPResult=testModeConfigDict["showSpots"])
@@ -342,7 +343,7 @@ class fitting:
 
         self.saveToCSV([sepCSVHeader], self.SEPCSVName)
 
-        if self.configList["sepSingleCoreDebugMode"] != True:
+        if self.configDict["sepSingleCoreDebugMode"] != True:
             with Parallel(n_jobs=-1, verbose=2) as parallel:
                 multicoreSEP = parallel(
                     delayed(self.sepCore)(fileID, filePath) for fileID, filePath in enumerate(self.fileList))
@@ -359,7 +360,7 @@ class fitting:
             self.appendSepObjectIntoSEPDict(fileID, filePath, i[0])
 
         self.saveToCSV(writeBufferArray, self.SEPCSVName)
-        self.saveDictToPLK(self.sepDict, self.timeStamp + "_" + self.configList["saveNameRemark"] + "_SEPDict")
+        self.saveDictToPLK(self.sepDict, self.timeStamp + "_" + self.configDict["saveNameRemark"] + "_SEPDict")
 
         self.createNGaussDict()
         print("SEPMode Complete")
@@ -406,7 +407,7 @@ class fitting:
         xi, yi = np.mgrid[0:fullRange, 0:fullRange]
 
         xyi = np.vstack([xi.ravel(), yi.ravel()])
-        numOfGauss = int((len(fit_params) - 3) / len(self.configList["SPAParameters"]["gaussianUpperBoundTemplate"]))
+        numOfGauss = int((len(fit_params) - 3) / len(self.configDict["SPAParameters"]["gaussianUpperBoundTemplate"]))
 
         zpred = fitFunc.NGauss(numOfGauss)(xyi, *fit_params)
 
@@ -444,7 +445,7 @@ class fitting:
                 plt.savefig(saveFitFuncFileName + ".png")
             else:
                 saveFigFullPath = self.makeDirInDataFolder("fitFuncFig_"
-                                                           + self.configList["SPAParameters"][
+                                                           + self.configDict["SPAParameters"][
                                                                "saveFitFuncPlotFileRemark"])
                 plt.savefig(saveFigFullPath + "/" + saveFitFuncFileName + ".png")
             plt.close(fig)
@@ -521,7 +522,7 @@ class fitting:
                 imageArray = self.readLEEDImage(frameFilePath)
 
                 for spotID in range(numberOfSpot):
-                    if self.configList["SPAParameters"]["adaptiveGaussianFitting"]:
+                    if self.configDict["SPAParameters"]["adaptiveGaussianFitting"]:
                         numOfGauss = self.genNGaussDict[str(frameID)][str(spotID)]
                     else:
                         numOfGauss = 1
@@ -560,7 +561,7 @@ class fitting:
                     rSquare = self.calRSquareError(self.genFittedFuncArray(fit_params, outputZpredOnly=True),
                                                    cropedArray)
 
-                    if self.configList["SPAParameters"]["saveFitFuncPlot"]:
+                    if self.configDict["SPAParameters"]["saveFitFuncPlot"]:
                         self.plotFitFunc(fit_params, cropedArray, saveFitFuncPlot=True,
                                          saveFitFuncFileName=os.path.basename(frameFilePath)[:-4] + "_" + str(spotID),
                                          plottitle=str(numOfGauss) + "_" + str(rSquare),
@@ -622,9 +623,9 @@ class fitting:
         self.saveToCSV([self.SPACSVHeader], self.SPACSVNameRaw)
         self.saveToCSV(self.convertSPADictIntoCSVWriteArray(self.SPAResultRawDict), self.SPACSVNameRaw)
         self.saveDictToPLK(self.SPAResultRawDict,
-                           self.timeStamp + "_" + self.configList["saveNameRemark"] + "_RawSPADict")
+                           self.timeStamp + "_" + self.configDict["saveNameRemark"] + "_RawSPADict")
         self.saveDictToPLK(self.SPAUncertDict,
-                           self.timeStamp + "_" + self.configList["saveNameRemark"] + "_RawSPAUncertDict")
+                           self.timeStamp + "_" + self.configDict["saveNameRemark"] + "_RawSPAUncertDict")
 
         print("SPA Complete")
         SPATimer.toc()
@@ -768,7 +769,7 @@ class fitting:
         self.saveToCSV(self.convertSPADictIntoCSVWriteArray(self.SPAResultEllipticalCorrectedDict),
                        self.SPACSVNameEllipticalCorrected)
         self.saveDictToPLK(self.SPAResultEllipticalCorrectedDict,
-                           self.timeStamp + "_" + self.configList["saveNameRemark"] + "_EllipticalCorrectedSPADict")
+                           self.timeStamp + "_" + self.configDict["saveNameRemark"] + "_EllipticalCorrectedSPADict")
 
         return self.SPAResultEllipticalCorrectedDict
 
