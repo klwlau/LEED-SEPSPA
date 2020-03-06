@@ -73,7 +73,30 @@ minorGaussianIntGuess|array| 2D gaussian initial guess use in `adaptiveGaussianF
 saveFitFuncPlot|bool| save a plot for every fitted plot, if set true
 saveFitFuncPlotFileRemark|string| add remark to fitted plot output file name
 
+#Example code
+To run sepspa **test mode** with a config file:
+```python
+from sepspa.fitting import fitting
 
+example = fitting(configFilePath="configList.json")
+example.testMode()
+```
+
+To run sepspa **sepspa mode** with a config file:
+```python
+from sepspa.fitting import fitting
+
+example = fitting(configFilePath="configList.json")
+example.spaMode()
+```
+
+To run sepspa **sep mode** with a config file:
+```python
+from sepspa.fitting import fitting
+
+example = fitting(configFilePath="configList.json")
+example.sepMode()
+```
 
 
 
