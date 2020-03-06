@@ -36,8 +36,8 @@
     "backgroundGuessUpperBound": [15, 15, 2000],
     "backgroundGuessLowerBound" : [-15, -15, 0],
 
-    "smartConfig": true,
     "adaptiveGaussianFitting":true,
+    "smartConfig": true,
     "multipleSpotInFrameRange" : 20,
 
     "majorGaussianXYRange": 3,

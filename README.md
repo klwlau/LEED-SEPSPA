@@ -62,8 +62,8 @@ plotFittedFunc|bool|plot `spa` result if set to `true`
 SPAParameters|dict|parameters that control `spa`
 backgroundGuessUpperBound|array|the upper bond of background fitting `[a,b,c]` in fitting function `ax+by+c` 
 backgroundGuessLowerBound|array|the lower bond of background fitting `[a,b,c]` in fitting function `ax+by+c`
-smartConfig|bool| use 
 adaptiveGaussianFitting|bool| search within a N by N box set in `multipleSpotInFrameRange` to see if there are other in identified spot. if set `true`, add another 2D gaussian to improve fitting.
+smartConfig|bool| use sep result for adding 2D gaussian in `adaptiveGaussianFitting`
 multipleSpotInFrameRange|int| search within a N by N box to see if there are other in identified spot. when adaptiveGaussianFitting is `true`, add another 2D gaussian to improve fitting.
 majorGaussianXYRange|float| A n by n box limiting center of 2D gaussian
 gaussianUpperBoundTemplate|array|the upper bond of gaussian function, `[Amp, x_0, y_0, sigma_x, sigma_y, theta]` 
