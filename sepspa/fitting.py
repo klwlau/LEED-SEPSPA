@@ -12,7 +12,7 @@ from numba import jit
 import numpy as np
 from joblib import Parallel, delayed
 from scipy.integrate import dblquad
-import SEPSPA.fitFunc as fitFunc
+import sepspa.fitFunc as fitFunc
 from matplotlib.colors import LinearSegmentedColormap
 
 
