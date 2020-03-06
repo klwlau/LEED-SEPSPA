@@ -1,7 +1,7 @@
 {
   "dataFolderName": "folder_path",
   "CSVwriteBuffer": 20,
-  "saveNameRemark":"",
+  "csvRemark":"",
   "sepSingleCoreDebugMode": false,
 
 
@@ -50,7 +50,7 @@
 
 
     "saveFitFuncPlot":false,
-    "saveFitFuncPlotFileRemark": "multifit_Rsq"
+    "saveFitFuncPlotFileRemark": ""
   }
 
 
