@@ -12,7 +12,7 @@ A tools to locate and analyse LEED spot
 - pytictoc 1.5.0+
 
 # Support platform
-- Linux and Mac (Preferable for easy sep install)
+- Linux and Mac (Preferable for easy sep package install)
 - Windows
 
 # Install
