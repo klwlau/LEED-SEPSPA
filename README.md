@@ -58,6 +58,18 @@ example = fitting(configFilePath="configList.json")
 example.sepMode()
 ```
 
+# Result output
+|File name | Type | Location| Description|
+|------------ | -------------| ------------| -------------|
+|`<time_stamp>.json`|`.json`|`./Log/`| mirror `config.json` used in last run|
+|`<time_stamp>_SPARaw.csv`|`.csv`|`./Result/`| result output from `spa`|
+|`<time_stamp>_SEP.csv`|`.csv`|`./Result/`| result output from `sep`|
+|`<time_stamp>__RawSPADict.pkl`|`.pkl`|`<data folder>/pythonObj/`|a python dictionary object that stored `spa` output|
+|`<time_stamp>__RawSPAUncertDict.pkl`|`.pkl`|`<data folder>/pythonObj/`|a python dictionary object that stored `spa` error|
+|`<time_stamp>__SEPDict.pkl`|`.pkl`|`<data folder>/pythonObj/`|a python dictionary object that stored `sep` output|
+|`<data file name>_<spot number>.png`|`.png`|`<data folder>/fitFuncFig_<user remark>/`| figure output if `saveFitFuncPlot` enable
+|`<data file name>_SEP.png`|`.png`|`<data folder>/SEPResult/`| figure output if `saveSEPResult` enable
+
 # Config SEPSAP 
 
 To run SEPSAP there are some parameter that need to be tune before use, all parameters are stored in `configList.json`.
