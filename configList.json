@@ -34,7 +34,6 @@
 
   "SPAParameters": {
     "smartConfig": true,
-    "smartXYGuessBoundRange":10,
 
     "backgroundGuessUpperBound": [15, 15, 2000],
     "backgroundGuessLowerBound" : [-15, -15, 0],
@@ -49,9 +48,6 @@
     "backgroundIntGuess" : [0,0,0] ,
     "minorGaussianIntGuess" : [300, 0, 0, 3, 3, 0],
 
-    "RSqThreshold": 30000,
-    "forceFitOverlapPeak": true,
-    "overlapPeakWidthThreshold": 2.5,
 
     "saveFitFuncPlot":false,
     "saveFitFuncPlotFileRemark": "multifit_Rsq"
