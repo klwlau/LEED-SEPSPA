@@ -7,7 +7,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 from pytictoc import TicToc
-import csv, itertools, json, os, shutil, ntpath
+import csv, itertools, json, os, shutil
 from numba import jit
 import numpy as np
 from joblib import Parallel, delayed
@@ -775,24 +775,18 @@ class fitting:
 
 
 class utility:
-    def __init__(self, SPAdict, scanStartFrame, scanStopFrame, zeroAngularPosition):
+    def __init__(self, SPAdict, zeroAngularPosition):
         self.SPAdict = SPAdict
-        self.scanStartFrame = scanStartFrame
-        self.scanStopFrame = scanStopFrame
 
         self.thetaArray = np.array(self.gatherItemFromDict("thetaPolarCorr", returnFramewise=True))
         self.adjThetaArray = self.adjSpotAngle(zeroAngularPosition)
         self.ampRatioArray = np.array(self.gatherItemFromDict("integratedIntensityRatio",
-                                                              returnFramewise=True))  ## need to rename ampRatioList to integratedIntensityRatioArray
+                                                              returnFramewise=True))
         self.ampRatioArray, self.adjThetaArray = self.clusterDomain(self.adjThetaArray, self.ampRatioArray)
 
         self.makeColorMap()
 
     def makeColorMap(self):
-        def addAlpha(cdict):
-            cdict['alpha'] = ((0.0, 0.0, 0.0),
-                              (1, 1, 1))
-            return cdict
 
         nbins = 10000
         redAlphaDict = {'red': ((0.0, 1.0, 1.0), (1.0, 1.0, 1.0)), 'green': ((0.0, 1.0, 1.0), (1.0, 0.0, 0.0)),
@@ -857,7 +851,7 @@ class utility:
                 array[i] = array[i][array[i] < threshold]
             return array
 
-    def clusterDomain(self, adjedThetaList, ampRatioList, clusterWindow=2):
+    def clusterDomain(self, adjedThetaList, ampRatioList, clusterDegWindow=2):
         def cluster(items, key_func):
             items = sorted(items)
             clustersList = [[items[0]]]
@@ -876,7 +870,7 @@ class utility:
             domainAngleList = []
             domainAmpList = []
             clusterListInFrame = cluster(sorted(thetaInFrameList.tolist()),
-                                         lambda curr, prev: curr - prev < clusterWindow)
+                                         lambda curr, prev: curr - prev < clusterDegWindow)
             for domain in clusterListInFrame:
                 domainAngle = np.mean(domain)
                 domainAmp = 0
@@ -904,61 +898,3 @@ class utility:
             return returnRList, np.radians(returnThetaList)
         else:
             return returnRList, returnThetaList
-
-    def readCSVOutPut(self, fileName):
-        import csv
-        csvList = []
-        with open(fileName, "r") as f:
-            reader = csv.reader(f)
-            for row in reader:
-                if row[0] != '':
-                    csvList.append(row)
-        return csvList
-
-    def oldPlot(self):
-        R3, theta3 = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, -3, 3)
-        R10L, theta10L = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, -10, -3)
-        R10R, theta10R = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, 3, 10)
-        R20L, theta20L = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, -20, -10)
-        R20R, theta20R = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, 10, 20)
-        R30L, theta30L = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, -30, -20)
-        R30R, theta30R = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, 20, 30)
-
-        RInvL, thetaInvL = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, -30, -3)
-        RInvR, thetaInvR = self.selectTheatRange(self.ampRatioArray, self.adjThetaArray, 3, 30)
-
-        R3 = np.array(R3)
-
-        R10 = np.append(R10L, R10R)
-        R20 = np.append(R20L, R20R)
-        R30 = np.append(R30L, R30R)
-        theta10 = np.append(theta10L, theta10R)
-        theta20 = np.append(theta20L, theta20R)
-        theta30 = np.append(theta30L, theta30R)
-        RInv = np.append(RInvL, RInvR)
-        thetaInv = np.append(thetaInvL, thetaInvR)
-
-        fig = plt.figure(figsize=(8.5, 8.5))
-        ax = fig.add_subplot(111)
-
-        plt.hist(np.rad2deg(theta3), weights=R3, color="black", bins=6)
-        plt.hist(np.rad2deg(theta10), weights=R10, color=(1, 0, 0), bins=20)
-        plt.hist(np.rad2deg(theta20), weights=R20, color=(0, 1, 0), bins=40)
-        plt.hist(np.rad2deg(theta30), weights=R30, color=(0, 0, 1), bins=60)
-
-        # plt.plot(tonyInDataX, (tonyInDataY) * 0.6 - 3.3, color="#d62728", linewidth=2)
-
-        plt.xlim(-30, 30)
-        plt.yscale('log', nonposy='clip')
-
-        plt.xlabel('Domain Rotation ($\degree$)')
-        ax.yaxis.set_label_position("right")
-        ax.yaxis.tick_right()
-        plt.ylabel("Cumulative Area Fraction")
-
-        for item in ([ax.title, ax.xaxis.label, ax.yaxis.label] +
-                     ax.get_xticklabels() + ax.get_yticklabels()):
-            item.set_fontsize(20)
-
-        plt.savefig("fractionalAreaWeightedHistogram_60binlogAbsColour.png", dpi=300)
-        plt.close()
