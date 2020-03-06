@@ -29,6 +29,35 @@ Run (if git is installed):
 git clone https://github.com/klwlau/LEED-SEPSPA
 ```
 
+#Example code
+
+To run sepspa **test mode** with a config file:
+
+```python
+from sepspa.fitting import fitting
+
+example = fitting(configFilePath="configList.json")
+example.testMode()
+```
+
+To run sepspa **sepspa mode** with a config file:
+
+```python
+from sepspa.fitting import fitting
+
+example = fitting(configFilePath="configList.json")
+example.sepspaMode()
+```
+
+To run sepspa **sep mode** with a config file:
+
+```python
+from sepspa.fitting import fitting
+
+example = fitting(configFilePath="configList.json")
+example.sepMode()
+```
+
 # Config SEPSAP 
 
 To run SEPSAP there are some parameter that need to be tune before use, all parameters are stored in `configList.json`.
@@ -77,37 +106,4 @@ To run SEPSAP there are some parameter that need to be tune before use, all para
 |minorGaussianIntGuess|array| 2D gaussian initial guess use in `adaptiveGaussianFitting`|
 |saveFitFuncPlot|bool| save a plot for every fitted plot, if set true|
 |saveFitFuncPlotFileRemark|string| add remark to fitted plot output file name|
-
-
-
-#Example code
-
-To run sepspa **test mode** with a config file:
-
-```python
-from sepspa.fitting import fitting
-
-example = fitting(configFilePath="configList.json")
-example.testMode()
-```
-
-To run sepspa **sepspa mode** with a config file:
-
-```python
-from sepspa.fitting import fitting
-
-example = fitting(configFilePath="configList.json")
-example.sepspaMode()
-```
-
-To run sepspa **sep mode** with a config file:
-
-```python
-from sepspa.fitting import fitting
-
-example = fitting(configFilePath="configList.json")
-example.sepMode()
-```
-
-
 
