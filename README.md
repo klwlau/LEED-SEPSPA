@@ -29,7 +29,7 @@ Run (if git is installed):
 git clone https://github.com/klwlau/LEED-SEPSPA
 ```
 
-#Example code
+# Example code
 
 To run sepspa **test mode** with a config file:
 
