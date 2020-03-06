@@ -253,8 +253,8 @@ class fitting:
         plt.colorbar()
         if saveMode:
             # plt.show()
-            saveDir = self.dataFolderName + "SEPResult/"
-            plt.savefig(saveDir + saveFileName + ".jpg", dpi=500)
+            saveDir = self.dataFolderName + "/SEPResult/"
+            plt.savefig(saveDir + saveFileName + ".png", dpi=500)
 
         if showPlot:
             plt.show()
