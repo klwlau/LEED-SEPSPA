@@ -1,7 +1,9 @@
 # LEED-SEPSPA
+
 A tools to locate and analyse LEED spot
 
 # Package Requirements
+
 - Python 3.6+
 - sep 1.0.3+ (https://github.com/kbarbary/sep)
 - joblib 0.13.2+
@@ -12,10 +14,12 @@ A tools to locate and analyse LEED spot
 - pytictoc 1.5.0+
 
 # Support platform
+
 - Linux and Mac (Preferable for easy sep package install)
 - Windows
 
 # Install
+
 Download the package from github
 
 or
@@ -26,6 +30,7 @@ git clone https://github.com/klwlau/LEED-SEPSPA
 ```
 
 # Config SEPSAP 
+
 To run SEPSAP there are some parameter that need to be tune before use, all parameters are stored in `configList.json`.
 
 |Parameter | Type | Description|
@@ -76,6 +81,7 @@ To run SEPSAP there are some parameter that need to be tune before use, all para
 
 
 #Example code
+
 To run sepspa **test mode** with a config file:
 
 ```python
