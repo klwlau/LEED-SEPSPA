@@ -490,7 +490,7 @@ class fitting:
 
         return CSVWriteArray
 
-    def spaMode(self, sepDict=None):
+    def sepspaMode(self, sepDict=None):
 
         SPAFrameTimer = TicToc()
         SPATimer = TicToc()
