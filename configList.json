@@ -33,11 +33,10 @@
   },
 
   "SPAParameters": {
-    "smartConfig": true,
-
     "backgroundGuessUpperBound": [15, 15, 2000],
     "backgroundGuessLowerBound" : [-15, -15, 0],
 
+    "smartConfig": true,
     "adaptiveGaussianFitting":true,
     "multipleSpotInFrameRange" : 20,
 
