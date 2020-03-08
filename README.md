@@ -60,7 +60,7 @@ example.sepMode()
 
 # Result output
 |File name | Type | Location| Description|
-|------------ | -------------| ------------| -------------|
+|------------: | :-------------:| :------------:| :-------------|
 |`<time_stamp>.json`|`.json`|`./Log/`| mirror `config.json` used in last run|
 |`<time_stamp>_SPARaw.csv`|`.csv`|`./Result/`| result output from `spa`|
 |`<time_stamp>_SEP.csv`|`.csv`|`./Result/`| result output from `sep`|
@@ -75,7 +75,7 @@ example.sepMode()
 To run SEPSAP there are some parameter that need to be tune before use, all parameters are stored in `configList.json`.
 
 |Parameter | Type | Description|
-|------------ | -------------| -------------|
+|------------: | :-------------:| :-------------|
 |`dataFolderName`|`string` | path to data (eg. `"C:/data"`)|
 |`CSVwriteBuffer`|`int` | how often sepspa save result into csv| 
 |`csvRemark`|`string` |add remark to csv output file name|
